@@ -2,6 +2,7 @@ package timboe.hunted.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,9 +17,9 @@ import timboe.hunted.HuntedGame;
 /**
  * Created by Tim on 28/12/2016.
  */
-public class HuntedRender  implements Screen {
+public class HuntedRender  implements Screen, InputProcessor {
 
-//  protected float deltaTot;
+  protected float deltaTot;
 //  protected Table table; // UI
   protected Stage stage;
 
@@ -35,10 +36,16 @@ public class HuntedRender  implements Screen {
 
   @Override
   public void dispose () {
+    stage.dispose();
+  }
+
+  protected void updatePhysics() {
   }
 
   @Override
   public void render(float delta) {
+    deltaTot += delta;
+    if (deltaTot < 1./30.) return;
 //    if (textureBuffer == true) {
 //      if(frameBuffer == null) {
 //        // m_fboScaler increase or decrease the antialiasing quality
@@ -48,6 +55,8 @@ public class HuntedRender  implements Screen {
 //      }
 //      frameBuffer.begin();
 //    }
+
+    updatePhysics();
 
     renderClear();
     renderBackground();
@@ -103,7 +112,7 @@ public class HuntedRender  implements Screen {
   @Override
   public void show() {
 //    if (secondaryStage == null && gestureDetector == null) {
-      Gdx.input.setInputProcessor( stage );
+      Gdx.input.setInputProcessor( this );
 //    } else {
 //      if (inputMultiplex == null) {
 //        inputMultiplex = new InputMultiplexer( stage );
@@ -134,5 +143,48 @@ public class HuntedRender  implements Screen {
     //ADD RESTORE LINE
 //		hookStage();
   }
+
+  @Override
+  public boolean keyDown(int keycode) {
+    return false;
+  }
+
+  @Override
+  public boolean keyUp(int keycode) {
+    return false;
+  }
+
+  @Override
+  public boolean keyTyped(char character) {
+
+    return false;
+  }
+
+  @Override
+  public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    return false;
+  }
+
+  @Override
+  public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    return false;
+  }
+
+  @Override
+  public boolean touchDragged(int screenX, int screenY, int pointer) {
+    return false;
+  }
+
+  @Override
+  public boolean mouseMoved(int screenX, int screenY) {
+    return false;
+  }
+
+  @Override
+  public boolean scrolled(int amount) {
+    return false;
+  }
+
+
 
 }

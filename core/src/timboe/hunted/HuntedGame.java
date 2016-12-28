@@ -6,15 +6,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import timboe.hunted.render.Sprites;
 import timboe.hunted.render.Textures;
 import timboe.hunted.screen.GameScreen;
 
 public class HuntedGame extends Game {
 
-  public static float CAMERA_WIDTH;
-  public static float CAMERA_HEIGHT;
-
   public static final float TILE_SIZE = 32;
+  public static final int TILE_W = 256;
+  public static final int TILE_H = 256;
 
   public GameScreen theGameScreen;
 
@@ -27,8 +27,6 @@ public class HuntedGame extends Game {
 
   @Override
 	public void create () {
-    CAMERA_WIDTH = Gdx.graphics.getWidth();
-    CAMERA_HEIGHT = Gdx.graphics.getHeight();
     self = this;
     theGameScreen = new GameScreen();
     setScreen(theGameScreen);
@@ -47,5 +45,6 @@ public class HuntedGame extends Game {
 	public void dispose () {
     theGameScreen.dispose();
     Textures.getInstance().dispose();
-	}
+    Sprites.getInstance().dispose();
+  }
 }
