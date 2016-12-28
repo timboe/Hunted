@@ -13,8 +13,8 @@ import timboe.hunted.screen.GameScreen;
 public class HuntedGame extends Game {
 
   public static final float TILE_SIZE = 32;
-  public static final int TILE_W = 256;
-  public static final int TILE_H = 256;
+  public static final int TILE_X = 256;
+  public static final int TILE_Y = 256;
 
   public GameScreen theGameScreen;
 
