@@ -22,15 +22,15 @@ public class Sprites {
   private Player player;
 
   public Integer xyToID(int x, int y) {
-    return (HuntedGame.TILE_H * x) + y;
+    return (HuntedGame.TILE_Y * x) + y;
   }
 
   private Sprites() {
     player = new Player();
     tileSet = new Group();
     tileMap = new HashMap<Integer, Tile>();
-    for (int x = 0; x < HuntedGame.TILE_W; ++x) {
-      for (int y = 0; y < HuntedGame.TILE_H; ++y) {
+    for (int x = 0; x < HuntedGame.TILE_X; ++x) {
+      for (int y = 0; y < HuntedGame.TILE_Y; ++y) {
         Tile t = new Tile(x,y);
         tileMap.put(xyToID(x,y), t);
         tileSet.addActor(t);
