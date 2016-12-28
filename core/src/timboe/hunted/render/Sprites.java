@@ -21,18 +21,32 @@ public class Sprites {
   private HashMap<Integer, Tile> tileMap;
   private Player player;
 
-  public Integer xyToID(int x, int y) {
-    return (HuntedGame.TILE_Y * x) + y;
-  }
-
   private Sprites() {
     player = new Player();
     tileSet = new Group();
+
+//    tileMap = new HashMap<Integer, Tile>();
+//    for (int cX = 0; cX < HuntedGame.CHUNKS_X; ++cX) {
+//      for (int cY = 0; cY < HuntedGame.CHUNKS_Y; ++cY) {
+//        final int xOff = cX * HuntedGame.CHUNK_SIZE;
+//        final int yOff = cY * HuntedGame.CHUNK_SIZE;
+//        Group chunkGroup = new Group();
+//        for (int x = xOff; x < xOff + HuntedGame.CHUNK_SIZE; ++x) {
+//          for (int y = 0; y < yOff + HuntedGame.CHUNK_SIZE; ++y) {
+//            Tile t = new Tile(x, y);
+//            tileMap.put(HuntedGame.xyToID(x, y), t);
+//            chunkGroup.addActor(t);
+//          }
+//        }
+//        tileSet.addActor(chunkGroup);
+//      }
+//    }
+
     tileMap = new HashMap<Integer, Tile>();
     for (int x = 0; x < HuntedGame.TILE_X; ++x) {
       for (int y = 0; y < HuntedGame.TILE_Y; ++y) {
-        Tile t = new Tile(x,y);
-        tileMap.put(xyToID(x,y), t);
+        Tile t = new Tile(x, y);
+        tileMap.put(HuntedGame.xyToID(x, y), t);
         tileSet.addActor(t);
       }
     }
@@ -47,7 +61,7 @@ public class Sprites {
   }
 
   public Tile getTile(int x, int y) {
-    return tileMap.get(xyToID(x,y));
+    return tileMap.get(HuntedGame.xyToID(x,y));
   }
 
   public void dispose() {

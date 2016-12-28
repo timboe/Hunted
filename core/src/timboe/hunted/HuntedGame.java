@@ -12,9 +12,14 @@ import timboe.hunted.screen.GameScreen;
 
 public class HuntedGame extends Game {
 
-  public static final float TILE_SIZE = 32;
+  public static final int TILE_SIZE = 32;
   public static final int TILE_X = 256;
   public static final int TILE_Y = 256;
+
+  public static final int CHUNK_SIZE = 16;
+  public static final int CHUNKS_X = TILE_X / CHUNK_SIZE;
+  public static final int CHUNKS_Y = TILE_Y / CHUNK_SIZE;
+  public static final int MIN_SIZE = 5;
 
   public GameScreen theGameScreen;
 
@@ -23,6 +28,11 @@ public class HuntedGame extends Game {
   private static HuntedGame self;
   public static HuntedGame get() {
     return self;
+  }
+
+  public static Integer xyToID(int x, int y) {
+    assert (y < 1024);
+    return (1024 * x) + y;
   }
 
   @Override

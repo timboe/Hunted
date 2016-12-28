@@ -15,14 +15,17 @@ public class Textures {
 
   public final Texture dummyDirt;
   public final Texture dummyPlayer;
+  public final Texture dummyFloor;
 
   private Textures() {
     dummyDirt = new Texture(Gdx.files.internal("dummyDirt.png"));
     dummyPlayer = new Texture(Gdx.files.internal("dummyPlayer.png"));
+    dummyFloor = new Texture(Gdx.files.internal("dummyFloor.png"));
   }
 
   public void dispose() {
     dummyDirt.dispose();
     dummyPlayer.dispose();
+    dummyFloor.dispose();
   }
 }

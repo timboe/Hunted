@@ -2,6 +2,8 @@ package timboe.hunted.world;
 
 import timboe.hunted.HuntedGame;
 
+import java.util.HashMap;
+
 /**
  * Created by Tim on 28/12/2016.
  */
@@ -12,10 +14,27 @@ public class WorldGen {
     return ourInstance;
   }
 
-  public final int CHUNK_SIZE = 16;
-  public final int CHUNKS_X = HuntedGame.TILE_X / CHUNK_SIZE;
-  public final int CHUNKS_Y = HuntedGame.TILE_X / CHUNK_SIZE;
+
+  public enum Split {NONE, VERTICAL, HORIZONTAL, BOTH};
+
+  private HashMap<Integer, Chunk> chunkMap;
 
   private WorldGen() {
+    chunkMap = new HashMap<Integer, Chunk>();
+    for (int x = 0; x < HuntedGame.CHUNKS_X; ++x) {
+      for  (int y = 0; y < HuntedGame.CHUNKS_Y; ++y) {
+        final int id = HuntedGame.xyToID(x,y);
+        chunkMap.put(id, new Chunk(x,y,id));
+      }
+    }
+  }
+
+  public void generateWorld() {
+    for (HashMap.Entry<Integer, Chunk> entry : chunkMap.entrySet()) {
+      entry.getValue().generate();
+    }
+    for (HashMap.Entry<Integer, Chunk> entry : chunkMap.entrySet()) {
+      entry.getValue().addRoomsToTileMap();
+    }
   }
 }

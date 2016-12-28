@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -25,10 +26,15 @@ public class HuntedRender  implements Screen, InputProcessor {
 
   protected GestureDetector gestureDetector = null;
 
+  protected ShapeRenderer shapeRenderer;
+
 
   public HuntedRender() {
     stage = new Stage(new ScreenViewport()); //TODO choose a better renderer here
-    if (HuntedGame.debug) stage.setDebugAll(true);
+    if (HuntedGame.debug) {
+      stage.setDebugAll(true);
+      shapeRenderer = new ShapeRenderer();
+    }
   }
 
   public void init() {
