@@ -12,14 +12,12 @@ import timboe.hunted.screen.GameScreen;
 
 public class HuntedGame extends Game {
 
-  public static final int TILE_SIZE = 32;
-  public static final int TILE_X = 256;
-  public static final int TILE_Y = 256;
+  public static final int TILE_SIZE = 8;
+  public static final int TILE_X = 128;
+  public static final int TILE_Y = 128;
 
-  public static final int CHUNK_SIZE = 16;
-  public static final int CHUNKS_X = TILE_X / CHUNK_SIZE;
-  public static final int CHUNKS_Y = TILE_Y / CHUNK_SIZE;
-  public static final int MIN_SIZE = 5;
+
+  public static final int MIN_ROOM_SIZE = 5;
 
   public GameScreen theGameScreen;
 

@@ -21,7 +21,7 @@ public class GameScreen extends HuntedRender {
 
   @Override
   public void init() {
-    cullBox = new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    cullBox = new Rectangle(0, 0, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
     stage.addActor(Sprites.getInstance().getTileSet());
     stage.addActor(Sprites.getInstance().getPlayer());
     WorldGen.getInstance().generateWorld();
@@ -43,20 +43,20 @@ public class GameScreen extends HuntedRender {
   @Override
   protected void renderBackground() {
     stage.act(Gdx.graphics.getDeltaTime());
-    stage.getRoot().setCullingArea( cullBox );
+    //stage.getRoot().setCullingArea( cullBox );
     stage.draw();
-    if (HuntedGame.debug) { // Draw chunk boundaries
-      shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-      shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-      shapeRenderer.setColor(1, 0, 0, 1);
-      for (int cX = 0; cX < HuntedGame.CHUNKS_X; ++cX) {
-        for (int cY = 0; cY < HuntedGame.CHUNKS_Y; ++cY) {
-          final int size = HuntedGame.CHUNK_SIZE * HuntedGame.TILE_SIZE;
-          shapeRenderer.rect(cX * size,cY * size, size, size);
-        }
-      }
-      shapeRenderer.end();
-    }
+//    if (HuntedGame.debug) { // Draw chunk boundaries
+//      shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+//      shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//      shapeRenderer.setColor(1, 0, 0, 1);
+//      for (int cX = 0; cX < HuntedGame.CHUNKS_X; ++cX) {
+//        for (int cY = 0; cY < HuntedGame.CHUNKS_Y; ++cY) {
+//          final int size = HuntedGame.CHUNK_SIZE * HuntedGame.TILE_SIZE;
+//          shapeRenderer.rect(cX * size,cY * size, size, size);
+//        }
+//      }
+//      shapeRenderer.end();
+//    }
   }
 
   @Override

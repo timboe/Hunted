@@ -30,7 +30,7 @@ public class Tile extends Actor {
 
   @Override
   public void draw(Batch batch, float alpha){
-    Gdx.app.log("dgb", "drawing ["+this+"] ("+getX()/32+","+getY()/32+")");
+    //if (getX() == 0 && getY() == 0) Gdx.app.log("dgb", "drawing ["+this+"] ("+getX()/32+","+getY()/32+")");
     batch.draw(texture,this.getX(),this.getY());
   }
 }
