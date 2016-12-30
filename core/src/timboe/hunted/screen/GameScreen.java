@@ -3,7 +3,9 @@ package timboe.hunted.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.render.HuntedRender;
 import timboe.hunted.render.Sprites;
@@ -17,8 +19,8 @@ public class GameScreen extends HuntedRender {
   private boolean keyN = false, keyE = false, keyS = false, keyW = false;
   private Rectangle cullBox;
 
-
-
+  Box2DDebugRenderer debugRenderer;
+  Matrix4 debugMatrix;
 
   @Override
   public void init() {
@@ -26,10 +28,15 @@ public class GameScreen extends HuntedRender {
     stage.addActor(Sprites.getInstance().getTileSet());
     stage.addActor(Sprites.getInstance().getPlayer());
     WorldGen.getInstance().generateWorld();
+
+    debugRenderer = new Box2DDebugRenderer();
   }
 
   @Override
   protected void updatePhysics() {
+
+    stage.act(Gdx.graphics.getDeltaTime());
+    HuntedGame.worldBox2D.step(Gdx.graphics.getDeltaTime(), 6, 2);
     Sprites.getInstance().getPlayer().updatePhysics();
 
     float cameraX = Math.max( Sprites.getInstance().getPlayer().getX(), Gdx.graphics.getWidth()/2 );
@@ -38,26 +45,17 @@ public class GameScreen extends HuntedRender {
     cameraY = Math.min( cameraY, (HuntedGame.TILE_Y * HuntedGame.TILE_SIZE) - (Gdx.graphics.getHeight()/2) );
 
     stage.getCamera().position.set(cameraX, cameraY, 0);
+    stage.getCamera().update();
     cullBox.setCenter(cameraX, cameraY);
   }
 
   @Override
   protected void renderBackground() {
-    stage.act(Gdx.graphics.getDeltaTime());
     //stage.getRoot().setCullingArea( cullBox );
     stage.draw();
-//    if (HuntedGame.debug) { // Draw chunk boundaries
-//      shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-//      shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//      shapeRenderer.setColor(1, 0, 0, 1);
-//      for (int cX = 0; cX < HuntedGame.CHUNKS_X; ++cX) {
-//        for (int cY = 0; cY < HuntedGame.CHUNKS_Y; ++cY) {
-//          final int size = HuntedGame.CHUNK_SIZE * HuntedGame.TILE_SIZE;
-//          shapeRenderer.rect(cX * size,cY * size, size, size);
-//        }
-//      }
-//      shapeRenderer.end();
-//    }
+
+    debugMatrix = stage.getCamera().combined.cpy().scale(HuntedGame.TILE_SIZE, HuntedGame.TILE_SIZE, 0);
+    debugRenderer.render(HuntedGame.worldBox2D, debugMatrix);
   }
 
   @Override
