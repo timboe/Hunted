@@ -16,16 +16,22 @@ public class Textures {
   public final Texture dummyDirt;
   public final Texture dummyPlayer;
   public final Texture dummyFloor;
+  public final Texture dummyLarge;
+  public final Texture dummyCorridor;
 
   private Textures() {
     dummyDirt = new Texture(Gdx.files.internal("dummyDirt.png"));
     dummyPlayer = new Texture(Gdx.files.internal("dummyPlayer.png"));
     dummyFloor = new Texture(Gdx.files.internal("dummyFloor.png"));
+    dummyCorridor = new Texture(Gdx.files.internal("dummyCorridor.png"));
+    dummyLarge = new Texture(Gdx.files.internal("dummyLarge.png"));
   }
 
   public void dispose() {
     dummyDirt.dispose();
     dummyPlayer.dispose();
     dummyFloor.dispose();
+    dummyCorridor.dispose();
+    dummyLarge.dispose();
   }
 }

@@ -3,6 +3,7 @@ package timboe.hunted.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.render.Textures;
@@ -14,6 +15,7 @@ public class Tile extends Actor {
 
   Texture texture = Textures.getInstance().dummyDirt;
   boolean isFloor;
+  Body body;
 
   public Tile(int x, int y){
     setX(x * HuntedGame.TILE_SIZE);
@@ -25,12 +27,19 @@ public class Tile extends Actor {
   public void setIsFloor() {
     isFloor = true;
     texture =  Textures.getInstance().dummyFloor;
-
   }
+
+  public void setIsCorridor() {
+    texture =  Textures.getInstance().dummyCorridor;
+  }
+
+//  public void setIsLargeRoom() {
+//    texture =  Textures.getInstance().dummyLarge;
+//  }
 
   @Override
   public void draw(Batch batch, float alpha){
-    //if (getX() == 0 && getY() == 0) Gdx.app.log("dgb", "drawing ["+this+"] ("+getX()/32+","+getY()/32+")");
+    if (false && getX() == 0 && getY() == 0) Gdx.app.log("dgb", "drawing ["+this+"] ("+getX()/32+","+getY()/32+")");
     batch.draw(texture,this.getX(),this.getY());
   }
 }

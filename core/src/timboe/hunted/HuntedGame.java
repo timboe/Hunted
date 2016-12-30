@@ -18,6 +18,7 @@ public class HuntedGame extends Game {
 
 
   public static final int MIN_ROOM_SIZE = 5;
+  public static final int CORRIDOR_SIZE = MIN_ROOM_SIZE;
 
   public GameScreen theGameScreen;
 

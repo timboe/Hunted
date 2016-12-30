@@ -19,9 +19,10 @@ public class GameScreen extends HuntedRender {
 
 
 
+
   @Override
   public void init() {
-    cullBox = new Rectangle(0, 0, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+    cullBox = new Rectangle(0, 0, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2); //TODO remove /2
     stage.addActor(Sprites.getInstance().getTileSet());
     stage.addActor(Sprites.getInstance().getPlayer());
     WorldGen.getInstance().generateWorld();

@@ -1,11 +1,11 @@
 package timboe.hunted.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.render.Sprites;
 
-import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
 
@@ -20,21 +20,27 @@ public class WorldGen {
   }
 
   private Vector<Room> rooms;
+  private Vector<Room> corridors;
   private Random r;
 
-  private final int ROOM_PLACE_TRIES = 1000;
+  private final int ROOM_PLACE_TRIES = 2000;
   public final int ROOM_MEAN_SIZE = 15;
+//  public final int ROOM_LARGE_SIZE = 8;
   private final int ROOM_STD_D = 5;
   private final int ROOM_BORDER = 1; // minimum spaceing between rooms
+  private final int CORRIDOR_MAX_LENGTH = 20;
 
   private WorldGen() {
     r = new Random();
     rooms = new Vector<Room>();
+    corridors = new Vector<Room>();
   }
 
   public void generateWorld() {
     placeRooms();
     shrinkRooms();
+    makeCorridors();
+    removeUnconnected();
     addRoomsToTileMap();
   }
 
@@ -68,21 +74,117 @@ public class WorldGen {
   }
 
   private void shrinkRooms() {
-    for (Rectangle room : rooms) {
+    for (Room room : rooms) {
       room.set(room.getX(), room.getY(), room.getWidth() - ROOM_BORDER, room.getHeight() - ROOM_BORDER);
     }
   }
 
-  private void addRoomsToTileMap() {
-    for (Rectangle room : rooms) {
-      for (int x = (int)room.x; x < (int)room.x + (int)room.width; ++x) {
-        for (int y = (int)room.y; y < (int)room.y + (int)room.height; ++y) {
-          Sprites.getInstance().getTile(x,y).setIsFloor();
+  private void removeUnconnected() {
+    Vector<Room> toRemove = new Vector<Room>();
+    for (final Room room : rooms) {
+      if (room.GetCorridors().size() == 0) toRemove.add(room);
+    }
+    rooms.removeAll(toRemove);
+  }
+
+  private void makeCorridors() {
+    // Connect large rooms
+    Room intersectionY = new Room(0,0,0,0);
+    Room intersectionX = new Room(0,0,0,0);
+    for (Room room : rooms) {
+      Room extendedY = new Room(room.getX(), 0, room.getWidth(), HuntedGame.TILE_Y); // Project out in y
+      Room extendedX = new Room(0, room.getY(), HuntedGame.TILE_X, room.getHeight()); // Project out in x
+      //Gdx.app.log("dgb", "Taking room ("+room+"), extending to ("+extendedY+")");
+      for (Room toCheck : rooms) {
+        if (toCheck == room) continue; // Must also be not me
+        if (toCheck.GetLinksTo(room)) continue; // Must not be linked in the other direction
+        boolean overlapY = Intersector.intersectRectangles(extendedY, toCheck, intersectionY);
+        if (overlapY && intersectionY.getWidth() >= HuntedGame.CORRIDOR_SIZE) { // Enough space for a corridor
+          Room below = room;
+          Room above = toCheck;
+          if (toCheck.getY() < room.getY()) { // Check length if toCheck is above/below. It is BELOW
+            below = toCheck;
+            above = room;
+          }
+          final int corridorLength = (int) (above.getY() - (below.getY() + below.getHeight()));
+          Gdx.app.log("dgb", "Potential V corridor with length ("+corridorLength+"="+above.getY()+"-("+below.getY()+"+"+below.getHeight()+")");
+          if (corridorLength <= CORRIDOR_MAX_LENGTH) { // It fits
+            int startX = 0;
+            int possibleOffset = (int) intersectionY.getWidth() - HuntedGame.CORRIDOR_SIZE;
+            if (possibleOffset > 0) startX = r.nextInt(possibleOffset);
+            Room c = new Room(intersectionY.getX() + startX,
+              below.getY() + below.getHeight(),
+              HuntedGame.CORRIDOR_SIZE,
+              corridorLength);
+            // Check that the corridor does not intercept any other large rooms
+            boolean overlap = false;
+            Room fatC = new Room(c.getX() - 1, c.getY(), c.getWidth() + 2, c.getHeight());
+            for (Room overlapCheck : rooms) {
+              if (overlapCheck.overlaps(fatC)) overlap = true;
+            }
+            if (!overlap) {
+              c.SetCorridor();
+              corridors.add(c);
+              Gdx.app.log("dgb", "Adding V corridor [" + this + "] (" + c + ")");
+              below.SetLinksTo(above, c);
+              above.SetLinksTo(below, c);
+            }
+          }
+        }
+        boolean overlapX = Intersector.intersectRectangles(extendedX, toCheck, intersectionX);
+        if (overlapX && intersectionX.getHeight() >= HuntedGame.CORRIDOR_SIZE) { // Enough space for a corridor
+          Room left = room;
+          Room right = toCheck;
+          if (toCheck.getX() < room.getX()) { // Check if toCheck is left/right. It is LEFT
+            left = toCheck;
+            right = room;
+          }
+          final int corridorLength = (int) (right.getX() - (left.getX() + left.getWidth()));
+          Gdx.app.log("dgb", "Potential H corridor with length ("+corridorLength+"="+right.getX()+"-("+left.getX()+"+"+left.getWidth()+")");
+          if (corridorLength <= CORRIDOR_MAX_LENGTH) { // It fits
+            int startY = 0;
+            int possibleOffset = (int) intersectionX.getHeight() - HuntedGame.CORRIDOR_SIZE;
+            if (possibleOffset > 0) startY = r.nextInt(possibleOffset);
+            Room c = new Room(left.getX() + left.getWidth(),
+              intersectionX.getY() + startY,
+              corridorLength,
+              HuntedGame.CORRIDOR_SIZE);
+            c.SetCorridor();
+            // Check that the corridor does not intercept any other large rooms
+            boolean overlap = false;
+            Room fatC = new Room(c.getX(), c.getY() - 1, c.getWidth(), c.getHeight() + 2);
+            for (Room overlapCheck : rooms) {
+              if (overlapCheck.overlaps(fatC)) overlap = true;
+            }
+            if (!overlap) {
+              c.SetCorridor();
+              corridors.add(c);
+              Gdx.app.log("dgb", "Adding V corridor [" + this + "] (" + c + ")");
+              left.SetLinksTo(right, c);
+              right.SetLinksTo(left, c);
+            }
+          }
         }
       }
     }
   }
 
+  private void addRoomsToTileMap() {
+    for (Room room : rooms) addRoomToTileMap(room);
+    for (Room room : corridors) addRoomToTileMap(room);
+  }
 
+  private void addRoomToTileMap(Room room) {
+    for (int x = (int) room.x; x < (int) room.x + (int) room.width; ++x) {
+      for (int y = (int) room.y; y < (int) room.y + (int) room.height; ++y) {
+        if (x >= HuntedGame.TILE_X || y >= HuntedGame.TILE_Y) {
+          Gdx.app.error("coord", "Invalid coordinate in [" + this + "] (" + x + "," + y + ")");
+          continue;
+        }
+        Sprites.getInstance().getTile(x, y).setIsFloor();
+        if (room.GetIsCorridor()) Sprites.getInstance().getTile(x, y).setIsCorridor();
+      }
+    }
+  }
 
 }
