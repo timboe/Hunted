@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import timboe.hunted.HuntedGame;
+import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Player;
 import timboe.hunted.entity.Tile;
 
@@ -23,6 +24,7 @@ public class Sprites {
   private Group tileSet;
   private HashMap<Integer, Tile> tileMap;
   private Player player;
+  private BigBad bigBad;
 
   private Sprites() {
     reset();
@@ -30,6 +32,7 @@ public class Sprites {
 
   public void reset() {
     player = new Player();
+    bigBad = new BigBad();
     tileSet = new Group();
 
     tileMap = new HashMap<Integer, Tile>();
@@ -101,6 +104,8 @@ public class Sprites {
   public Player getPlayer() {
     return player;
   }
+
+  public BigBad getBigBad() { return  bigBad; }
 
   public Group getTileSet() {
     return tileSet;

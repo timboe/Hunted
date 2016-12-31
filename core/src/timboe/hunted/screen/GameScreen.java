@@ -30,6 +30,7 @@ public class GameScreen extends HuntedRender {
     WorldGen.getInstance().generateWorld();
     stage.addActor(Sprites.getInstance().getTileSet());
     stage.addActor(Sprites.getInstance().getPlayer());
+    stage.addActor(Sprites.getInstance().getBigBad());
 
     debugRenderer = new Box2DDebugRenderer();
   }
@@ -39,8 +40,10 @@ public class GameScreen extends HuntedRender {
 
     stage.act(Gdx.graphics.getDeltaTime());
     Sprites.getInstance().getPlayer().updatePhysics();
+    Sprites.getInstance().getBigBad().updatePhysics();
     Physics.getInstance().worldBox2D.step(Gdx.graphics.getDeltaTime(), 6, 2);
     Sprites.getInstance().getPlayer().updatePosition();
+    Sprites.getInstance().getBigBad().updatePosition();
 
     float cameraX = Math.max( Sprites.getInstance().getPlayer().getX(), Gdx.graphics.getWidth()/2 );
     cameraX = Math.min( cameraX, (HuntedGame.TILE_X * HuntedGame.TILE_SIZE) - (Gdx.graphics.getWidth()/2) );

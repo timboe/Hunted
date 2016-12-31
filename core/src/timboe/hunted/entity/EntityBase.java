@@ -18,6 +18,9 @@ public class EntityBase extends Actor {
   protected Body body;
   protected Vector2 grid;
   protected float offsetMod = 0f;
+  protected float angle = 0;
+  protected boolean moving = false;
+
 
   public EntityBase(int x, int y) {
     grid = new Vector2(x,y);
@@ -84,6 +87,21 @@ public class EntityBase extends Actor {
     body.createFixture(fixtureDef);
     circleShape.dispose();
   }
+
+  public void updatePhysics() {
+    if (moving) {
+      body.setLinearVelocity((float) (HuntedGame.PLAYER_SPEED * Math.sin(angle)),
+        (float) (HuntedGame.PLAYER_SPEED * Math.cos(angle)));
+    } else {
+      body.setLinearVelocity(0f,0f);
+    }
+  }
+
+  public void updatePosition() {
+    setPosition((body.getPosition().x * HuntedGame.TILE_SIZE) - getWidth()/2,
+      (body.getPosition().y * HuntedGame.TILE_SIZE) - getHeight()/2 + offsetMod );
+  }
+
 
   @Override
   public void draw(Batch batch, float alpha){

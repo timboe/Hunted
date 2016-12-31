@@ -14,9 +14,6 @@ import timboe.hunted.screen.GameScreen;
 public class Player extends EntityBase {
 
 
-  final double speed = 10;
-  private double angle = 0;
-  private boolean moving = false;
 
   public Player() {
     super(0,0);
@@ -40,22 +37,10 @@ public class Player extends EntityBase {
   }
 
 
-  public void setMoveDirection(double an) {
+  public void setMoveDirection(double a) {
     moving = true;
-    angle = an;
+    angle = (float)a;
   }
 
-  public void updatePhysics() {
-    if (moving) {
-      body.setLinearVelocity((float) (speed * Math.sin(angle)), (float) (speed * Math.cos(angle)));
-    } else {
-      body.setLinearVelocity(0f,0f);
-    }
-  }
-
-  public void updatePosition() {
-    setPosition((body.getPosition().x * HuntedGame.TILE_SIZE) - getWidth()/2,
-      (body.getPosition().y * HuntedGame.TILE_SIZE) - getHeight()/2 + offsetMod );
-  }
 
 }

@@ -19,6 +19,9 @@ public class HuntedGame extends Game {
   public static final int TILE_X = 128;
   public static final int TILE_Y = 128;
 
+  public static final float PLAYER_SPEED = 10f;
+  public static final float BIGBAD_SPEED = .8f * PLAYER_SPEED;
+  public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
 
   public static final int MIN_ROOM_SIZE = 5;
   public static final int CORRIDOR_SIZE = MIN_ROOM_SIZE;

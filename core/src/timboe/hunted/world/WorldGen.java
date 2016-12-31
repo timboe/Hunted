@@ -67,7 +67,9 @@ public class WorldGen {
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
     Room firstRoom = rooms.firstElement();
-    Sprites.getInstance().getPlayer().setPhysicsPosition(firstRoom.getX(), firstRoom.getY());
+    Room lastRoom = rooms.lastElement();
+    Sprites.getInstance().getPlayer().setPhysicsPosition(firstRoom.getX() + 1, firstRoom.getY() + 1);
+    Sprites.getInstance().getBigBad().setPhysicsPosition(lastRoom.getX() + 1, lastRoom.getY() + 1);
     return true;
   }
 
