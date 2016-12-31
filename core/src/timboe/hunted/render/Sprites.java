@@ -23,6 +23,10 @@ public class Sprites {
   private Player player;
 
   private Sprites() {
+    reset();
+  }
+
+  public void reset() {
     player = new Player();
     tileSet = new Group();
 

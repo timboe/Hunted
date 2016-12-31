@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Rectangle;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.render.Sprites;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Vector;
 
@@ -26,8 +28,9 @@ public class WorldGen {
   private final int ROOM_PLACE_TRIES = 2000;
   public final int ROOM_MEAN_SIZE = 15;
   private final int ROOM_STD_D = 5;
-  private final int ROOM_BORDER = 1; // minimum spaceing between rooms
+  private final int ROOM_BORDER = 1; // minimum spacing between rooms
   private final int CORRIDOR_MAX_LENGTH = 20;
+  private final int CORRIDOR_CHANCE = 90; //%
 
   private WorldGen() {
     r = new Random();
@@ -36,18 +39,44 @@ public class WorldGen {
   }
 
   public void generateWorld() {
+    int tryN = 0;
+    boolean success = false;
+    while (!success && ++tryN < 10 ) {
+      success = tryWorld();
+    }
+    if (!success) {
+      Gdx.app.error("WorldGen", "World generation failed");
+      Gdx.app.exit();
+    } else {
+      Gdx.app.log("WorldGen", "World generation finished on " + tryN + " attempt.");
+    }
+  }
+
+  private boolean tryWorld() {
+    reset();
     placeRooms();
     shrinkRooms();
     makeCorridors();
     removeUnconnected();
+    if (!allConnected()) {
+      Gdx.app.log("WorldGen", "Warning - world not fully navigable");
+      return false;
+    }
     addRoomsToTileMap();
     disableInvisibleTiles();
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
     Room firstRoom = rooms.firstElement();
     Sprites.getInstance().getPlayer().setPhysicsPosition(firstRoom.getX(), firstRoom.getY());
+    return true;
   }
 
+  private void reset() {
+    rooms.clear();
+    corridors.clear();
+    Physics.getInstance().reset();
+    Sprites.getInstance().reset();
+  }
 
   private void placeRooms() {
     int t = 0;
@@ -86,9 +115,30 @@ public class WorldGen {
   private void removeUnconnected() {
     Vector<Room> toRemove = new Vector<Room>();
     for (final Room room : rooms) {
-      if (room.GetCorridors().size() == 0) toRemove.add(room);
+      if (room.getCorridors().size() == 0) toRemove.add(room);
     }
     rooms.removeAll(toRemove);
+  }
+
+  private boolean allConnected() {
+    // Can we get from one room to all others?
+    HashSet<Room> connectedRooms = new HashSet<Room>();
+    ArrayList<Room> roomsToExplore = new ArrayList<Room>();
+    roomsToExplore.add( rooms.firstElement() );
+    while (roomsToExplore.size() > 0) {
+      Room room = roomsToExplore.remove(0);
+      connectedRooms.add(room);
+      for (final Room connected : room.getConnectedRooms()) {
+        if (!connectedRooms.contains(connected) && !roomsToExplore.contains(connected)) {
+          roomsToExplore.add(connected);
+        }
+      }
+    }
+    return (connectedRooms.size() == rooms.size());
+  }
+
+  private boolean prob(int chanceOfPass) {
+    return (r.nextInt(100) + 1) <= chanceOfPass;
   }
 
   private void makeCorridors() {
@@ -101,7 +151,7 @@ public class WorldGen {
       //Gdx.app.log("dgb", "Taking room ("+room+"), extending to ("+extendedY+")");
       for (Room toCheck : rooms) {
         if (toCheck == room) continue; // Must also be not me
-        if (toCheck.GetLinksTo(room)) continue; // Must not be linked in the other direction
+        if (toCheck.getLinksTo(room)) continue; // Must not be linked in the other direction
         boolean overlapY = Intersector.intersectRectangles(extendedY, toCheck, intersectionY);
         if (overlapY && intersectionY.getWidth() >= HuntedGame.CORRIDOR_SIZE) { // Enough space for a corridor
           Room below = room;
@@ -111,8 +161,7 @@ public class WorldGen {
             above = room;
           }
           final int corridorLength = (int) (above.getY() - (below.getY() + below.getHeight()));
-          Gdx.app.log("dgb", "Potential V corridor with length (" + corridorLength + "=" + above.getY() + "-(" + below.getY() + "+" + below.getHeight() + ")");
-          if (corridorLength <= CORRIDOR_MAX_LENGTH) { // It fits
+          if (corridorLength <= CORRIDOR_MAX_LENGTH && prob(CORRIDOR_CHANCE)) { // It fits
             int startX = 0;
             int possibleOffset = (int) intersectionY.getWidth() - HuntedGame.CORRIDOR_SIZE;
             if (possibleOffset > 0) startX = r.nextInt(possibleOffset);
@@ -127,11 +176,11 @@ public class WorldGen {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
             if (!overlap) {
-              c.SetCorridor();
+              c.setCorridor();
               corridors.add(c);
               Gdx.app.log("dgb", "Adding V corridor [" + this + "] (" + c + ")");
-              below.SetLinksTo(above, c);
-              above.SetLinksTo(below, c);
+              below.setLinksTo(above, c);
+              above.setLinksTo(below, c);
             }
           }
         }
@@ -144,8 +193,7 @@ public class WorldGen {
             right = room;
           }
           final int corridorLength = (int) (right.getX() - (left.getX() + left.getWidth()));
-          Gdx.app.log("dgb", "Potential H corridor with length (" + corridorLength + "=" + right.getX() + "-(" + left.getX() + "+" + left.getWidth() + ")");
-          if (corridorLength <= CORRIDOR_MAX_LENGTH) { // It fits
+          if (corridorLength <= CORRIDOR_MAX_LENGTH && prob(CORRIDOR_CHANCE)) { // It fits
             int startY = 0;
             int possibleOffset = (int) intersectionX.getHeight() - HuntedGame.CORRIDOR_SIZE;
             if (possibleOffset > 0) startY = r.nextInt(possibleOffset);
@@ -153,7 +201,7 @@ public class WorldGen {
               intersectionX.getY() + startY,
               corridorLength,
               HuntedGame.CORRIDOR_SIZE);
-            c.SetCorridor();
+            c.setCorridor();
             // Check that the corridor does not intercept any other large rooms
             boolean overlap = false;
             Room fatC = new Room(c.getX(), c.getY() - 1, c.getWidth(), c.getHeight() + 2);
@@ -161,11 +209,11 @@ public class WorldGen {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
             if (!overlap) {
-              c.SetCorridor();
+              c.setCorridor();
               corridors.add(c);
               Gdx.app.log("dgb", "Adding V corridor [" + this + "] (" + c + ")");
-              left.SetLinksTo(right, c);
-              right.SetLinksTo(left, c);
+              left.setLinksTo(right, c);
+              right.setLinksTo(left, c);
             }
           }
         }
@@ -185,8 +233,8 @@ public class WorldGen {
           Gdx.app.error("coord", "Invalid coordinate in [" + this + "] (" + x + "," + y + ")");
           continue;
         }
-        Sprites.getInstance().getTile(x, y).setIsFloor();
-        if (room.GetIsCorridor()) Sprites.getInstance().getTile(x, y).setIsCorridor();
+        Sprites.getInstance().getTile(x, y).setIsFloor(room);
+        if (room.getIsCorridor()) Sprites.getInstance().getTile(x, y).setIsCorridor();
       }
     }
   }

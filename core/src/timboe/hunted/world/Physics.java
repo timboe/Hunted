@@ -13,13 +13,18 @@ public class Physics {
     return ourInstance;
   }
 
-  public World worldBox2D;
+  public World worldBox2D = null;
 
   private Physics() {
+    reset();
+  }
+
+  public void reset() {
+    dispose();
     worldBox2D = new World(new Vector2(0f, 0f), true);
   }
 
   public void dispose() {
-    worldBox2D.dispose();
+    if (worldBox2D != null) worldBox2D.dispose();
   }
 }

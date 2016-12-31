@@ -15,41 +15,43 @@ public class Room extends Rectangle{
 //  private boolean isLarge;
   private boolean isCorridor;
   private HashMap<Room, Room> linksTo;
+  private float scent;
 
   Room(float x, float y, float w, float h) {
     super(x,y,w,h);
     isCorridor = false;
-//    isLarge = false;
-//    if (w >= WorldGen.getInstance().ROOM_LARGE_SIZE && h >= WorldGen.getInstance().ROOM_LARGE_SIZE) isLarge = true;
     linksTo = new HashMap<Room, Room>();
+    scent = 0;
   }
 
-  public void SetCorridor() {
+  public void setCorridor() {
     isCorridor = true;
-//    isLarge = false;
   }
 
-  public boolean GetIsCorridor() {
+  public boolean getIsCorridor() {
     return isCorridor;
   }
 
-//  public boolean GetIsLarge() {
-//    return  true;
-//    return isLarge;
-//  }
-
-  public void SetLinksTo(final Room room, final Room corridor) {
+  public void setLinksTo(final Room room, final Room corridor) {
     linksTo.put(room, corridor); // Links to room via corridor
   }
 
-  public boolean GetLinksTo(final Room toTest) {
+  public boolean getLinksTo(final Room toTest) {
     return linksTo.containsKey(toTest);
   }
 
-  public Vector<Room> GetCorridors() {
+  public Vector<Room> getCorridors() {
     Vector<Room> v = new Vector<Room>();
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
       v.add(entry.getValue());
+    }
+    return v;
+  }
+
+  public Vector<Room> getConnectedRooms() {
+    Vector<Room> v = new Vector<Room>();
+    for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
+      v.add(entry.getKey());
     }
     return v;
   }
