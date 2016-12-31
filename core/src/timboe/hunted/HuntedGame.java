@@ -27,7 +27,7 @@ public class HuntedGame extends Game {
 
 
 
-  public static boolean debug = false;
+  public static boolean debug = true;
 
   private static HuntedGame self;
   public static HuntedGame get() {

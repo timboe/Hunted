@@ -28,7 +28,7 @@ public class WorldGen {
   private final int ROOM_PLACE_TRIES = 2000;
   public final int ROOM_MEAN_SIZE = 15;
   private final int ROOM_STD_D = 5;
-  private final int ROOM_BORDER = 1; // minimum spacing between rooms
+  private final int ROOM_BORDER = 2; // minimum spacing between rooms
   private final int CORRIDOR_MAX_LENGTH = 20;
   private final int CORRIDOR_CHANCE = 90; //%
 

@@ -16,12 +16,13 @@ public class Player extends EntityBase {
 
   final double speed = 10;
   private double angle = 0;
+  private boolean moving = false;
 
   public Player() {
     super(0,0);
     texture = Textures.getInstance().dummyPlayer;
-    angle = -1;
-    setPhysicsBody(BodyDef.BodyType.DynamicBody, 1, 1);
+    angle = 0;
+    setPlayerBody(0.5f, 0.25f);
   }
 
 
@@ -35,28 +36,26 @@ public class Player extends EntityBase {
     else if (keyE) setMoveDirection(Math.PI / 2);
     else if (keyS) setMoveDirection(Math.PI);
     else if (keyW) setMoveDirection(3. * Math.PI / 2);
-    else setMoveDirection(-1);
+    else moving = false;
   }
 
 
   public void setMoveDirection(double an) {
+    moving = true;
     angle = an;
   }
 
   public void updatePhysics() {
-
-    if (angle >= 0) {
+    if (moving) {
       body.setLinearVelocity((float) (speed * Math.sin(angle)), (float) (speed * Math.cos(angle)));
     } else {
       body.setLinearVelocity(0f,0f);
     }
-
-
   }
 
   public void updatePosition() {
     setPosition((body.getPosition().x * HuntedGame.TILE_SIZE) - getWidth()/2,
-      (body.getPosition().y * HuntedGame.TILE_SIZE) - getHeight()/2 );
+      (body.getPosition().y * HuntedGame.TILE_SIZE) - getHeight()/2 + offsetMod );
   }
 
 }

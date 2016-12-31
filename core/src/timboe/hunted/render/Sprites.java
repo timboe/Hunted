@@ -1,5 +1,7 @@
 package timboe.hunted.render;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import timboe.hunted.HuntedGame;
@@ -48,53 +50,52 @@ public class Sprites {
     }
   }
 
+  private boolean canIncludeInRigidBody(Tile t) {
+    return (t.getIsFloor() == false && t.getHasPhysics() == false);
+  }
+
+  private Vector2 expandRigidBody(final int x, final int y) {
+    Vector2 size = new Vector2(1,1);
+    int xNew = x + 1;
+    while (xNew < HuntedGame.TILE_X) {
+      Tile t = getTile(xNew, y);
+      if (canIncludeInRigidBody(t)) {
+        size.x += 1;
+        ++xNew;
+      } else {
+        break;
+      }
+    }
+    int yNew = y + 1;
+    while (yNew < HuntedGame.TILE_Y) {
+      boolean canExpand = true;
+      for (int cX = x; cX < x + size.x; ++cX) {
+        Tile t = getTile(cX, yNew);
+        if (canIncludeInRigidBody(t) == false) canExpand = false;
+      }
+      if (canExpand) {
+        size.y += 1;
+        ++yNew;
+      } else {
+        break;
+      }
+    }
+    return size;
+  }
+
   public void addTileRigidBodies() {
-    for (int x = 0; x < HuntedGame.TILE_X; ++x) { // Vertical
-      int runSize = 0;
-      int runY = 0;
-      Tile runStart = null;
+    int count = 0;
+    for (int x = 0; x < HuntedGame.TILE_X; ++x) {
       for (int y = 0; y < HuntedGame.TILE_Y; ++y) {
-        Tile t = tileMap.get(HuntedGame.xyToID(x, y));
-        if (t.isVisible() == true && t.getIsFloor() == false && t.getHasPhysics() == false) {
-          if (++runSize == 1) {
-            runStart = t;
-            runY = y;
-          }
-        } else if (runSize > 1) { // > 1 in the first pass
-          runStart.setPhysicsBody(BodyDef.BodyType.StaticBody, 1, runSize);
-          for (int done = 0; done < runSize; ++done) tileMap.get(HuntedGame.xyToID(x, runY+done)).setHasPhysics(true);
-          runSize = 0;
-        } else {
-          runSize = 0;
+        Tile t = getTile(x, y); // Find a solid tile
+        if (canIncludeInRigidBody(t)) {
+          Vector2 size = expandRigidBody(x, y);
+          t.setPhysicsBody(size.x, size.y);
+          ++count;
         }
       }
-      if (runSize > 0) {
-        runStart.setPhysicsBody(BodyDef.BodyType.StaticBody, 1, runSize);
-        for (int done = 0; done < runSize; ++done) tileMap.get(HuntedGame.xyToID(x, runY+done)).setHasPhysics(true);
-      }
     }
-    for (int y = 0; y < HuntedGame.TILE_Y; ++y) { // Horizontal
-      int runSize = 0;
-      int runX = 0;
-      Tile runStart = null;
-      for (int x = 0; x < HuntedGame.TILE_X; ++x) {
-        Tile t = tileMap.get(HuntedGame.xyToID(x, y));
-        if (t.isVisible() == true && t.getIsFloor() == false && t.getHasPhysics() == false) {
-          if (++runSize == 1) {
-            runStart = t;
-            runX = x;
-          }
-        } else if (runSize > 0) { // > 0 in the second pass
-          runStart.setPhysicsBody(BodyDef.BodyType.StaticBody, runSize, 1);
-          for (int done = 0; done < runSize; ++done) tileMap.get(HuntedGame.xyToID(runX + done, y)).setHasPhysics(true);
-          runSize = 0;
-        }
-      }
-      if (runSize > 0) {
-        runStart.setPhysicsBody(BodyDef.BodyType.StaticBody, runSize, 1);
-        for (int done = 0; done < runSize; ++done) tileMap.get(HuntedGame.xyToID(runX + done, y)).setHasPhysics(true);
-      }
-    }
+    Gdx.app.log("WorldGen", "required " + count + " rigid bodies");
   }
 
   public Player getPlayer() {
