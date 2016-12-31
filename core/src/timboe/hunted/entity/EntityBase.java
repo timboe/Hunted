@@ -1,5 +1,6 @@
 package timboe.hunted.entity;
 
+import box2dLight.PointLight;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
@@ -14,12 +15,13 @@ import timboe.hunted.world.Physics;
  * Created by Tim on 30/12/2016.
  */
 public class EntityBase extends Actor {
-  protected Texture texture;
-  protected Body body;
-  protected Vector2 grid;
+  protected Texture texture = null;
+  protected Body body = null;
+  protected Vector2 grid = null;
   protected float offsetMod = 0f;
   protected float angle = 0;
   protected boolean moving = false;
+  protected PointLight torch = null;
 
 
   public EntityBase(int x, int y) {
@@ -27,7 +29,6 @@ public class EntityBase extends Actor {
     setX(x * HuntedGame.TILE_SIZE);
     setY(y * HuntedGame.TILE_SIZE);
     setBounds(getX(),getY(),HuntedGame.TILE_SIZE,HuntedGame.TILE_SIZE);
-    body = null;
   }
 
   public void setPhysicsPosition(float x, float y) {
@@ -98,8 +99,10 @@ public class EntityBase extends Actor {
   }
 
   public void updatePosition() {
-    setPosition((body.getPosition().x * HuntedGame.TILE_SIZE) - getWidth()/2,
-      (body.getPosition().y * HuntedGame.TILE_SIZE) - getHeight()/2 + offsetMod );
+    float x = (body.getPosition().x * HuntedGame.TILE_SIZE) - getWidth()/2;
+    float y = (body.getPosition().y * HuntedGame.TILE_SIZE) - getHeight()/2 + offsetMod;
+    setPosition(x,y);
+    //if (torch != null) torch.setPosition(x,y);
   }
 
 

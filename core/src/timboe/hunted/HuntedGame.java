@@ -3,6 +3,7 @@ package timboe.hunted;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,6 +19,11 @@ public class HuntedGame extends Game {
   public static final int TILE_SIZE = 32;
   public static final int TILE_X = 128;
   public static final int TILE_Y = 128;
+
+  public static final int RAYS = 500;
+
+  public static final Color FLAME = new Color(.986f, .345f, .1331f, .4f);
+  public static final int PLAYER_TORCH_STRENGTH = 20;
 
   public static final float PLAYER_SPEED = 10f;
   public static final float BIGBAD_SPEED = .8f * PLAYER_SPEED;

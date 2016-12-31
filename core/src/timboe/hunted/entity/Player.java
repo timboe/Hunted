@@ -1,12 +1,19 @@
 package timboe.hunted.entity;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.render.Textures;
 import timboe.hunted.screen.GameScreen;
+import timboe.hunted.world.Physics;
+
+
 
 /**
  * Created by Tim on 28/12/2016.
@@ -14,15 +21,19 @@ import timboe.hunted.screen.GameScreen;
 public class Player extends EntityBase {
 
 
-
   public Player() {
     super(0,0);
     texture = Textures.getInstance().dummyPlayer;
     angle = 0;
     setPlayerBody(0.5f, 0.25f);
+    torch = new PointLight(Physics.getInstance().rayHandler,
+      HuntedGame.RAYS,
+      HuntedGame.FLAME,
+      HuntedGame.PLAYER_TORCH_STRENGTH,
+      0f, 0f);
+    torch.attachToBody(body, 0f, 0.25f);
+    torch.setIgnoreAttachedBody(true);
   }
-
-
 
   public void updateDirection(boolean keyN, boolean keyE, boolean keyS, boolean keyW) {
     if (keyN && keyE) setMoveDirection(Math.PI / 4.);
@@ -40,6 +51,7 @@ public class Player extends EntityBase {
   public void setMoveDirection(double a) {
     moving = true;
     angle = (float)a;
+    body.setTransform(body.getPosition(), (float)(a - (Math.PI/2)));
   }
 
 

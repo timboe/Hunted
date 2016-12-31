@@ -42,6 +42,7 @@ public class GameScreen extends HuntedRender {
     Sprites.getInstance().getPlayer().updatePhysics();
     Sprites.getInstance().getBigBad().updatePhysics();
     Physics.getInstance().worldBox2D.step(Gdx.graphics.getDeltaTime(), 6, 2);
+    Physics.getInstance().rayHandler.update();
     Sprites.getInstance().getPlayer().updatePosition();
     Sprites.getInstance().getBigBad().updatePosition();
 
@@ -61,6 +62,10 @@ public class GameScreen extends HuntedRender {
     stage.draw();
 
     debugMatrix = stage.getCamera().combined.cpy().scale(HuntedGame.TILE_SIZE, HuntedGame.TILE_SIZE, 0);
+
+    Physics.getInstance().rayHandler.setCombinedMatrix(debugMatrix);
+    Physics.getInstance().rayHandler.render();
+
     debugRenderer.render(Physics.getInstance().worldBox2D, debugMatrix);
   }
 
