@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import timboe.hunted.render.Sprites;
 import timboe.hunted.render.Textures;
 import timboe.hunted.screen.GameScreen;
+import timboe.hunted.world.Physics;
 
 public class HuntedGame extends Game {
 
@@ -24,10 +25,9 @@ public class HuntedGame extends Game {
 
   public GameScreen theGameScreen;
 
-  public static World worldBox2D;
 
 
-  public static boolean debug = true;
+  public static boolean debug = false;
 
   private static HuntedGame self;
   public static HuntedGame get() {
@@ -42,7 +42,6 @@ public class HuntedGame extends Game {
   @Override
 	public void create () {
     self = this;
-    worldBox2D = new World(new Vector2(0f, 0f), true);
     theGameScreen = new GameScreen();
     setScreen(theGameScreen);
   }
@@ -61,6 +60,6 @@ public class HuntedGame extends Game {
     theGameScreen.dispose();
     Textures.getInstance().dispose();
     Sprites.getInstance().dispose();
-    worldBox2D.dispose();
+    Physics.getInstance().dispose();
   }
 }

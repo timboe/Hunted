@@ -11,41 +11,20 @@ import timboe.hunted.screen.GameScreen;
 /**
  * Created by Tim on 28/12/2016.
  */
-public class Player extends Actor{
+public class Player extends EntityBase {
 
-  Texture texture = Textures.getInstance().dummyPlayer;
 
   final double speed = 10;
   private double angle = 0;
-  private Body body;
 
   public Player() {
+    super(0,0);
+    texture = Textures.getInstance().dummyPlayer;
     angle = -1;
-    setBounds(getX(),getY(),HuntedGame.TILE_SIZE,HuntedGame.TILE_SIZE);
-    BodyDef bodyDef = new BodyDef();
-    bodyDef.type = BodyDef.BodyType.DynamicBody;
-    bodyDef.fixedRotation = true; // No spiny
-    bodyDef.position.set(getX(),getY());
-    bodyDef.position.set((getX() + getWidth()/2) / (float)HuntedGame.TILE_SIZE,
-      (getY() + getHeight()/2) / (float)HuntedGame.TILE_SIZE);
-
-    // Create a body in the world using our definition
-    body = HuntedGame.worldBox2D.createBody(bodyDef);
-    // Now define the dimensions of the physics shape
-    PolygonShape shape = new PolygonShape();
-    // Basically set the physics polygon to a box with the same dimensions
-    shape.setAsBox(getWidth()/2 / (float)HuntedGame.TILE_SIZE, getHeight()/2 / (float)HuntedGame.TILE_SIZE);
-
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.density = 1f;
-    Fixture fixture = body.createFixture(fixtureDef);
-
-    // Shape is the only disposable of the lot, so get rid of it
-    shape.dispose();
-
-
+    setPhysicsBody(BodyDef.BodyType.DynamicBody, 1, 1);
   }
+
+
 
   public void updateDirection(boolean keyN, boolean keyE, boolean keyS, boolean keyW) {
     if (keyN && keyE) setMoveDirection(Math.PI / 4.);
@@ -65,21 +44,19 @@ public class Player extends Actor{
   }
 
   public void updatePhysics() {
-//      setPosition(body.getPosition().x, body.getPosition().y);
 
     if (angle >= 0) {
       body.setLinearVelocity((float) (speed * Math.sin(angle)), (float) (speed * Math.cos(angle)));
-//      moveBy((float) (speed * Math.sin(angle)), (float) (speed * Math.cos(angle)));
     } else {
       body.setLinearVelocity(0f,0f);
     }
 
+
+  }
+
+  public void updatePosition() {
     setPosition((body.getPosition().x * HuntedGame.TILE_SIZE) - getWidth()/2,
       (body.getPosition().y * HuntedGame.TILE_SIZE) - getHeight()/2 );
   }
 
-  @Override
-  public void draw(Batch batch, float alpha) {
-    batch.draw(texture,this.getX(),this.getY());
-  }
 }

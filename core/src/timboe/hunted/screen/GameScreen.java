@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.render.HuntedRender;
 import timboe.hunted.render.Sprites;
+import timboe.hunted.world.Physics;
 import timboe.hunted.world.WorldGen;
 
 /**
@@ -36,8 +37,9 @@ public class GameScreen extends HuntedRender {
   protected void updatePhysics() {
 
     stage.act(Gdx.graphics.getDeltaTime());
-    HuntedGame.worldBox2D.step(Gdx.graphics.getDeltaTime(), 6, 2);
     Sprites.getInstance().getPlayer().updatePhysics();
+    Physics.getInstance().worldBox2D.step(Gdx.graphics.getDeltaTime(), 6, 2);
+    Sprites.getInstance().getPlayer().updatePosition();
 
     float cameraX = Math.max( Sprites.getInstance().getPlayer().getX(), Gdx.graphics.getWidth()/2 );
     cameraX = Math.min( cameraX, (HuntedGame.TILE_X * HuntedGame.TILE_SIZE) - (Gdx.graphics.getWidth()/2) );
@@ -55,7 +57,7 @@ public class GameScreen extends HuntedRender {
     stage.draw();
 
     debugMatrix = stage.getCamera().combined.cpy().scale(HuntedGame.TILE_SIZE, HuntedGame.TILE_SIZE, 0);
-    debugRenderer.render(HuntedGame.worldBox2D, debugMatrix);
+    debugRenderer.render(Physics.getInstance().worldBox2D, debugMatrix);
   }
 
   @Override

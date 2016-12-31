@@ -1,5 +1,6 @@
 package timboe.hunted.render;
 
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.entity.Player;
@@ -25,29 +26,69 @@ public class Sprites {
     player = new Player();
     tileSet = new Group();
 
-//    tileMap = new HashMap<Integer, Tile>();
-//    for (int cX = 0; cX < HuntedGame.CHUNKS_X; ++cX) {
-//      for (int cY = 0; cY < HuntedGame.CHUNKS_Y; ++cY) {
-//        final int xOff = cX * HuntedGame.CHUNK_SIZE;
-//        final int yOff = cY * HuntedGame.CHUNK_SIZE;
-//        Group chunkGroup = new Group();
-//        for (int x = xOff; x < xOff + HuntedGame.CHUNK_SIZE; ++x) {
-//          for (int y = 0; y < yOff + HuntedGame.CHUNK_SIZE; ++y) {
-//            Tile t = new Tile(x, y);
-//            tileMap.put(HuntedGame.xyToID(x, y), t);
-//            chunkGroup.addActor(t);
-//          }
-//        }
-//        tileSet.addActor(chunkGroup);
-//      }
-//    }
-
     tileMap = new HashMap<Integer, Tile>();
     for (int x = 0; x < HuntedGame.TILE_X; ++x) {
       for (int y = 0; y < HuntedGame.TILE_Y; ++y) {
-        Tile t = new Tile(x, y);
-        tileMap.put(HuntedGame.xyToID(x, y), t);
-        tileSet.addActor(t);
+        tileMap.put(HuntedGame.xyToID(x, y), new Tile(x, y));
+      }
+    }
+  }
+
+  public void addTileActors() {
+    tileSet.clearChildren();
+    for (int x = 0; x < HuntedGame.TILE_X; ++x) {
+      for (int y = 0; y < HuntedGame.TILE_Y; ++y) {
+        Tile t = tileMap.get(HuntedGame.xyToID(x, y));
+        if (t.isVisible() == true) tileSet.addActor(t);
+      }
+    }
+  }
+
+  public void addTileRigidBodies() {
+    for (int x = 0; x < HuntedGame.TILE_X; ++x) { // Vertical
+      int runSize = 0;
+      int runY = 0;
+      Tile runStart = null;
+      for (int y = 0; y < HuntedGame.TILE_Y; ++y) {
+        Tile t = tileMap.get(HuntedGame.xyToID(x, y));
+        if (t.isVisible() == true && t.getIsFloor() == false && t.getHasPhysics() == false) {
+          if (++runSize == 1) {
+            runStart = t;
+            runY = y;
+          }
+        } else if (runSize > 1) { // > 1 in the first pass
+          runStart.setPhysicsBody(BodyDef.BodyType.StaticBody, 1, runSize);
+          for (int done = 0; done < runSize; ++done) tileMap.get(HuntedGame.xyToID(x, runY+done)).setHasPhysics(true);
+          runSize = 0;
+        } else {
+          runSize = 0;
+        }
+      }
+      if (runSize > 0) {
+        runStart.setPhysicsBody(BodyDef.BodyType.StaticBody, 1, runSize);
+        for (int done = 0; done < runSize; ++done) tileMap.get(HuntedGame.xyToID(x, runY+done)).setHasPhysics(true);
+      }
+    }
+    for (int y = 0; y < HuntedGame.TILE_Y; ++y) { // Horizontal
+      int runSize = 0;
+      int runX = 0;
+      Tile runStart = null;
+      for (int x = 0; x < HuntedGame.TILE_X; ++x) {
+        Tile t = tileMap.get(HuntedGame.xyToID(x, y));
+        if (t.isVisible() == true && t.getIsFloor() == false && t.getHasPhysics() == false) {
+          if (++runSize == 1) {
+            runStart = t;
+            runX = x;
+          }
+        } else if (runSize > 0) { // > 0 in the second pass
+          runStart.setPhysicsBody(BodyDef.BodyType.StaticBody, runSize, 1);
+          for (int done = 0; done < runSize; ++done) tileMap.get(HuntedGame.xyToID(runX + done, y)).setHasPhysics(true);
+          runSize = 0;
+        }
+      }
+      if (runSize > 0) {
+        runStart.setPhysicsBody(BodyDef.BodyType.StaticBody, runSize, 1);
+        for (int done = 0; done < runSize; ++done) tileMap.get(HuntedGame.xyToID(runX + done, y)).setHasPhysics(true);
       }
     }
   }

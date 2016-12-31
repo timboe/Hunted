@@ -3,7 +3,7 @@ package timboe.hunted.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.render.Textures;
@@ -11,17 +11,14 @@ import timboe.hunted.render.Textures;
 /**
  * Created by Tim on 28/12/2016.
  */
-public class Tile extends Actor {
+public class Tile extends EntityBase {
 
-  Texture texture = Textures.getInstance().dummyDirt;
-  boolean isFloor;
-  Body body;
+  private boolean isFloor = false;
+  private boolean hasPhysics = false;
 
-  public Tile(int x, int y){
-    setX(x * HuntedGame.TILE_SIZE);
-    setY(y * HuntedGame.TILE_SIZE);
-    setBounds(getX(),getY(),HuntedGame.TILE_SIZE,HuntedGame.TILE_SIZE);
-    isFloor = false;
+  public Tile(int x, int y) {
+    super(x, y);
+    texture = Textures.getInstance().dummyDirt;
   }
 
   public void setIsFloor() {
@@ -29,17 +26,19 @@ public class Tile extends Actor {
     texture =  Textures.getInstance().dummyFloor;
   }
 
-  public void setIsCorridor() {
-    texture =  Textures.getInstance().dummyCorridor;
+  public boolean getIsFloor() {
+    return isFloor;
   }
 
-//  public void setIsLargeRoom() {
-//    texture =  Textures.getInstance().dummyLarge;
-//  }
+  public boolean getHasPhysics() {
+    return hasPhysics;
+  }
 
-  @Override
-  public void draw(Batch batch, float alpha){
-    if (false && getX() == 0 && getY() == 0) Gdx.app.log("dgb", "drawing ["+this+"] ("+getX()/32+","+getY()/32+")");
-    batch.draw(texture,this.getX(),this.getY());
+  public void setHasPhysics(boolean p) {
+    hasPhysics = p;
+  }
+
+  public void setIsCorridor() {
+    texture =  Textures.getInstance().dummyCorridor;
   }
 }

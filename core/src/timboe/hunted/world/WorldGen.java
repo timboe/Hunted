@@ -25,7 +25,6 @@ public class WorldGen {
 
   private final int ROOM_PLACE_TRIES = 2000;
   public final int ROOM_MEAN_SIZE = 15;
-//  public final int ROOM_LARGE_SIZE = 8;
   private final int ROOM_STD_D = 5;
   private final int ROOM_BORDER = 1; // minimum spaceing between rooms
   private final int CORRIDOR_MAX_LENGTH = 20;
@@ -42,6 +41,11 @@ public class WorldGen {
     makeCorridors();
     removeUnconnected();
     addRoomsToTileMap();
+    disableInvisibleTiles();
+    Sprites.getInstance().addTileActors();
+    Sprites.getInstance().addTileRigidBodies();
+    Room firstRoom = rooms.firstElement();
+    Sprites.getInstance().getPlayer().setPhysicsPosition(firstRoom.getX(), firstRoom.getY());
   }
 
 
@@ -89,8 +93,8 @@ public class WorldGen {
 
   private void makeCorridors() {
     // Connect large rooms
-    Room intersectionY = new Room(0,0,0,0);
-    Room intersectionX = new Room(0,0,0,0);
+    Room intersectionY = new Room(0, 0, 0, 0);
+    Room intersectionX = new Room(0, 0, 0, 0);
     for (Room room : rooms) {
       Room extendedY = new Room(room.getX(), 0, room.getWidth(), HuntedGame.TILE_Y); // Project out in y
       Room extendedX = new Room(0, room.getY(), HuntedGame.TILE_X, room.getHeight()); // Project out in x
@@ -107,7 +111,7 @@ public class WorldGen {
             above = room;
           }
           final int corridorLength = (int) (above.getY() - (below.getY() + below.getHeight()));
-          Gdx.app.log("dgb", "Potential V corridor with length ("+corridorLength+"="+above.getY()+"-("+below.getY()+"+"+below.getHeight()+")");
+          Gdx.app.log("dgb", "Potential V corridor with length (" + corridorLength + "=" + above.getY() + "-(" + below.getY() + "+" + below.getHeight() + ")");
           if (corridorLength <= CORRIDOR_MAX_LENGTH) { // It fits
             int startX = 0;
             int possibleOffset = (int) intersectionY.getWidth() - HuntedGame.CORRIDOR_SIZE;
@@ -140,7 +144,7 @@ public class WorldGen {
             right = room;
           }
           final int corridorLength = (int) (right.getX() - (left.getX() + left.getWidth()));
-          Gdx.app.log("dgb", "Potential H corridor with length ("+corridorLength+"="+right.getX()+"-("+left.getX()+"+"+left.getWidth()+")");
+          Gdx.app.log("dgb", "Potential H corridor with length (" + corridorLength + "=" + right.getX() + "-(" + left.getX() + "+" + left.getWidth() + ")");
           if (corridorLength <= CORRIDOR_MAX_LENGTH) { // It fits
             int startY = 0;
             int possibleOffset = (int) intersectionX.getHeight() - HuntedGame.CORRIDOR_SIZE;
@@ -187,4 +191,54 @@ public class WorldGen {
     }
   }
 
+  private void disableInvisibleTiles() {
+    for (int x = 0; x < HuntedGame.TILE_X; ++x) {
+      for (int y = 0; y < HuntedGame.TILE_Y; ++y) {
+        if (neighboursAllDirt(x, y)) Sprites.getInstance().getTile(x, y).setVisible(false);
+      }
+    }
+  }
+
+  private boolean neighboursAllDirt(final int x, final int y) {
+    for (int d = 0; d < 8; ++d) {
+      int cX = x;
+      int cY = y;
+      switch (d) {
+        case 0:
+          ++cY;
+          break;
+        case 1:
+          ++cX;
+          break;
+        case 2:
+          --cY;
+          break;
+        case 3:
+          --cX;
+          break;
+        case 4:
+          ++cX;
+          ++cY;
+          break;
+        case 5:
+          ++cX;
+          --cY;
+          break;
+        case 6:
+          --cX;
+          ++cY;
+          break;
+        case 7:
+          --cX;
+          --cY;
+          break;
+      }
+      if (cX >= HuntedGame.TILE_X || cY >= HuntedGame.TILE_Y) continue;
+      if (cX < 0 || cY < 0) continue;
+      if (Sprites.getInstance().getTile(cX, cY).getIsFloor()) return false;
+    }
+    return true;
+  }
+
 }
+
