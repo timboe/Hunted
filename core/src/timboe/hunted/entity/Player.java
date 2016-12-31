@@ -16,8 +16,8 @@ public class Player extends EntityBase {
   public Player() {
     super(0,0);
     texture = Textures.getInstance().dummyPlayer;
-    angle = 0;
-    setPlayerBody(0.5f, 0.25f);
+    speed = Param.PLAYER_SPEED;
+    setAsPlayerBody(0.5f, 0.25f);
     torch = new PointLight(Physics.getInstance().rayHandler,
       Param.RAYS,
       Param.FLAME,
@@ -35,23 +35,18 @@ public class Player extends EntityBase {
   }
 
   public void updateDirection(boolean keyN, boolean keyE, boolean keyS, boolean keyW) {
-    if (keyN && keyE) setMoveDirection(Math.PI / 4.);
-    else if (keyE && keyS) setMoveDirection(3. * Math.PI / 4);
-    else if (keyS && keyW) setMoveDirection(5. * Math.PI / 4);
-    else if (keyW && keyN) setMoveDirection(7. * Math.PI / 4);
-    else if (keyN) setMoveDirection(0);
-    else if (keyE) setMoveDirection(Math.PI / 2);
-    else if (keyS) setMoveDirection(Math.PI);
-    else if (keyW) setMoveDirection(3. * Math.PI / 2);
+    if (keyN && keyE) setMoveDirection(Math.PI / 4f);
+    else if (keyE && keyS) setMoveDirection(7f * Math.PI / 4f);
+    else if (keyS && keyW) setMoveDirection(5f * Math.PI / 4f);
+    else if (keyW && keyN) setMoveDirection(3f * Math.PI / 4f);
+    else if (keyN) setMoveDirection(Math.PI / 2f);
+    else if (keyE) setMoveDirection(0);
+    else if (keyS) setMoveDirection(3f * Math.PI / 2f);
+    else if (keyW) setMoveDirection(Math.PI);
     else moving = false;
   }
 
 
-  public void setMoveDirection(double a) {
-    moving = true;
-    angle = (float)a;
-    body.setTransform(body.getPosition(), (float)(a - (Math.PI/2)));
-  }
 
 
 }

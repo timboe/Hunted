@@ -20,6 +20,7 @@ public class EntityBase extends Actor {
   protected Rectangle worldBox = null;
   protected float offsetMod = 0f;
   protected float angle = 0;
+  protected float speed = 0;
   protected boolean moving = false;
   protected PointLight torch = null;
 
@@ -34,7 +35,7 @@ public class EntityBase extends Actor {
     body.setTransform(x + worldBox.width/2f, y + worldBox.height/2f, angle);
   }
 
-  public void setPhysicsBody(float width, float height) {
+  public void setAsPhysicsBody(float width, float height) {
     // This may extend over many sprites - make sure we flag them all
     for (int w = 0; w < (int)width; ++ w) {
       for (int h = 0; h < (int)height; ++h) {
@@ -46,9 +47,7 @@ public class EntityBase extends Actor {
     float newWidth2 = (width * worldBox.width) / 2f;
     float newHeight2 = (height * worldBox.height) / 2f;
     bodyDef.type = BodyDef.BodyType.StaticBody;
-    bodyDef.fixedRotation = true; // No spiny
-    bodyDef.position.set(worldBox.x + newWidth2,
-      worldBox.y + newHeight2);
+    bodyDef.position.set(worldBox.x + newWidth2, worldBox.y + newHeight2);
     body = Physics.getInstance().worldBox2D.createBody(bodyDef);
 
     PolygonShape boxShape = new PolygonShape();
@@ -62,15 +61,14 @@ public class EntityBase extends Actor {
     boxShape.dispose();
   }
 
-  public void setPlayerBody(float scale, float offset) {
+  public void setAsPlayerBody(float scale, float offset) {
     BodyDef bodyDef = new BodyDef();
     float newWidth2 = (scale * worldBox.width) / 2f;
     float heightMod = worldBox.height / 2f;
     offsetMod = worldBox.height * offset;
     bodyDef.type = BodyDef.BodyType.DynamicBody;
-    bodyDef.fixedRotation = true; // No spiny
-    bodyDef.position.set(worldBox.x + newWidth2,
-      worldBox.y + heightMod - offsetMod);
+    bodyDef.fixedRotation = true; // No spiny physics
+    bodyDef.position.set(worldBox.x + newWidth2, worldBox.y + heightMod - offsetMod);
     body = Physics.getInstance().worldBox2D.createBody(bodyDef);
 
     CircleShape circleShape = new CircleShape();
@@ -85,8 +83,7 @@ public class EntityBase extends Actor {
 
   public void updatePhysics() {
     if (moving) {
-      body.setLinearVelocity((float) (Param.PLAYER_SPEED * Math.sin(angle)),
-        (float) (Param.PLAYER_SPEED * Math.cos(angle)));
+      body.setLinearVelocity((float) (speed * Math.cos(angle)), (float) (speed * Math.sin(angle)));
     } else {
       body.setLinearVelocity(0f,0f);
     }
@@ -96,6 +93,7 @@ public class EntityBase extends Actor {
     float x = (body.getPosition().x * Param.TILE_SIZE) - getWidth()/2;
     float y = (body.getPosition().y * Param.TILE_SIZE) - getHeight()/2 + offsetMod;
     setPosition(x,y);
+    worldBox.setPosition(body.getPosition());
   }
 
   public Tile getTileUnderEntity() {
@@ -104,6 +102,12 @@ public class EntityBase extends Actor {
 
   public Room getRoomUnderEntity() {
     return getTileUnderEntity().getTilesRoom();
+  }
+
+  public void setMoveDirection(double a) {
+    moving = true;
+    angle = (float)a;
+    body.setTransform(body.getPosition(), angle);
   }
 
   @Override

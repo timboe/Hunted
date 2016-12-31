@@ -92,7 +92,7 @@ public class Sprites {
         Tile t = getTile(x, y); // Find a solid tile
         if (canIncludeInRigidBody(t)) {
           Vector2 size = expandRigidBody(x, y);
-          t.setPhysicsBody(size.x, size.y);
+          t.setAsPhysicsBody(size.x, size.y);
           ++count;
         }
       }

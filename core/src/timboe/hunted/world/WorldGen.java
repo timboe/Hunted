@@ -61,7 +61,7 @@ public class WorldGen {
     shrinkRooms();
     makeCorridors();
     removeUnconnected();
-    if (!allConnected()) {
+    if (!getAllConnected()) {
       Gdx.app.log("WorldGen", "Warning - world not fully navigable");
       return false;
     }
@@ -69,8 +69,6 @@ public class WorldGen {
     disableInvisibleTiles();
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
-    Room firstRoom = rooms.firstElement();
-    Sprites.getInstance().getPlayer().setPhysicsPosition(firstRoom.getX() + 1, firstRoom.getY() + 1);
     success &= placeBigBad();
     return success;
   }
@@ -90,8 +88,10 @@ public class WorldGen {
     final int maxY = Param.TILE_Y - Param.MIN_ROOM_SIZE;
     while (t < ROOM_PLACE_TRIES) {
       boolean pass = true;
-      final long w = Math.round(ROOM_MEAN_SIZE + (r.nextGaussian() * ROOM_STD_D));
-      final long h = Math.round(ROOM_MEAN_SIZE + (r.nextGaussian() * ROOM_STD_D));
+      long w = Math.round(ROOM_MEAN_SIZE + (r.nextGaussian() * ROOM_STD_D));
+      long h = Math.round(ROOM_MEAN_SIZE + (r.nextGaussian() * ROOM_STD_D));
+      if (w % 2 == 0) ++w; // Force odd
+      if (h % 2 == 0) ++h; // Force odd
       final long x = minX + r.nextInt(maxX - minX);
       final long y = minY + r.nextInt(maxY - minY);
       Room room = new Room(x, y, w, h);
@@ -125,7 +125,8 @@ public class WorldGen {
     }
     if (nearest == null) return false;
     // Place baddy
-    Sprites.getInstance().getBigBad().setPhysicsPosition(nearest.x + nearest.width/2, nearest.y + nearest.height/2);
+    Sprites.getInstance().getBigBad().setPhysicsPosition(Math.round(nearest.x + nearest.width/2), Math.round(nearest.y + nearest.height/2));
+    Sprites.getInstance().getPlayer().setPhysicsPosition(nearest.x + 1, nearest.y + 1);
     return true;
   }
 
@@ -143,7 +144,7 @@ public class WorldGen {
     rooms.removeAll(toRemove);
   }
 
-  private boolean allConnected() {
+  private boolean getAllConnected() {
     // Can we get from one room to all others?
     HashSet<Room> connectedRooms = new HashSet<Room>();
     ArrayList<Room> roomsToExplore = new ArrayList<Room>();
@@ -167,7 +168,6 @@ public class WorldGen {
     for (Room room : rooms) {
       Room extendedY = new Room(room.getX(), 0, room.getWidth(), Param.TILE_Y); // Project out in y
       Room extendedX = new Room(0, room.getY(), Param.TILE_X, room.getHeight()); // Project out in x
-      //Gdx.app.log("dgb", "Taking room ("+room+"), extending to ("+extendedY+")");
       for (Room toCheck : rooms) {
         if (toCheck == room) continue; // Must also be not me
         if (toCheck.getLinksTo(room)) continue; // Must not be linked in the other direction
@@ -195,9 +195,8 @@ public class WorldGen {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
             if (!overlap) {
-              c.setCorridor();
+              c.setCorridor(Room.CorridorDirection.HORIZONTAL);
               corridors.add(c);
-              Gdx.app.log("dgb", "Adding V corridor [" + this + "] (" + c + ")");
               below.setLinksTo(above, c);
               above.setLinksTo(below, c);
             }
@@ -220,7 +219,6 @@ public class WorldGen {
               intersectionX.getY() + startY,
               corridorLength,
               Param.CORRIDOR_SIZE);
-            c.setCorridor();
             // Check that the corridor does not intercept any other large rooms
             boolean overlap = false;
             Room fatC = new Room(c.getX(), c.getY() - 1, c.getWidth(), c.getHeight() + 2);
@@ -228,9 +226,9 @@ public class WorldGen {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
             if (!overlap) {
-              c.setCorridor();
+              c.setCorridor(Room.CorridorDirection.VERTICAL);
               corridors.add(c);
-              Gdx.app.log("dgb", "Adding V corridor [" + this + "] (" + c + ")");
+//              Gdx.app.log("dgb", "Adding V corridor [" + this + "] (" + c + ")");
               left.setLinksTo(right, c);
               right.setLinksTo(left, c);
             }
