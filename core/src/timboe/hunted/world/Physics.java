@@ -18,7 +18,6 @@ public class Physics {
   public RayHandler rayHandler = null;
 
   private Physics() {
-    reset();
   }
 
   public void reset() {
@@ -32,8 +31,7 @@ public class Physics {
     rayHandler.setBlurNum(1);           // set number of gaussian blur passes
     rayHandler.setShadows(true);        // enable or disable shadow
     rayHandler.setCulling(true);        // enable or disable culling
-    rayHandler.setAmbientLight(1f);   // set default ambient light
-    rayHandler.
+    rayHandler.setAmbientLight(0.7f);   // set default ambient light
   }
 
   public void dispose() {

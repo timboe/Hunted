@@ -1,16 +1,8 @@
 package timboe.hunted.entity;
 
 import box2dLight.PointLight;
-import box2dLight.RayHandler;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import timboe.hunted.HuntedGame;
+import timboe.hunted.Param;
 import timboe.hunted.render.Textures;
-import timboe.hunted.screen.GameScreen;
 import timboe.hunted.world.Physics;
 
 
@@ -27,12 +19,19 @@ public class Player extends EntityBase {
     angle = 0;
     setPlayerBody(0.5f, 0.25f);
     torch = new PointLight(Physics.getInstance().rayHandler,
-      HuntedGame.RAYS,
-      HuntedGame.FLAME,
-      HuntedGame.PLAYER_TORCH_STRENGTH,
+      Param.RAYS,
+      Param.FLAME,
+      Param.PLAYER_TORCH_STRENGTH,
       0f, 0f);
     torch.attachToBody(body, 0f, 0.25f);
     torch.setIgnoreAttachedBody(true);
+  }
+
+  @Override
+  public void updatePhysics() {
+    super.updatePhysics();
+    // Add player smelliness
+    getRoomUnderEntity().addToScent( Param.PLAYER_SMELL );
   }
 
   public void updateDirection(boolean keyN, boolean keyE, boolean keyS, boolean keyW) {

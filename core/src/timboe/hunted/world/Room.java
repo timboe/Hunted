@@ -12,7 +12,6 @@ import java.util.Vector;
  */
 public class Room extends Rectangle{
 
-//  private boolean isLarge;
   private boolean isCorridor;
   private HashMap<Room, Room> linksTo;
   private float scent;
@@ -33,22 +32,14 @@ public class Room extends Rectangle{
   }
 
   public void setLinksTo(final Room room, final Room corridor) {
-    linksTo.put(room, corridor); // Links to room via corridor
+    linksTo.put(corridor, room); // Corridor links to room
   }
 
   public boolean getLinksTo(final Room toTest) {
-    return linksTo.containsKey(toTest);
+    return linksTo.containsValue(toTest);
   }
 
   public Vector<Room> getCorridors() {
-    Vector<Room> v = new Vector<Room>();
-    for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
-      v.add(entry.getValue());
-    }
-    return v;
-  }
-
-  public Vector<Room> getConnectedRooms() {
     Vector<Room> v = new Vector<Room>();
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
       v.add(entry.getKey());
@@ -56,4 +47,27 @@ public class Room extends Rectangle{
     return v;
   }
 
+  public Vector<Room> getConnectedRooms() {
+    Vector<Room> v = new Vector<Room>();
+    for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
+      v.add(entry.getValue());
+    }
+    return v;
+  }
+
+  public void addToScent(float toAdd) {
+    scent = Math.min(scent + toAdd, 1);
+  }
+
+  public float getScent() { return scent; }
+
+  public HashMap.Entry<Room,Room> getNeighborRoomWithHighestSccentTrail() {
+    HashMap.Entry<Room,Room> toReturn = linksTo.entrySet().iterator().next();
+    for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
+      if (entry.getKey().getScent() > toReturn.getKey().getScent()) {
+        toReturn = entry;
+      }
+    }
+    return toReturn;
+  }
 }

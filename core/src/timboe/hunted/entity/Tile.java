@@ -29,6 +29,10 @@ public class Tile extends EntityBase {
     texture =  Textures.getInstance().dummyFloor;
   }
 
+  public Room getTilesRoom() {
+    return myRoom;
+  }
+
   public boolean getIsFloor() {
     return isFloor;
   }

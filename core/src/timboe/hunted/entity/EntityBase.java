@@ -3,13 +3,13 @@ package timboe.hunted.entity;
 import box2dLight.PointLight;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import timboe.hunted.HuntedGame;
+import timboe.hunted.Param;
 import timboe.hunted.render.Sprites;
-import timboe.hunted.render.Textures;
 import timboe.hunted.world.Physics;
+import timboe.hunted.world.Room;
 
 /**
  * Created by Tim on 30/12/2016.
@@ -17,7 +17,7 @@ import timboe.hunted.world.Physics;
 public class EntityBase extends Actor {
   protected Texture texture = null;
   protected Body body = null;
-  protected Vector2 grid = null;
+  protected Rectangle worldBox = null;
   protected float offsetMod = 0f;
   protected float angle = 0;
   protected boolean moving = false;
@@ -25,40 +25,34 @@ public class EntityBase extends Actor {
 
 
   public EntityBase(int x, int y) {
-    grid = new Vector2(x,y);
-    setX(x * HuntedGame.TILE_SIZE);
-    setY(y * HuntedGame.TILE_SIZE);
-    setBounds(getX(),getY(),HuntedGame.TILE_SIZE,HuntedGame.TILE_SIZE);
+    worldBox = new Rectangle(x, y,1f,1f);
+    setBounds(x * Param.TILE_SIZE, y * Param.TILE_SIZE, Param.TILE_SIZE, Param.TILE_SIZE);
   }
 
   public void setPhysicsPosition(float x, float y) {
-    grid.set(x,y);
-    x *= HuntedGame.TILE_SIZE;
-    y *= HuntedGame.TILE_SIZE;
-    body.setTransform((x + getWidth()/2f) / (float)HuntedGame.TILE_SIZE,
-      (y + getHeight()/2f) / (float)HuntedGame.TILE_SIZE,
-      0f);
+    worldBox.setPosition(x,y);
+    body.setTransform(x + worldBox.width/2f, y + worldBox.height/2f, angle);
   }
 
   public void setPhysicsBody(float width, float height) {
     // This may extend over many sprites - make sure we flag them all
     for (int w = 0; w < (int)width; ++ w) {
       for (int h = 0; h < (int)height; ++h) {
-        Sprites.getInstance().getTile((int)(grid.x + w), (int)(grid.y + h)).setHasPhysics(true);
+        Sprites.getInstance().getTile((int)(worldBox.x + w), (int)(worldBox.y + h)).setHasPhysics(true);
       }
     }
 
     BodyDef bodyDef = new BodyDef();
-    float newWidth2 = (width * getWidth()) / 2f;
-    float newHeight2 = (height * getHeight()) / 2f;
+    float newWidth2 = (width * worldBox.width) / 2f;
+    float newHeight2 = (height * worldBox.height) / 2f;
     bodyDef.type = BodyDef.BodyType.StaticBody;
     bodyDef.fixedRotation = true; // No spiny
-    bodyDef.position.set((getX() + newWidth2) / (float)HuntedGame.TILE_SIZE,
-      (getY() + newHeight2) / (float)HuntedGame.TILE_SIZE);
+    bodyDef.position.set(worldBox.x + newWidth2,
+      worldBox.y + newHeight2);
     body = Physics.getInstance().worldBox2D.createBody(bodyDef);
 
     PolygonShape boxShape = new PolygonShape();
-    boxShape.setAsBox(newWidth2 / (float) HuntedGame.TILE_SIZE, newHeight2 / (float) HuntedGame.TILE_SIZE);
+    boxShape.setAsBox(newWidth2, newHeight2);
 
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = boxShape;
@@ -70,17 +64,17 @@ public class EntityBase extends Actor {
 
   public void setPlayerBody(float scale, float offset) {
     BodyDef bodyDef = new BodyDef();
-    float newWidth2 = (scale * getWidth()) / 2f;
-    float heightMod = getHeight() / 2f;
-    offsetMod = getHeight() * offset;
+    float newWidth2 = (scale * worldBox.width) / 2f;
+    float heightMod = worldBox.height / 2f;
+    offsetMod = worldBox.height * offset;
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     bodyDef.fixedRotation = true; // No spiny
-    bodyDef.position.set((getX() + newWidth2) / (float)HuntedGame.TILE_SIZE,
-      (getY() + heightMod - offsetMod) / (float)HuntedGame.TILE_SIZE);
+    bodyDef.position.set(worldBox.x + newWidth2,
+      worldBox.y + heightMod - offsetMod);
     body = Physics.getInstance().worldBox2D.createBody(bodyDef);
 
     CircleShape circleShape = new CircleShape();
-    circleShape.setRadius(newWidth2 / (float) HuntedGame.TILE_SIZE);
+    circleShape.setRadius(newWidth2);
 
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
@@ -91,20 +85,26 @@ public class EntityBase extends Actor {
 
   public void updatePhysics() {
     if (moving) {
-      body.setLinearVelocity((float) (HuntedGame.PLAYER_SPEED * Math.sin(angle)),
-        (float) (HuntedGame.PLAYER_SPEED * Math.cos(angle)));
+      body.setLinearVelocity((float) (Param.PLAYER_SPEED * Math.sin(angle)),
+        (float) (Param.PLAYER_SPEED * Math.cos(angle)));
     } else {
       body.setLinearVelocity(0f,0f);
     }
   }
 
   public void updatePosition() {
-    float x = (body.getPosition().x * HuntedGame.TILE_SIZE) - getWidth()/2;
-    float y = (body.getPosition().y * HuntedGame.TILE_SIZE) - getHeight()/2 + offsetMod;
+    float x = (body.getPosition().x * Param.TILE_SIZE) - getWidth()/2;
+    float y = (body.getPosition().y * Param.TILE_SIZE) - getHeight()/2 + offsetMod;
     setPosition(x,y);
-    //if (torch != null) torch.setPosition(x,y);
   }
 
+  public Tile getTileUnderEntity() {
+    return Sprites.getInstance().getTile((int) body.getPosition().x, (int) body.getPosition().y);
+  }
+
+  public Room getRoomUnderEntity() {
+    return getTileUnderEntity().getTilesRoom();
+  }
 
   @Override
   public void draw(Batch batch, float alpha){

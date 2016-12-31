@@ -3,7 +3,9 @@ package timboe.hunted.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-import timboe.hunted.HuntedGame;
+import com.badlogic.gdx.math.Vector2;
+import timboe.hunted.Param;
+import timboe.hunted.Utility;
 import timboe.hunted.render.Sprites;
 
 import java.util.ArrayList;
@@ -53,6 +55,7 @@ public class WorldGen {
   }
 
   private boolean tryWorld() {
+    boolean success = true;
     reset();
     placeRooms();
     shrinkRooms();
@@ -67,10 +70,9 @@ public class WorldGen {
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
     Room firstRoom = rooms.firstElement();
-    Room lastRoom = rooms.lastElement();
     Sprites.getInstance().getPlayer().setPhysicsPosition(firstRoom.getX() + 1, firstRoom.getY() + 1);
-    Sprites.getInstance().getBigBad().setPhysicsPosition(lastRoom.getX() + 1, lastRoom.getY() + 1);
-    return true;
+    success &= placeBigBad();
+    return success;
   }
 
   private void reset() {
@@ -84,8 +86,8 @@ public class WorldGen {
     int t = 0;
     final int minX = 1;
     final int minY = 1;
-    final int maxX = HuntedGame.TILE_X - HuntedGame.MIN_ROOM_SIZE;
-    final int maxY = HuntedGame.TILE_Y - HuntedGame.MIN_ROOM_SIZE;
+    final int maxX = Param.TILE_X - Param.MIN_ROOM_SIZE;
+    final int maxY = Param.TILE_Y - Param.MIN_ROOM_SIZE;
     while (t < ROOM_PLACE_TRIES) {
       boolean pass = true;
       final long w = Math.round(ROOM_MEAN_SIZE + (r.nextGaussian() * ROOM_STD_D));
@@ -93,10 +95,10 @@ public class WorldGen {
       final long x = minX + r.nextInt(maxX - minX);
       final long y = minY + r.nextInt(maxY - minY);
       Room room = new Room(x, y, w, h);
-      if (w < HuntedGame.MIN_ROOM_SIZE + (2 * ROOM_BORDER)) pass = false;
-      else if (h < HuntedGame.MIN_ROOM_SIZE + (2 * ROOM_BORDER)) pass = false;
-      else if (x + w >= HuntedGame.TILE_X) pass = false;
-      else if (y + h >= HuntedGame.TILE_Y) pass = false;
+      if (w < Param.MIN_ROOM_SIZE + (2 * ROOM_BORDER)) pass = false;
+      else if (h < Param.MIN_ROOM_SIZE + (2 * ROOM_BORDER)) pass = false;
+      else if (x + w >= Param.TILE_X) pass = false;
+      else if (y + h >= Param.TILE_Y) pass = false;
       for (final Rectangle testRoom : rooms) {
         if (!pass) break;
         if (testRoom.overlaps(room)) {
@@ -106,6 +108,25 @@ public class WorldGen {
       if (pass) rooms.add(room);
       else ++t;
     }
+  }
+
+  private boolean placeBigBad() {
+    // Find the room nearest the centre
+    Room nearest = null;
+    float minDist = 9999f;
+    final Vector2 target = new Vector2(Param.TILE_X/2, Param.TILE_Y/2);
+    for (Room room : rooms) {
+      Vector2 dist = new Vector2(room.x + room.width/2, room.y + room.height/2);
+      dist.sub(target);
+      if (dist.len() < minDist) {
+        minDist = dist.len();
+        nearest = room;
+      }
+    }
+    if (nearest == null) return false;
+    // Place baddy
+    Sprites.getInstance().getBigBad().setPhysicsPosition(nearest.x + nearest.width/2, nearest.y + nearest.height/2);
+    return true;
   }
 
   private void shrinkRooms() {
@@ -139,23 +160,19 @@ public class WorldGen {
     return (connectedRooms.size() == rooms.size());
   }
 
-  private boolean prob(int chanceOfPass) {
-    return (r.nextInt(100) + 1) <= chanceOfPass;
-  }
-
   private void makeCorridors() {
     // Connect large rooms
     Room intersectionY = new Room(0, 0, 0, 0);
     Room intersectionX = new Room(0, 0, 0, 0);
     for (Room room : rooms) {
-      Room extendedY = new Room(room.getX(), 0, room.getWidth(), HuntedGame.TILE_Y); // Project out in y
-      Room extendedX = new Room(0, room.getY(), HuntedGame.TILE_X, room.getHeight()); // Project out in x
+      Room extendedY = new Room(room.getX(), 0, room.getWidth(), Param.TILE_Y); // Project out in y
+      Room extendedX = new Room(0, room.getY(), Param.TILE_X, room.getHeight()); // Project out in x
       //Gdx.app.log("dgb", "Taking room ("+room+"), extending to ("+extendedY+")");
       for (Room toCheck : rooms) {
         if (toCheck == room) continue; // Must also be not me
         if (toCheck.getLinksTo(room)) continue; // Must not be linked in the other direction
         boolean overlapY = Intersector.intersectRectangles(extendedY, toCheck, intersectionY);
-        if (overlapY && intersectionY.getWidth() >= HuntedGame.CORRIDOR_SIZE) { // Enough space for a corridor
+        if (overlapY && intersectionY.getWidth() >= Param.CORRIDOR_SIZE) { // Enough space for a corridor
           Room below = room;
           Room above = toCheck;
           if (toCheck.getY() < room.getY()) { // Check length if toCheck is above/below. It is BELOW
@@ -163,13 +180,13 @@ public class WorldGen {
             above = room;
           }
           final int corridorLength = (int) (above.getY() - (below.getY() + below.getHeight()));
-          if (corridorLength <= CORRIDOR_MAX_LENGTH && prob(CORRIDOR_CHANCE)) { // It fits
+          if (corridorLength <= CORRIDOR_MAX_LENGTH && Utility.prob(CORRIDOR_CHANCE)) { // It fits
             int startX = 0;
-            int possibleOffset = (int) intersectionY.getWidth() - HuntedGame.CORRIDOR_SIZE;
+            int possibleOffset = (int) intersectionY.getWidth() - Param.CORRIDOR_SIZE;
             if (possibleOffset > 0) startX = r.nextInt(possibleOffset);
             Room c = new Room(intersectionY.getX() + startX,
               below.getY() + below.getHeight(),
-              HuntedGame.CORRIDOR_SIZE,
+              Param.CORRIDOR_SIZE,
               corridorLength);
             // Check that the corridor does not intercept any other large rooms
             boolean overlap = false;
@@ -187,7 +204,7 @@ public class WorldGen {
           }
         }
         boolean overlapX = Intersector.intersectRectangles(extendedX, toCheck, intersectionX);
-        if (overlapX && intersectionX.getHeight() >= HuntedGame.CORRIDOR_SIZE) { // Enough space for a corridor
+        if (overlapX && intersectionX.getHeight() >= Param.CORRIDOR_SIZE) { // Enough space for a corridor
           Room left = room;
           Room right = toCheck;
           if (toCheck.getX() < room.getX()) { // Check if toCheck is left/right. It is LEFT
@@ -195,14 +212,14 @@ public class WorldGen {
             right = room;
           }
           final int corridorLength = (int) (right.getX() - (left.getX() + left.getWidth()));
-          if (corridorLength <= CORRIDOR_MAX_LENGTH && prob(CORRIDOR_CHANCE)) { // It fits
+          if (corridorLength <= CORRIDOR_MAX_LENGTH && Utility.prob(CORRIDOR_CHANCE)) { // It fits
             int startY = 0;
-            int possibleOffset = (int) intersectionX.getHeight() - HuntedGame.CORRIDOR_SIZE;
+            int possibleOffset = (int) intersectionX.getHeight() - Param.CORRIDOR_SIZE;
             if (possibleOffset > 0) startY = r.nextInt(possibleOffset);
             Room c = new Room(left.getX() + left.getWidth(),
               intersectionX.getY() + startY,
               corridorLength,
-              HuntedGame.CORRIDOR_SIZE);
+              Param.CORRIDOR_SIZE);
             c.setCorridor();
             // Check that the corridor does not intercept any other large rooms
             boolean overlap = false;
@@ -231,7 +248,7 @@ public class WorldGen {
   private void addRoomToTileMap(Room room) {
     for (int x = (int) room.x; x < (int) room.x + (int) room.width; ++x) {
       for (int y = (int) room.y; y < (int) room.y + (int) room.height; ++y) {
-        if (x >= HuntedGame.TILE_X || y >= HuntedGame.TILE_Y) {
+        if (x >= Param.TILE_X || y >= Param.TILE_Y) {
           Gdx.app.error("coord", "Invalid coordinate in [" + this + "] (" + x + "," + y + ")");
           continue;
         }
@@ -242,8 +259,8 @@ public class WorldGen {
   }
 
   private void disableInvisibleTiles() {
-    for (int x = 0; x < HuntedGame.TILE_X; ++x) {
-      for (int y = 0; y < HuntedGame.TILE_Y; ++y) {
+    for (int x = 0; x < Param.TILE_X; ++x) {
+      for (int y = 0; y < Param.TILE_Y; ++y) {
         if (neighboursAllDirt(x, y)) Sprites.getInstance().getTile(x, y).setVisible(false);
       }
     }
@@ -283,7 +300,7 @@ public class WorldGen {
           --cY;
           break;
       }
-      if (cX >= HuntedGame.TILE_X || cY >= HuntedGame.TILE_Y) continue;
+      if (cX >= Param.TILE_X || cY >= Param.TILE_Y) continue;
       if (cX < 0 || cY < 0) continue;
       if (Sprites.getInstance().getTile(cX, cY).getIsFloor()) return false;
     }

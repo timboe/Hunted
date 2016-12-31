@@ -2,11 +2,10 @@ package timboe.hunted.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import timboe.hunted.HuntedGame;
+import timboe.hunted.Param;
 import timboe.hunted.render.HuntedRender;
 import timboe.hunted.render.Sprites;
 import timboe.hunted.world.Physics;
@@ -46,10 +45,13 @@ public class GameScreen extends HuntedRender {
     Sprites.getInstance().getPlayer().updatePosition();
     Sprites.getInstance().getBigBad().updatePosition();
 
-    float cameraX = Math.max( Sprites.getInstance().getPlayer().getX(), Gdx.graphics.getWidth()/2 );
-    cameraX = Math.min( cameraX, (HuntedGame.TILE_X * HuntedGame.TILE_SIZE) - (Gdx.graphics.getWidth()/2) );
-    float cameraY = Math.max( Sprites.getInstance().getPlayer().getY(), Gdx.graphics.getHeight()/2 );
-    cameraY = Math.min( cameraY, (HuntedGame.TILE_Y * HuntedGame.TILE_SIZE) - (Gdx.graphics.getHeight()/2) );
+//    float cameraX = Math.max( Sprites.getInstance().getPlayer().getX(), Gdx.graphics.getWidth()/2 );
+//    cameraX = Math.min( cameraX, (HuntedGame.TILE_X * HuntedGame.TILE_SIZE) - (Gdx.graphics.getWidth()/2) );
+//    float cameraY = Math.max( Sprites.getInstance().getPlayer().getY(), Gdx.graphics.getHeight()/2 );
+//    cameraY = Math.min( cameraY, (HuntedGame.TILE_Y * HuntedGame.TILE_SIZE) - (Gdx.graphics.getHeight()/2) );
+
+    float cameraX = Sprites.getInstance().getPlayer().getX();
+    float cameraY = Sprites.getInstance().getPlayer().getY();
 
     stage.getCamera().position.set(cameraX, cameraY, 0);
     stage.getCamera().update();
@@ -61,7 +63,7 @@ public class GameScreen extends HuntedRender {
     //stage.getRoot().setCullingArea( cullBox );
     stage.draw();
 
-    debugMatrix = stage.getCamera().combined.cpy().scale(HuntedGame.TILE_SIZE, HuntedGame.TILE_SIZE, 0);
+    debugMatrix = stage.getCamera().combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
 
     Physics.getInstance().rayHandler.setCombinedMatrix(debugMatrix);
     Physics.getInstance().rayHandler.render();
