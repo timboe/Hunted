@@ -49,7 +49,7 @@ public class HuntedRender  implements Screen, InputProcessor {
   @Override
   public void render(float delta) {
     deltaTot += delta;
-    if (deltaTot < 1./30.) return;
+    if (deltaTot < 1./60.) return;
 //    if (textureBuffer == true) {
 //      if(frameBuffer == null) {
 //        // m_fboScaler increase or decrease the antialiasing quality

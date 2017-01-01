@@ -195,7 +195,7 @@ public class WorldGen {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
             if (!overlap) {
-              c.setCorridor(Room.CorridorDirection.HORIZONTAL);
+              c.setCorridor(Room.CorridorDirection.VERTICAL);
               corridors.add(c);
               below.setLinksTo(above, c);
               above.setLinksTo(below, c);
@@ -226,9 +226,8 @@ public class WorldGen {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
             if (!overlap) {
-              c.setCorridor(Room.CorridorDirection.VERTICAL);
+              c.setCorridor(Room.CorridorDirection.HORIZONTAL);
               corridors.add(c);
-//              Gdx.app.log("dgb", "Adding V corridor [" + this + "] (" + c + ")");
               left.setLinksTo(right, c);
               right.setLinksTo(left, c);
             }

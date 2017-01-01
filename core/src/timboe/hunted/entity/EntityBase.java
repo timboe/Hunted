@@ -93,7 +93,7 @@ public class EntityBase extends Actor {
     float x = (body.getPosition().x * Param.TILE_SIZE) - getWidth()/2;
     float y = (body.getPosition().y * Param.TILE_SIZE) - getHeight()/2 + offsetMod;
     setPosition(x,y);
-    worldBox.setPosition(body.getPosition());
+    worldBox.setPosition((float)Math.floor(body.getPosition().x), (float)Math.floor(body.getPosition().y)); // Deltas to round down
   }
 
   public Tile getTileUnderEntity() {

@@ -16,6 +16,7 @@ public class Tile extends EntityBase {
 
   private boolean isFloor = false;
   private boolean hasPhysics = false;
+  private boolean isWeb = false;
   private Room myRoom = null;
 
   public Tile(int x, int y) {
@@ -27,6 +28,12 @@ public class Tile extends EntityBase {
     isFloor = true;
     myRoom = room;
     texture =  Textures.getInstance().dummyFloor;
+  }
+
+  public void setIsWeb() {
+    if (isWeb) return;
+    texture = Textures.getInstance().dummyWeb;
+    isWeb = true;
   }
 
   public Room getTilesRoom() {
