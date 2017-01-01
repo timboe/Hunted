@@ -18,8 +18,8 @@ public class Param {
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED = .8f * PLAYER_SPEED;
 
-  public static final float PLAYER_SMELL = 0.01f;
-  public static final float SMELL_SPREAD = 0.1f; // [Fraction] How much smell moves/is lost per tick
+  public static final float PLAYER_SMELL = 0.001f;
+  public static final float SMELL_SPREAD = 0.05f; // [Fraction] How much smell moves/is lost per tick
   public static final float SMELL_DISSAPATE = 0.5f; // How much of the moving smell is lost
 
 
