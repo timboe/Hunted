@@ -1,8 +1,10 @@
 package timboe.hunted.world;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Rectangle;
+import timboe.hunted.Param;
 
 import java.util.*;
 
@@ -16,6 +18,7 @@ public class Room extends Rectangle{
   private CorridorDirection corridorDirection = CorridorDirection.NONE;
   private HashMap<Room, Room> linksTo;
   private float scent = 0f;
+  private float connections = 0f;
   private Random r;
 
   Room(float x, float y, float w, float h) {
@@ -24,7 +27,11 @@ public class Room extends Rectangle{
     linksTo = new HashMap<Room, Room>();
   }
 
-  public void setCorridor(CorridorDirection d) {
+  public void setCorridor(CorridorDirection d, Room a, Room b) {
+    setLinksTo(a,b);
+    setLinksTo(b,a);
+    a.setLinksTo(this, b);
+    b.setLinksTo(this, a);
     corridorDirection = d;
   }
 
@@ -34,8 +41,11 @@ public class Room extends Rectangle{
 
   public CorridorDirection getCorridorDirection() { return  corridorDirection; }
 
-  public void setLinksTo(final Room room, final Room corridor) {
-    linksTo.put(corridor, room); // Corridor links to room
+  public void setLinksTo(final Room from, final Room to) {
+    // For rooms: corridors -> connecting rooms
+    // For corridors: room -> connecting room (both directions)
+    linksTo.put(from, to);
+    ++connections;
   }
 
   public boolean getLinksTo(final Room toTest) {
@@ -59,7 +69,20 @@ public class Room extends Rectangle{
   }
 
   public void addToScent(float toAdd) {
-    scent = Math.min(scent + toAdd, 1);
+    scent = Math.min(scent + toAdd, 1f);
+  }
+
+  public void updatePhysics() {
+    // Spread scent about
+    float toSpread = scent * Param.SMELL_SPREAD;
+    scent -= toSpread;
+    if (scent < 1e-6) scent = 0f;
+    toSpread *= Param.SMELL_DISSAPATE; // Only spread half, other half is gone for good
+    toSpread /= connections;
+    for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
+      if (getIsCorridor()) entry.getValue().addToScent( toSpread ); // Spread to rooms
+      else entry.getKey().addToScent( toSpread ); // Spread to corridors
+    }
   }
 
   public float getScent() { return scent; }
@@ -67,7 +90,7 @@ public class Room extends Rectangle{
   public HashMap.Entry<Room,Room> getNeighborRoomWithHighestScentTrail() {
     HashMap.Entry<Room,Room> toReturn = linksTo.entrySet().iterator().next();
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
-      if (entry.getKey().getScent() > toReturn.getKey().getScent()) {
+      if (entry.getKey().getScent() > toReturn.getKey().getScent()) { // Check corridors
         toReturn = entry;
       }
     }

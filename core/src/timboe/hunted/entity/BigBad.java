@@ -56,7 +56,7 @@ public class BigBad extends EntityBase {
         newV.sub(pathingVector);
         length = newV.len();
       }
-      Gdx.app.log("AI","BigBad moved to " + pathingVector + " distance from target " + length);
+//      Gdx.app.log("AI","BigBad moved to " + pathingVector + " distance from target " + length);
     }
 
     switch (aiState) {
@@ -99,8 +99,9 @@ public class BigBad extends EntityBase {
   private void chooseDestination() {
     // First try and follow scent trail
     HashMap.Entry<Room,Room> toGoTo;
-    if ( false && Utility.prob(getRoomUnderEntity().getScent()) ) { // Follow scent
+    if ( true || Utility.prob(getRoomUnderEntity().getScent()) ) { // Follow scent
       toGoTo = getRoomUnderEntity().getNeighborRoomWithHighestScentTrail();
+      Gdx.app.log("AI","Got scent of " + getRoomUnderEntity().getScent()*100 + "% following to " + toGoTo.getValue() + " with scent " + toGoTo.getValue().getScent()*100);
     } else { // Pick random, prefer new rooms
       toGoTo = getRoomUnderEntity().getRandomNeighbourRoom(roomsVisited);
     }
@@ -124,9 +125,9 @@ public class BigBad extends EntityBase {
       movementTargets.add( new Vector2(worldBox.x, commonY) );
       movementTargets.add( new Vector2(finalX, commonY) );
     }
-    for (Vector2 t : movementTargets) {
-      Gdx.app.log("AI","Movement target - " + t);
-    }
+//    for (Vector2 t : movementTargets) {
+//      Gdx.app.log("AI","Movement target - " + t);
+//    }
     aiState = AIState.PATHING;
   }
 

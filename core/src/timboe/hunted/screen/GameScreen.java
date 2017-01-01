@@ -2,13 +2,17 @@ package timboe.hunted.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import timboe.hunted.Param;
 import timboe.hunted.render.HuntedRender;
 import timboe.hunted.render.Sprites;
 import timboe.hunted.world.Physics;
+import timboe.hunted.world.Room;
 import timboe.hunted.world.WorldGen;
 
 /**
@@ -19,8 +23,10 @@ public class GameScreen extends HuntedRender {
   private boolean keyN = false, keyE = false, keyS = false, keyW = false;
   private Rectangle cullBox;
 
-  Box2DDebugRenderer debugRenderer;
+  Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   Matrix4 debugMatrix;
+  BitmapFont debugFont = new BitmapFont();
+  SpriteBatch debugSpriteBatch = new SpriteBatch();
 
   @Override
   public void init() {
@@ -31,7 +37,6 @@ public class GameScreen extends HuntedRender {
     stage.addActor(Sprites.getInstance().getPlayer());
     stage.addActor(Sprites.getInstance().getBigBad());
 
-    debugRenderer = new Box2DDebugRenderer();
   }
 
   @Override
@@ -44,6 +49,10 @@ public class GameScreen extends HuntedRender {
     Physics.getInstance().rayHandler.update();
     Sprites.getInstance().getPlayer().updatePosition();
     Sprites.getInstance().getBigBad().updatePosition();
+
+    for (Room room : WorldGen.getInstance().getAllRooms()) {
+      room.updatePhysics();
+    }
 
 //    float cameraX = Math.max( Sprites.getInstance().getPlayer().getX(), Gdx.graphics.getWidth()/2 );
 //    cameraX = Math.min( cameraX, (HuntedGame.TILE_X * HuntedGame.TILE_SIZE) - (Gdx.graphics.getWidth()/2) );
@@ -62,6 +71,13 @@ public class GameScreen extends HuntedRender {
   protected void renderBackground() {
     //stage.getRoot().setCullingArea( cullBox );
     stage.draw();
+
+    debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
+    debugSpriteBatch.begin();
+    for (Room room : WorldGen.getInstance().getAllRooms()) {
+      debugFont.draw(debugSpriteBatch, Float.toString(room.getScent()*100f), room.getX()*Param.TILE_SIZE, room.getY()*Param.TILE_SIZE);
+    }
+    debugSpriteBatch.end();
 
     debugMatrix = stage.getCamera().combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
 

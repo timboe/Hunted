@@ -8,10 +8,7 @@ import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.render.Sprites;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by Tim on 28/12/2016.
@@ -25,6 +22,7 @@ public class WorldGen {
 
   private Vector<Room> rooms;
   private Vector<Room> corridors;
+  private HashSet<Room> allRooms;
   private Random r;
 
   private final int ROOM_PLACE_TRIES = 2000;
@@ -38,7 +36,14 @@ public class WorldGen {
     r = new Random();
     rooms = new Vector<Room>();
     corridors = new Vector<Room>();
+    allRooms = new HashSet<Room>();
   }
+
+  public Vector<Room> getRooms() { return rooms; }
+
+  public Vector<Room> getCorridors() { return corridors; }
+
+  public HashSet<Room> getAllRooms() { return allRooms; }
 
   public void generateWorld() {
     int tryN = 0;
@@ -76,6 +81,7 @@ public class WorldGen {
   private void reset() {
     rooms.clear();
     corridors.clear();
+    allRooms.clear();
     Physics.getInstance().reset();
     Sprites.getInstance().reset();
   }
@@ -105,7 +111,10 @@ public class WorldGen {
           pass = false;
         }
       }
-      if (pass) rooms.add(room);
+      if (pass) {
+        rooms.add(room);
+        allRooms.add(room);
+      }
       else ++t;
     }
   }
@@ -142,6 +151,7 @@ public class WorldGen {
       if (room.getCorridors().size() == 0) toRemove.add(room);
     }
     rooms.removeAll(toRemove);
+    allRooms.removeAll(toRemove);
   }
 
   private boolean getAllConnected() {
@@ -195,10 +205,9 @@ public class WorldGen {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
             if (!overlap) {
-              c.setCorridor(Room.CorridorDirection.VERTICAL);
+              c.setCorridor(Room.CorridorDirection.VERTICAL, below, above);
               corridors.add(c);
-              below.setLinksTo(above, c);
-              above.setLinksTo(below, c);
+              allRooms.add(c);
             }
           }
         }
@@ -226,10 +235,9 @@ public class WorldGen {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
             if (!overlap) {
-              c.setCorridor(Room.CorridorDirection.HORIZONTAL);
+              c.setCorridor(Room.CorridorDirection.HORIZONTAL, left, right);
               corridors.add(c);
-              left.setLinksTo(right, c);
-              right.setLinksTo(left, c);
+              allRooms.add(c);
             }
           }
         }
@@ -238,8 +246,7 @@ public class WorldGen {
   }
 
   private void addRoomsToTileMap() {
-    for (Room room : rooms) addRoomToTileMap(room);
-    for (Room room : corridors) addRoomToTileMap(room);
+    for (Room room : allRooms) addRoomToTileMap(room);
   }
 
   private void addRoomToTileMap(Room room) {
