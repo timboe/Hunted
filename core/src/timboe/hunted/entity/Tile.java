@@ -7,8 +7,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.HuntedGame;
+import timboe.hunted.Param;
+import timboe.hunted.Utility;
 import timboe.hunted.render.Textures;
 import timboe.hunted.world.Room;
+
+import java.util.Random;
 
 /**
  * Created by Tim on 28/12/2016.
@@ -29,7 +33,9 @@ public class Tile extends EntityBase {
   public void setIsFloor(Room room) {
     isFloor = true;
     myRoom = room;
-    setTexture("floorA");
+    int floor = Utility.r.nextInt(100);
+    if (floor <= 22)  setTexture("floor" + Integer.toString(floor));
+    else setTexture("floor");
   }
 
   public void setIsWeb() {

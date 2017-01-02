@@ -11,8 +11,11 @@ public class Param {
   public static final int TILE_Y = 128;
 
   public static final int RAYS = 500;
-  public static final Color FLAME = new Color(.986f, .345f, .1331f, .4f);
-  public static final int PLAYER_TORCH_STRENGTH = 20;
+  public static final Color FLAME = new Color(.1f, .1f, .1f, .8f);
+  public static final int PLAYER_TORCH_STRENGTH = 30;
+  public static final float AMBIENT_LIGHT = 0.5f;
+  public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
+  public static final int TORCH_SPACING = 5;
 
   public static final float PLAYER_SPEED = 10f;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;

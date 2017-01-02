@@ -261,7 +261,7 @@ public class WorldGen {
           continue;
         }
         Sprites.getInstance().getTile(x, y).setIsFloor(room);
-        if (room.getIsCorridor()) Sprites.getInstance().getTile(x, y).setTexture("floorB"); //TODO debug
+        if (room.getIsCorridor()) Sprites.getInstance().getTile(x, y).setTexture("floorZ"); //TODO debug
       }
     }
   }
@@ -332,6 +332,7 @@ public class WorldGen {
     for (int x = 0; x < Param.TILE_X; ++x) {
       for (int y = 0; y < Param.TILE_Y; ++y) {
         final float rnd = r.nextFloat();
+        boolean torch = Utility.prob(Param.TORCH_CHANCE);
         Tile t = Sprites.getInstance().getTile(x, y);
         if (t.getIsFloor() || !t.isVisible()) continue;
         getNeighbourFloor(x, y, f);
@@ -377,6 +378,22 @@ public class WorldGen {
           Sprites.getInstance().getTile(x, y + 1).setVisible(false); // DOUBLE-TILE
         } else if (f.get("SE") && !f.get("N") && !f.get("E") && !f.get("S") && !f.get("W")) { // NW OUTER CORNER
           t.setTexture("wallNE");
+          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
+          ///////////////////
+          ///////////////////
+        } else if (torch && y%Param.TORCH_SPACING==0 && f.get("E") && !f.get("N") && !f.get("S") && f.get("NE") // WEST TORCH
+          && (y+3 >= Param.TILE_Y || Sprites.getInstance().getTile(x,y+3).getIsFloor() == false) ) { //TODO horrid condition
+          t.setTexture("wallWTorch");
+          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
+        } else if (torch && y%Param.TORCH_SPACING==0 && f.get("W") && !f.get("N") && !f.get("S") && f.get("NW") // EAST TORCH
+          && (y+3 >= Param.TILE_Y || Sprites.getInstance().getTile(x,y+3).getIsFloor() == false) ) { //TODO horrid condition
+          t.setTexture("wallETorch");
+          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
+        } else if (torch && x%Param.TORCH_SPACING==0 && f.get("N") && !f.get("E") && !f.get("W")) { // SOUTH TORCH
+          t.setTexture("wallSTorch");
+        } else if (torch && x%Param.TORCH_SPACING==0 && f.get("S") && !f.get("E") && !f.get("W")) { // NORTH TORCH
+          if (rnd < .5f) t.setTexture("wallNTorchA");
+          else t.setTexture("wallNTorchB");
           Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
           ///////////////////
           ///////////////////
