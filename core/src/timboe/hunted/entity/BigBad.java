@@ -62,9 +62,13 @@ public class BigBad extends EntityBase {
 
   private float getTargetAngle() {
     Vector2 target = movementTargets.get(0);
-    float targetAngle = (float) Math.atan2(Math.round(target.y - worldBox.y), Math.round(target.x - worldBox.x));
+    float targetAngle = (float) Math.atan2(target.y - body.getPosition().y, target.x - body.getPosition().x);
     if (targetAngle < 0) targetAngle += (float)2*Math.PI;
     return targetAngle;
+  }
+
+  private boolean atDestination() {
+    return movementTargets.get(0).epsilonEquals(body.getPosition(),.1f);
   }
 
   private void rotate() {
@@ -75,17 +79,13 @@ public class BigBad extends EntityBase {
       float diff = targetAngle - body.getAngle();
 //      int sign = (diff >= Math.PI && diff <= 2*Math.PI) || (diff <= 0 && diff >= -Math.PI) ? -1 : 1;
       int sign = (diff >= 0 && diff <= Math.PI) || (diff <= -Math.PI && diff >= -2*Math.PI) ? 1 : -1;
-
-      Gdx.app.log("AI","Target: " + Math.toDegrees(targetAngle) + ". Rotate from  " + Math.toDegrees(body.getAngle()) + " to " + Math.toDegrees(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED)));
+//      Gdx.app.log("AI","Target: " + Math.toDegrees(targetAngle) + ". Rotate from  " + Math.toDegrees(body.getAngle()) + " to " + Math.toDegrees(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED)));
       setMoveDirection(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED), false);
     }
   }
 
   private void path() {
-    float targetAngle = getTargetAngle();
-    setMoveDirection(targetAngle, true);
-    if (movementTargets.get(0).epsilonEquals(worldBox.x,worldBox.y,1e-4f)) {
-      setPhysicsPosition(worldBox.x, worldBox.y); // We do this to snap the physics object to the grid. Otherwise could drift
+    if (atDestination()) {
       movementTargets.remove(0);
       Gdx.app.log("AI","Reached target - " + movementTargets.size() + " more targets");
       if (movementTargets.size() == 0) {
@@ -94,6 +94,9 @@ public class BigBad extends EntityBase {
       } else {
         aiState = AIState.ROTATE;
       }
+    } else {
+      float targetAngle = getTargetAngle();
+      setMoveDirection(targetAngle, true);
     }
   }
 
@@ -110,22 +113,23 @@ public class BigBad extends EntityBase {
   }
 
   private void basicPathing(Room corridor, Room target) {
-    Gdx.app.log("AI","Starting - " + worldBox.x + "," + worldBox.y);
+    Gdx.app.log("AI","Starting - " + body.getPosition());
     if (corridor.getCorridorDirection() == Room.CorridorDirection.VERTICAL) {
-      int commonX = (int) (corridor.x + Math.floor(Param.CORRIDOR_SIZE/2f));
+      float commonX = corridor.x + Param.CORRIDOR_SIZE/2f;
       Gdx.app.log("AI","Go through V corridor at common X:" + commonX);
-      float finalY = target.y + (float)Math.floor(Param.CORRIDOR_SIZE/2f);
-      if (target.y < corridor.y) finalY = target.y + target.height - (float)Math.ceil(Param.CORRIDOR_SIZE/2f);
-      movementTargets.add( new Vector2(commonX, worldBox.y) );
+      float finalY = target.y + Param.CORRIDOR_SIZE/2f;
+      if (target.y < corridor.y) finalY = target.y + target.height - 1 - Param.CORRIDOR_SIZE/2f;
+      movementTargets.add( new Vector2(commonX, body.getPosition().y) );
       movementTargets.add( new Vector2(commonX, finalY));
     } else {
-      int commonY = (int) (corridor.y + Math.floor(Param.CORRIDOR_SIZE/2f));
+      float commonY = corridor.y + Param.CORRIDOR_SIZE/2f;
       Gdx.app.log("AI","Go through H corridor at common Y:" + commonY);
-      float finalX = target.x + (float)Math.floor(Param.CORRIDOR_SIZE/2f);
-      if (target.x < corridor.x) finalX = target.x + target.width - (float)Math.ceil(Param.CORRIDOR_SIZE/2f);
-      movementTargets.add( new Vector2(worldBox.x, commonY) );
+      float finalX = target.x + Param.CORRIDOR_SIZE/2f;
+      if (target.x < corridor.x) finalX = target.x + target.width - 1 - Param.CORRIDOR_SIZE/2f;
+      movementTargets.add( new Vector2(body.getPosition().x, commonY) );
       movementTargets.add( new Vector2(finalX, commonY) );
     }
+    // Check we are not already at our first target
 //    for (Vector2 t : movementTargets) {
 //      Gdx.app.log("AI","Movement target - " + t);
 //    }
