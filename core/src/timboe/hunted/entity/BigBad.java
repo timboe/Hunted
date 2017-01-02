@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class BigBad extends EntityBase {
 
-  enum AIState {IDLE, SETANGLE, PATHING}
+  enum AIState {IDLE, ROTATE, PATHING}
   AIState aiState = AIState.IDLE;
   Vector<Vector2> movementTargets;
   HashSet<Room> roomsVisited;
@@ -32,66 +32,67 @@ public class BigBad extends EntityBase {
   }
 
 //  @Override
-//  public void setPhysicsPosition(float x, float y) {
-//    super.setPhysicsPosition(x,y);
-//    roomsVisited.add(getRoomUnderEntity());
-//  }
-
-  @Override
   public void updatePhysics() {
     runAI();
     Tile t = getTileUnderEntity();
     t.setIsWeb();
     roomsVisited.add(t.getTilesRoom());
-    super.updatePhysics();
+//    super.updatePhysics();
   }
 
   public void runAI() {
 
-    if (pathingVector.epsilonEquals(worldBox.x,worldBox.y,1e-2f) == false) {
-      pathingVector.set(worldBox.x,worldBox.y);
-      float length = 0;
-      if (movementTargets.size() > 0) {
-        Vector2 newV = movementTargets.get(0).cpy();
-        newV.sub(pathingVector);
-        length = newV.len();
-      }
+//    if (pathingVector.epsilonEquals(worldBox.x,worldBox.y,1e-2f) == false) {
+//      pathingVector.set(worldBox.x,worldBox.y);
+//      float length = 0;
+//      if (movementTargets.size() > 0) {
+//        Vector2 newV = movementTargets.get(0).cpy();
+//        newV.sub(pathingVector);
+//        length = newV.len();
+//      }
 //      Gdx.app.log("AI","BigBad moved to " + pathingVector + " distance from target " + length);
-    }
+//    }
 
     switch (aiState) {
       case IDLE: chooseDestination(); break;
-//      case SETANGLE: setAngle(); break;
+      case ROTATE: rotate(); break;
       case PATHING: path(); break;
     }
   }
 
-//  private void setAngle() {
-//    Vector2 target = movementTargets.get(0);
-//    float angle = (float)Math.atan2(Math.round(target.y - worldBox.y), Math.round(target.x - worldBox.x));
-//    Gdx.app.log("AI","Path from " + worldBox.x + "," + worldBox.y + " to " + target.x + "," + target.y + " which is angle " + Math.toDegrees(angle));
-//    aiState = AIState.PATHING;
-//    setMoveDirection(angle);
-//    // we path right away as we may already be at the destination
-//    path();
-//
-//
-//  }
+  private float getTargetAngle() {
+    Vector2 target = movementTargets.get(0);
+    float targetAngle = (float) Math.atan2(Math.round(target.y - worldBox.y), Math.round(target.x - worldBox.x));
+    if (targetAngle < 0) targetAngle += (float)2*Math.PI;
+    return targetAngle;
+  }
+
+  private void rotate() {
+    float targetAngle = getTargetAngle();
+    if (Math.abs(body.getAngle() - targetAngle) < Math.toRadians(10)) {
+      aiState = AIState.PATHING;
+    } else {
+      float diff = targetAngle - body.getAngle();
+//      int sign = (diff >= Math.PI && diff <= 2*Math.PI) || (diff <= 0 && diff >= -Math.PI) ? -1 : 1;
+      int sign = (diff >= 0 && diff <= Math.PI) || (diff <= -Math.PI && diff >= -2*Math.PI) ? 1 : -1;
+
+      Gdx.app.log("AI","Target: " + Math.toDegrees(targetAngle) + ". Rotate from  " + Math.toDegrees(body.getAngle()) + " to " + Math.toDegrees(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED)));
+      setMoveDirection(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED), false);
+    }
+  }
 
   private void path() {
-    Vector2 target = movementTargets.get(0); // Are we there yet?
-    float angle = (float)Math.atan2(Math.round(target.y - worldBox.y), Math.round(target.x - worldBox.x));
-    setMoveDirection(angle);
-
-    if (target.epsilonEquals(worldBox.x,worldBox.y,1e-4f)) {
+    float targetAngle = getTargetAngle();
+    setMoveDirection(targetAngle, true);
+    if (movementTargets.get(0).epsilonEquals(worldBox.x,worldBox.y,1e-4f)) {
       setPhysicsPosition(worldBox.x, worldBox.y); // We do this to snap the physics object to the grid. Otherwise could drift
       movementTargets.remove(0);
       Gdx.app.log("AI","Reached target - " + movementTargets.size() + " more targets");
       if (movementTargets.size() == 0) {
-        moving = false;
+        setMoving(false);
         aiState = AIState.IDLE;
-//      } else {
-//        aiState = AIState.SETANGLE;
+      } else {
+        aiState = AIState.ROTATE;
       }
     }
   }
@@ -128,7 +129,7 @@ public class BigBad extends EntityBase {
 //    for (Vector2 t : movementTargets) {
 //      Gdx.app.log("AI","Movement target - " + t);
 //    }
-    aiState = AIState.PATHING;
+    aiState = AIState.ROTATE;
   }
 
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import sun.nio.cs.ext.MacHebrew;
 import timboe.hunted.Param;
 import timboe.hunted.render.Sprites;
 import timboe.hunted.render.Textures;
@@ -21,9 +22,9 @@ public class EntityBase extends Actor {
   protected Body body = null;
   protected Rectangle worldBox = null;
   protected float offsetMod = 0f;
-  protected float angle = 0;
+  private float angle = 0;
   protected float speed = 0;
-  protected boolean moving = false;
+  private boolean moving = false;
   protected PointLight torch = null;
 
 
@@ -89,7 +90,8 @@ public class EntityBase extends Actor {
     circleShape.dispose();
   }
 
-  public void updatePhysics() {
+  public void setMoving(boolean m) {
+    moving = m;
     if (moving) {
       body.setLinearVelocity((float) (speed * Math.cos(angle)), (float) (speed * Math.sin(angle)));
     } else {
@@ -112,10 +114,12 @@ public class EntityBase extends Actor {
     return getTileUnderEntity().getTilesRoom();
   }
 
-  public void setMoveDirection(double a) {
-    moving = true;
+  public void setMoveDirection(double a, boolean move) {
+    while (a < 0) a += 2*Math.PI;
+    while (a >= 2*Math.PI) a -= 2*Math.PI;
     angle = (float)a;
     body.setTransform(body.getPosition(), angle);
+    setMoving(move);
   }
 
   @Override
