@@ -13,7 +13,7 @@ public class Param {
   public static final int RAYS = 500;
   public static final Color FLAME = new Color(.1f, .1f, .1f, .4f);
   public static final int PLAYER_TORCH_STRENGTH = 25;
-  public static final float AMBIENT_LIGHT = 0.1f;
+  public static final float AMBIENT_LIGHT = 1f;
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
   public static final int TORCH_SPACING = 5;
 

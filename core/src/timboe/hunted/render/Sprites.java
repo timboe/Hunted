@@ -2,6 +2,7 @@ package timboe.hunted.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
@@ -26,6 +27,7 @@ public class Sprites {
   private HashMap<Integer, Tile> tileMap;
   private Player player;
   private BigBad bigBad;
+  public Tile entry;
 
   private Sprites() {
   }
@@ -41,6 +43,10 @@ public class Sprites {
         tileMap.put(Utility.xyToID(x, y), new Tile(x, y));
       }
     }
+  }
+
+  public void addToStage(Actor a) {
+    tileSet.addActor(a);
   }
 
   public void addTileActors() {

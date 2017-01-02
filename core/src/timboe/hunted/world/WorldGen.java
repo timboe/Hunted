@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.entity.Tile;
@@ -28,6 +27,7 @@ public class WorldGen {
   private Random r;
 
   private Room nearestCentre;
+  private Room entryRoom;
 
   private final int ROOM_PLACE_TRIES = 2000;
   public final int ROOM_MEAN_SIZE = 15;
@@ -139,7 +139,10 @@ public class WorldGen {
         nearestCentre = room;
       }
     }
-    if (nearestCentre == null) return false;
+    if (nearestCentre == null) {
+      Gdx.app.log("WorldGen","Waning - could not place BigBad");
+      return false;
+    }
     // Place baddy
     Sprites.getInstance().getBigBad().setPhysicsPosition(Math.round(nearestCentre.x + nearestCentre.width/2), Math.round(nearestCentre.y + nearestCentre.height/2));
     Sprites.getInstance().getPlayer().setPhysicsPosition(nearestCentre.x + 1, nearestCentre.y + 1);
@@ -147,7 +150,35 @@ public class WorldGen {
   }
 
   private boolean placeEntrance() {
-
+    // Find a room at the top. Needs to be in top 75%, wide enough, no north connections
+    Vector<Room> entryRoomOptions = new Vector<Room>();
+    for (final Room room : rooms) {
+      if (room.y < 3*Param.TILE_Y/4) continue;
+      if (room.width < 7) continue;
+      boolean hasNortherer = false;
+      for (Room connected : room.getConnectedRooms()) {
+        if (connected.y > room.y) {
+          hasNortherer = true;
+          break;
+        }
+      }
+      if (!hasNortherer) entryRoomOptions.add(room);
+    }
+    if (entryRoomOptions.size() == 0) {
+      Gdx.app.log("WorldGen", "Warning - Could not find a maze entrance");
+      return false;
+    }
+    entryRoom = entryRoomOptions.elementAt( r.nextInt(entryRoomOptions.size()) );
+    int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
+    for (int x = xStart; x < xStart + 3; ++x) {
+      Sprites.getInstance().getTile(x, (int)(entryRoom.y + entryRoom.height)).setVisible(false);
+    }
+    Sprites.getInstance().getPlayer().setPhysicsPosition(entryRoom.x + entryRoom.width/2f,
+      entryRoom.y + entryRoom.height/2f);
+    Tile t = new Tile(xStart, (int)(entryRoom.y + entryRoom.height));
+    t.setTexture("entry",5);
+    Sprites.getInstance().entry = t;
+    Sprites.getInstance().addToStage(t);
     return true;
   }
 

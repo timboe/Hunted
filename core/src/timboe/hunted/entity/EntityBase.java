@@ -12,11 +12,16 @@ import timboe.hunted.render.Textures;
 import timboe.hunted.world.Physics;
 import timboe.hunted.world.Room;
 
+import java.util.Vector;
+
 /**
  * Created by Tim on 30/12/2016.
  */
 public class EntityBase extends Actor {
-  protected TextureRegion textureRegion = null;
+  protected TextureRegion[] textureRegion = new TextureRegion[10];
+  protected int currentFrame;
+  protected int nFrames;
+
   protected Body body = null;
   protected Rectangle worldBox = null;
   protected float offsetMod = 0f;
@@ -38,10 +43,23 @@ public class EntityBase extends Actor {
   public Body getBody() { return body; }
 
   public void setTexture(String name) {
-    textureRegion = Textures.getInstance().getTexture(name);
-    setWidth(textureRegion.getRegionWidth());
-    setHeight(textureRegion.getRegionHeight());
+    setTexture(name, 0);
   }
+
+  public void setTexture(String name, int frames) {
+    nFrames = frames;
+    currentFrame = 0;
+    if (frames == 0) {
+      textureRegion[0] = Textures.getInstance().getTexture(name);
+    } else {
+      for (int i = 0; i < frames; ++i) {
+        textureRegion[i] = Textures.getInstance().getTexture(name + Integer.toString(i));
+      }
+    }
+    setWidth(textureRegion[0].getRegionWidth());
+    setHeight(textureRegion[0].getRegionHeight());
+  }
+
 
   public void setPhysicsPosition(float x, float y) {
     worldBox.setPosition(x,y);
@@ -162,8 +180,8 @@ public class EntityBase extends Actor {
   }
 
   @Override
-  public void draw(Batch batch, float alpha){
-    batch.draw(textureRegion ,this.getX(),this.getY());
+  public void draw(Batch batch, float alpha) {
+    batch.draw(textureRegion[currentFrame] ,this.getX(),this.getY());
   }
 
 }
