@@ -3,6 +3,7 @@ package timboe.hunted.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.HuntedGame;
@@ -21,18 +22,19 @@ public class Tile extends EntityBase {
 
   public Tile(int x, int y) {
     super(x, y);
-    texture = Textures.getInstance().dummyDirt;
+    setTexture("pitC");
   }
+
 
   public void setIsFloor(Room room) {
     isFloor = true;
     myRoom = room;
-    texture =  Textures.getInstance().dummyFloor;
+    setTexture("floorA");
   }
 
   public void setIsWeb() {
     if (isWeb) return;
-    texture = Textures.getInstance().dummyWeb;
+    setTexture("webA");
     isWeb = true;
   }
 
@@ -52,7 +54,7 @@ public class Tile extends EntityBase {
     hasPhysics = p;
   }
 
-  public void setIsCorridor() {
-    texture =  Textures.getInstance().dummyCorridor;
-  }
+//  public void setIsCorridor() {
+//    texture =  Textures.getInstance().dummyCorridor;
+//  }
 }

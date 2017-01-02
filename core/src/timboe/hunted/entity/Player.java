@@ -15,7 +15,7 @@ public class Player extends EntityBase {
 
   public Player() {
     super(0,0);
-    texture = Textures.getInstance().dummyPlayer;
+    setTexture("playerE");
     speed = Param.PLAYER_SPEED;
     setAsPlayerBody(0.5f, 0.25f);
     torch = new PointLight(Physics.getInstance().rayHandler,

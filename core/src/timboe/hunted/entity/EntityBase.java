@@ -3,11 +3,13 @@ package timboe.hunted.entity;
 import box2dLight.PointLight;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.Param;
 import timboe.hunted.render.Sprites;
+import timboe.hunted.render.Textures;
 import timboe.hunted.world.Physics;
 import timboe.hunted.world.Room;
 
@@ -15,7 +17,7 @@ import timboe.hunted.world.Room;
  * Created by Tim on 30/12/2016.
  */
 public class EntityBase extends Actor {
-  protected Texture texture = null;
+  protected TextureRegion textureRegion = null;
   protected Body body = null;
   protected Rectangle worldBox = null;
   protected float offsetMod = 0f;
@@ -28,6 +30,12 @@ public class EntityBase extends Actor {
   public EntityBase(int x, int y) {
     worldBox = new Rectangle(x, y,1f,1f);
     setBounds(x * Param.TILE_SIZE, y * Param.TILE_SIZE, Param.TILE_SIZE, Param.TILE_SIZE);
+  }
+
+  public void setTexture(String name) {
+    textureRegion = Textures.getInstance().getTexture(name);
+    setWidth(textureRegion.getRegionWidth());
+    setHeight(textureRegion.getRegionHeight());
   }
 
   public void setPhysicsPosition(float x, float y) {
@@ -93,7 +101,7 @@ public class EntityBase extends Actor {
     float x = (body.getPosition().x * Param.TILE_SIZE) - getWidth()/2;
     float y = (body.getPosition().y * Param.TILE_SIZE) - getHeight()/2 + offsetMod;
     setPosition(x,y);
-    worldBox.setPosition((float)Math.floor(body.getPosition().x), (float)Math.floor(body.getPosition().y)); // Deltas to round down
+    worldBox.setPosition((float)Math.floor(body.getPosition().x), (float)Math.floor(body.getPosition().y));
   }
 
   public Tile getTileUnderEntity() {
@@ -112,7 +120,7 @@ public class EntityBase extends Actor {
 
   @Override
   public void draw(Batch batch, float alpha){
-    batch.draw(texture,this.getX(),this.getY());
+    batch.draw(textureRegion ,this.getX(),this.getY());
   }
 
 }

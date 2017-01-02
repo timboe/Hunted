@@ -22,7 +22,6 @@ public class Param {
   public static final float SMELL_SPREAD = 0.05f; // [Fraction] How much smell moves/is lost per tick
   public static final float SMELL_DISSAPATE = 0.5f; // How much of the moving smell is lost
 
-
   public static final int MIN_ROOM_SIZE = 5;
   public static final int CORRIDOR_SIZE = MIN_ROOM_SIZE;
 }

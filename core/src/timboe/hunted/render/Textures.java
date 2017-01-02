@@ -2,39 +2,26 @@ package timboe.hunted.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Tim on 28/12/2016.
  */
 public class Textures {
   private static Textures ourInstance = new Textures();
-
   public static Textures getInstance() {
     return ourInstance;
   }
+  private Textures() {}
 
-  public final Texture dummyDirt;
-  public final Texture dummyPlayer;
-  public final Texture dummyFloor;
-  public final Texture dummyBigBad;
-  public final Texture dummyCorridor;
-  public final Texture dummyWeb;
+  private TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
 
-  private Textures() {
-    dummyDirt = new Texture(Gdx.files.internal("dummyDirt.png"));
-    dummyPlayer = new Texture(Gdx.files.internal("dummyPlayer.png"));
-    dummyFloor = new Texture(Gdx.files.internal("dummyFloor.png"));
-    dummyCorridor = new Texture(Gdx.files.internal("dummyCorridor.png"));
-    dummyBigBad = new Texture(Gdx.files.internal("dummyBigBad.png"));
-    dummyWeb = new Texture(Gdx.files.internal("dummyWeb.png"));
+  public TextureRegion getTexture(String name) {
+    return atlas.findRegion(name);
   }
 
   public void dispose() {
-    dummyDirt.dispose();
-    dummyPlayer.dispose();
-    dummyFloor.dispose();
-    dummyCorridor.dispose();
-    dummyBigBad.dispose();
-    dummyWeb.dispose();
+    atlas.dispose();
   }
 }

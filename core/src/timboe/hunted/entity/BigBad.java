@@ -26,7 +26,7 @@ public class BigBad extends EntityBase {
     speed = Param.BIGBAD_SPEED;
     pathingVector = new Vector2();
     roomsVisited = new HashSet<Room>();
-    texture = Textures.getInstance().dummyBigBad;
+    setTexture("playerC");
     setAsPlayerBody(0.5f, 0.25f);
     movementTargets = new Vector<Vector2>();
   }

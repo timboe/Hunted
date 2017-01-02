@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.entity.Tile;
 import timboe.hunted.render.Sprites;
 
 import java.util.*;
@@ -28,7 +30,8 @@ public class WorldGen {
   private final int ROOM_PLACE_TRIES = 2000;
   public final int ROOM_MEAN_SIZE = 15;
   private final int ROOM_STD_D = 5;
-  private final int ROOM_BORDER = 2; // minimum spacing between rooms
+  private final int ROOM_BORDER_X = 2; // minimum spacing between rooms
+  private final int ROOM_BORDER_Y = 4;
   private final int CORRIDOR_MAX_LENGTH = 20;
   private final int CORRIDOR_CHANCE = 90; //%
 
@@ -72,6 +75,7 @@ public class WorldGen {
     }
     addRoomsToTileMap();
     disableInvisibleTiles();
+    textureWalls();
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
     success &= placeBigBad();
@@ -101,10 +105,10 @@ public class WorldGen {
       final long x = minX + r.nextInt(maxX - minX);
       final long y = minY + r.nextInt(maxY - minY);
       Room room = new Room(x, y, w, h);
-      if (w < Param.MIN_ROOM_SIZE + (2 * ROOM_BORDER)) pass = false;
-      else if (h < Param.MIN_ROOM_SIZE + (2 * ROOM_BORDER)) pass = false;
+      if (w < Param.MIN_ROOM_SIZE + ROOM_BORDER_X) pass = false;
+      else if (h < Param.MIN_ROOM_SIZE + ROOM_BORDER_Y) pass = false;
       else if (x + w >= Param.TILE_X) pass = false;
-      else if (y + h >= Param.TILE_Y) pass = false;
+      else if (y + h >= Param.TILE_Y - 1) pass = false; // Note - we need to keep two clear at the top
       for (final Rectangle testRoom : rooms) {
         if (!pass) break;
         if (testRoom.overlaps(room)) {
@@ -141,7 +145,7 @@ public class WorldGen {
 
   private void shrinkRooms() {
     for (Room room : rooms) {
-      room.set(room.getX(), room.getY(), room.getWidth() - ROOM_BORDER, room.getHeight() - ROOM_BORDER);
+      room.set(room.getX(), room.getY(), room.getWidth() - ROOM_BORDER_X, room.getHeight() - ROOM_BORDER_Y);
     }
   }
 
@@ -200,7 +204,7 @@ public class WorldGen {
               corridorLength);
             // Check that the corridor does not intercept any other large rooms
             boolean overlap = false;
-            Room fatC = new Room(c.getX() - 1, c.getY(), c.getWidth() + 2, c.getHeight());
+            Room fatC = new Room(c.getX() - 2, c.getY(), c.getWidth() + 4, c.getHeight());
             for (Room overlapCheck : rooms) {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
@@ -230,7 +234,7 @@ public class WorldGen {
               Param.CORRIDOR_SIZE);
             // Check that the corridor does not intercept any other large rooms
             boolean overlap = false;
-            Room fatC = new Room(c.getX(), c.getY() - 1, c.getWidth(), c.getHeight() + 2);
+            Room fatC = new Room(c.getX(), c.getY() - 2, c.getWidth(), c.getHeight() + 4);
             for (Room overlapCheck : rooms) {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }
@@ -257,58 +261,145 @@ public class WorldGen {
           continue;
         }
         Sprites.getInstance().getTile(x, y).setIsFloor(room);
-        if (room.getIsCorridor()) Sprites.getInstance().getTile(x, y).setIsCorridor();
+        if (room.getIsCorridor()) Sprites.getInstance().getTile(x, y).setTexture("floorB"); //TODO debug
       }
     }
   }
 
   private void disableInvisibleTiles() {
+    HashMap<String, Boolean> floorMap = new HashMap<String, Boolean>();
     for (int x = 0; x < Param.TILE_X; ++x) {
       for (int y = 0; y < Param.TILE_Y; ++y) {
-        if (neighboursAllDirt(x, y)) Sprites.getInstance().getTile(x, y).setVisible(false);
+        getNeighbourFloor(x, y, floorMap);
+        if (!floorMap.containsValue(Boolean.TRUE)) {
+          Sprites.getInstance().getTile(x, y).setVisible(false);
+        }
       }
     }
   }
 
-  private boolean neighboursAllDirt(final int x, final int y) {
+  private void getNeighbourFloor(final int x, final int y, HashMap<String, Boolean> map) {
+    map.clear(); // Should not be needed
     for (int d = 0; d < 8; ++d) {
       int cX = x;
       int cY = y;
+      String id = "";
       switch (d) {
         case 0:
           ++cY;
+          id = "N";
           break;
         case 1:
           ++cX;
+          id = "E";
           break;
         case 2:
           --cY;
+          id = "S";
           break;
         case 3:
           --cX;
+          id = "W";
           break;
         case 4:
           ++cX;
           ++cY;
+          id = "NE";
           break;
         case 5:
           ++cX;
           --cY;
+          id = "SE";
           break;
         case 6:
           --cX;
           ++cY;
+          id = "NW";
           break;
         case 7:
           --cX;
           --cY;
+          id = "SW";
           break;
       }
-      if (cX >= Param.TILE_X || cY >= Param.TILE_Y) continue;
-      if (cX < 0 || cY < 0) continue;
-      if (Sprites.getInstance().getTile(cX, cY).getIsFloor()) return false;
+      if (cX >= Param.TILE_X || cY >= Param.TILE_Y || cX < 0 || cY < 0) map.put(id, Boolean.FALSE);
+      else map.put(id, Sprites.getInstance().getTile(cX, cY).getIsFloor());
     }
-    return true;
+  }
+
+  private void textureWalls() {
+    HashMap<String, Boolean> f = new HashMap<String, Boolean>();
+    for (int x = 0; x < Param.TILE_X; ++x) {
+      for (int y = 0; y < Param.TILE_Y; ++y) {
+        final float rnd = r.nextFloat();
+        Tile t = Sprites.getInstance().getTile(x, y);
+        if (t.getIsFloor() || !t.isVisible()) continue;
+        getNeighbourFloor(x, y, f);
+        // Assign Tiles
+        if (f.get("NE") && !f.get("N") && !f.get("E") && !f.get("S") && !f.get("W")) { // SW OUTER CORNER
+          t.setTexture("wallSW");
+        } else if (f.get("NW") && !f.get("N") && !f.get("E") && !f.get("S") && !f.get("W")) { // SE OUTER CORNER
+          t.setTexture("wallSE");
+        } else if (f.get("SW") && !f.get("N") && !f.get("E") && !f.get("S") && !f.get("W")) { // NW OUTER CORNER
+          t.setTexture("wallNW");
+          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // DOUBLE-TILE
+          ///////////////////
+          ///////////////////
+        } else if (f.get("N") && f.get("NW") && f.get("W") && !f.get("S") && !f.get("E") && !f.get("SW")) { // NW INNER CORNER TO W WALL
+          // Note - we actually set the tile BELOW us
+          Sprites.getInstance().getTile(x, y-1).setTexture("wallInnerNWConnectW"); // DOUBLE-TILE
+          t.setVisible(false); // set ME invisible
+        } else if (f.get("N") && f.get("NW") && f.get("W") && !f.get("S") && !f.get("E")) { // NW INNER CORNER
+          // Note - we actually set the tile BELOW us
+          Sprites.getInstance().getTile(x, y-1).setTexture("wallInnerNW"); // DOUBLE-TILE
+          t.setVisible(false); // set ME invisible
+        } else if (f.get("N") && f.get("NE") && f.get("E") && !f.get("S") && !f.get("W") && !f.get("SE")) { // NE INNER CORNER TO E WALL
+          // Note - we actually set the tile BELOW us
+          Sprites.getInstance().getTile(x, y-1).setTexture("wallInnerNEConnectE"); // DOUBLE-TILE
+          t.setVisible(false); // set ME invisible
+        } else if (f.get("N") && f.get("NE") && f.get("E") && !f.get("S") && !f.get("W")) { // NE INNER CORNER
+          // Note - we actually set the tile BELOW us
+          Sprites.getInstance().getTile(x, y-1).setTexture("wallInnerNE"); // DOUBLE-TILE
+          t.setVisible(false); // set ME invisible
+        } else if (f.get("W") && f.get("SW") && f.get("S") && !f.get("N") && !f.get("E") && !f.get("NW")) { // SW INNER CORNER TO W WALL
+          t.setTexture("wallInnerSWConnectW");
+          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // TRIPLE-TILE
+          Sprites.getInstance().getTile(x, y + 2).setVisible(false); // TRIPLE-TILE
+        } else if (f.get("W") && f.get("SW") && f.get("S") && !f.get("N") && !f.get("E")) { // SW INNER CORNER
+          t.setTexture("wallInnerSW");
+          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // DOUBLE-TILE
+        } else if (f.get("E") && f.get("SE") && f.get("S") && !f.get("N") && !f.get("W") && !f.get("NE")) { // SE INNER CORNER TO E WALL
+          t.setTexture("wallInnerSEConnectE");
+          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // TRIPLE-TILE
+          Sprites.getInstance().getTile(x, y + 2).setVisible(false); // TRIPLE-TILE
+        } else if (f.get("E") && f.get("SE") && f.get("S") && !f.get("N") && !f.get("W")) { // SE INNER CORNER
+          t.setTexture("wallInnerSE");
+          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // DOUBLE-TILE
+        } else if (f.get("SE") && !f.get("N") && !f.get("E") && !f.get("S") && !f.get("W")) { // NW OUTER CORNER
+          t.setTexture("wallNE");
+          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
+          ///////////////////
+          ///////////////////
+        } else if (f.get("E") && !f.get("N") && !f.get("S")) { // WEST WALL
+          if (rnd < .8f) t.setTexture("wallWA");
+          else if (rnd < .9f) t.setTexture("wallWB");
+          else t.setTexture("wallWC");
+        } else if (f.get("W") && !f.get("N") && !f.get("S")) { // EAST WALL
+          if (rnd < .8f) t.setTexture("wallEA");
+          else if (rnd < .9f) t.setTexture("wallEB");
+          else t.setTexture("wallEC");
+        } else if (f.get("N") && !f.get("E") && !f.get("W")) { // SOUTH WALL
+          t.setTexture("wallS");
+        } else if (f.get("S") && !f.get("E") && !f.get("W")) { // NORTH WALL
+          if (rnd < .8f) t.setTexture("wallNA");
+          else t.setTexture("wallNB");
+          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
+        } else {
+          Gdx.app.error("WorldGen","Painting error at " + x + "," + y);
+        }
+      }
+    }
+
   }
 
 }
