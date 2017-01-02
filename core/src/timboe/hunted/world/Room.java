@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Rectangle;
+import org.w3c.dom.css.Rect;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 
@@ -12,11 +13,12 @@ import java.util.*;
 /**
  * Created by Tim on 30/12/2016.
  */
-public class Room extends Rectangle{
+public class Room extends Rectangle {
 
   public enum CorridorDirection {VERTICAL, HORIZONTAL, NONE}
 
   private CorridorDirection corridorDirection = CorridorDirection.NONE;
+  public Rectangle corridorProjection = null; // One box wide, down the centre of the corridor, projected out
   private HashMap<Room, Room> linksTo = new HashMap<Room, Room>();
   private float scent = 0f;
   private float connections = 0f;
@@ -31,6 +33,12 @@ public class Room extends Rectangle{
     a.setLinksTo(this, b);
     b.setLinksTo(this, a);
     corridorDirection = d;
+    if (d == CorridorDirection.VERTICAL) {
+      corridorProjection = new Rectangle(x + Param.CORRIDOR_SIZE/2, 0, 1, Param.TILE_Y );
+    } else {
+      corridorProjection = new Rectangle(0, y + Param.CORRIDOR_SIZE/2, Param.TILE_X, 1 );
+    }
+
   }
 
   public boolean getIsCorridor() {

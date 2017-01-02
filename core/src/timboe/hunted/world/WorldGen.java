@@ -27,6 +27,8 @@ public class WorldGen {
   private HashSet<Room> allRooms;
   private Random r;
 
+  private Room nearestCentre;
+
   private final int ROOM_PLACE_TRIES = 2000;
   public final int ROOM_MEAN_SIZE = 15;
   private final int ROOM_STD_D = 5;
@@ -74,11 +76,12 @@ public class WorldGen {
       return false;
     }
     addRoomsToTileMap();
-    disableInvisibleTiles();
+    Sprites.getInstance().disableInvisibleTiles();
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
-    textureWalls();
     success &= placeBigBad();
+    success &= placeEntrance();
+    Sprites.getInstance().textureWalls();
     return success;
   }
 
@@ -125,7 +128,7 @@ public class WorldGen {
 
   private boolean placeBigBad() {
     // Find the room nearest the centre
-    Room nearest = null;
+    nearestCentre = null;
     float minDist = 9999f;
     final Vector2 target = new Vector2(Param.TILE_X/2, Param.TILE_Y/2);
     for (Room room : rooms) {
@@ -133,13 +136,18 @@ public class WorldGen {
       dist.sub(target);
       if (dist.len() < minDist) {
         minDist = dist.len();
-        nearest = room;
+        nearestCentre = room;
       }
     }
-    if (nearest == null) return false;
+    if (nearestCentre == null) return false;
     // Place baddy
-    Sprites.getInstance().getBigBad().setPhysicsPosition(Math.round(nearest.x + nearest.width/2), Math.round(nearest.y + nearest.height/2));
-    Sprites.getInstance().getPlayer().setPhysicsPosition(nearest.x + 1, nearest.y + 1);
+    Sprites.getInstance().getBigBad().setPhysicsPosition(Math.round(nearestCentre.x + nearestCentre.width/2), Math.round(nearestCentre.y + nearestCentre.height/2));
+    Sprites.getInstance().getPlayer().setPhysicsPosition(nearestCentre.x + 1, nearestCentre.y + 1);
+    return true;
+  }
+
+  private boolean placeEntrance() {
+
     return true;
   }
 
@@ -264,162 +272,11 @@ public class WorldGen {
     }
   }
 
-  private void disableInvisibleTiles() {
-    HashMap<String, Boolean> floorMap = new HashMap<String, Boolean>();
-    for (int x = 0; x < Param.TILE_X; ++x) {
-      for (int y = 0; y < Param.TILE_Y; ++y) {
-        getNeighbourFloor(x, y, floorMap);
-        if (!floorMap.containsValue(Boolean.TRUE)) {
-          Sprites.getInstance().getTile(x, y).setVisible(false);
-        }
-      }
-    }
-  }
 
-  private void getNeighbourFloor(final int x, final int y, HashMap<String, Boolean> map) {
-    map.clear(); // Should not be needed
-    for (int d = 0; d < 8; ++d) {
-      int cX = x;
-      int cY = y;
-      String id = "";
-      switch (d) {
-        case 0:
-          ++cY;
-          id = "N";
-          break;
-        case 1:
-          ++cX;
-          id = "E";
-          break;
-        case 2:
-          --cY;
-          id = "S";
-          break;
-        case 3:
-          --cX;
-          id = "W";
-          break;
-        case 4:
-          ++cX;
-          ++cY;
-          id = "NE";
-          break;
-        case 5:
-          ++cX;
-          --cY;
-          id = "SE";
-          break;
-        case 6:
-          --cX;
-          ++cY;
-          id = "NW";
-          break;
-        case 7:
-          --cX;
-          --cY;
-          id = "SW";
-          break;
-      }
-      if (cX >= Param.TILE_X || cY >= Param.TILE_Y || cX < 0 || cY < 0) map.put(id, Boolean.FALSE);
-      else map.put(id, Sprites.getInstance().getTile(cX, cY).getIsFloor());
-    }
-  }
 
-  private void textureWalls() {
-    HashMap<String, Boolean> f = new HashMap<String, Boolean>();
-    for (int x = 0; x < Param.TILE_X; ++x) {
-      for (int y = 0; y < Param.TILE_Y; ++y) {
-        final float rnd = r.nextFloat();
-        boolean torch = Utility.prob(Param.TORCH_CHANCE);
-        Tile t = Sprites.getInstance().getTile(x, y);
-        if (t.getIsFloor() || !t.isVisible()) continue;
-        getNeighbourFloor(x, y, f);
-        // Assign Tiles
-        if (f.get("NE") && !f.get("N") && !f.get("E") && !f.get("S") && !f.get("W")) { // SW OUTER CORNER
-          t.setTexture("wallSW");
-        } else if (f.get("NW") && !f.get("N") && !f.get("E") && !f.get("S") && !f.get("W")) { // SE OUTER CORNER
-          t.setTexture("wallSE");
-        } else if (f.get("SW") && !f.get("N") && !f.get("E") && !f.get("S") && !f.get("W")) { // NW OUTER CORNER
-          t.setTexture("wallNW");
-          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // DOUBLE-TILE
-          ///////////////////
-          ///////////////////
-        } else if (f.get("N") && f.get("NW") && f.get("W") && !f.get("S") && !f.get("E") && !f.get("SW")) { // NW INNER CORNER TO W WALL
-          // Note - we actually set the tile BELOW us
-          Sprites.getInstance().getTile(x, y-1).setTexture("wallInnerNWConnectW"); // DOUBLE-TILE
-          t.setVisible(false); // set ME invisible
-        } else if (f.get("N") && f.get("NW") && f.get("W") && !f.get("S") && !f.get("E")) { // NW INNER CORNER
-          // Note - we actually set the tile BELOW us
-          Sprites.getInstance().getTile(x, y-1).setTexture("wallInnerNW"); // DOUBLE-TILE
-          t.setVisible(false); // set ME invisible
-        } else if (f.get("N") && f.get("NE") && f.get("E") && !f.get("S") && !f.get("W") && !f.get("SE")) { // NE INNER CORNER TO E WALL
-          // Note - we actually set the tile BELOW us
-          Sprites.getInstance().getTile(x, y-1).setTexture("wallInnerNEConnectE"); // DOUBLE-TILE
-          t.setVisible(false); // set ME invisible
-        } else if (f.get("N") && f.get("NE") && f.get("E") && !f.get("S") && !f.get("W")) { // NE INNER CORNER
-          // Note - we actually set the tile BELOW us
-          Sprites.getInstance().getTile(x, y-1).setTexture("wallInnerNE"); // DOUBLE-TILE
-          t.setVisible(false); // set ME invisible
-        } else if (f.get("W") && f.get("SW") && f.get("S") && !f.get("N") && !f.get("E") && !f.get("NW")) { // SW INNER CORNER TO W WALL
-          t.setTexture("wallInnerSWConnectW");
-          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // TRIPLE-TILE
-          Sprites.getInstance().getTile(x, y + 2).setVisible(false); // TRIPLE-TILE
-        } else if (f.get("W") && f.get("SW") && f.get("S") && !f.get("N") && !f.get("E")) { // SW INNER CORNER
-          t.setTexture("wallInnerSW");
-          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // DOUBLE-TILE
-        } else if (f.get("E") && f.get("SE") && f.get("S") && !f.get("N") && !f.get("W") && !f.get("NE")) { // SE INNER CORNER TO E WALL
-          t.setTexture("wallInnerSEConnectE");
-          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // TRIPLE-TILE
-          Sprites.getInstance().getTile(x, y + 2).setVisible(false); // TRIPLE-TILE
-        } else if (f.get("E") && f.get("SE") && f.get("S") && !f.get("N") && !f.get("W")) { // SE INNER CORNER
-          t.setTexture("wallInnerSE");
-          Sprites.getInstance().getTile(x, y + 1).setVisible(false); // DOUBLE-TILE
-        } else if (f.get("SE") && !f.get("N") && !f.get("E") && !f.get("S") && !f.get("W")) { // NW OUTER CORNER
-          t.setTexture("wallNE");
-          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          ///////////////////
-          ///////////////////
-        } else if (torch && y%Param.TORCH_SPACING==0 && f.get("E") && !f.get("N") && !f.get("S") && f.get("NE") // WEST TORCH
-          && (y+3 >= Param.TILE_Y || Sprites.getInstance().getTile(x,y+3).getIsFloor() == false) ) { //TODO horrid condition
-          t.setTexture("wallWTorch");
-          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .9f, y + 1.2f, .6f);
-        } else if (torch && y%Param.TORCH_SPACING==0 && f.get("W") && !f.get("N") && !f.get("S") && f.get("NW") // EAST TORCH
-          && (y+3 >= Param.TILE_Y || Sprites.getInstance().getTile(x,y+3).getIsFloor() == false) ) { //TODO horrid condition
-          t.setTexture("wallETorch");
-          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .1f, y + 1.2f, .6f);
-        } else if (torch && x%Param.TORCH_SPACING==0 && f.get("N") && !f.get("E") && !f.get("W")) { // SOUTH TORCH
-          t.setTexture("wallSTorch");
-          Physics.getInstance().addTorch(x + .5f, y + .9f, .6f);
-        } else if (torch && x%Param.TORCH_SPACING==0 && f.get("S") && !f.get("E") && !f.get("W")) { // NORTH TORCH
-          if (rnd < .5f) t.setTexture("wallNTorchA");
-          else t.setTexture("wallNTorchB");
-          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .5f, y + .1f, .6f);
-          ///////////////////
-          ///////////////////
-        } else if (f.get("E") && !f.get("N") && !f.get("S")) { // WEST WALL
-          if (rnd < .8f) t.setTexture("wallWA");
-          else if (rnd < .9f) t.setTexture("wallWB");
-          else t.setTexture("wallWC");
-        } else if (f.get("W") && !f.get("N") && !f.get("S")) { // EAST WALL
-          if (rnd < .8f) t.setTexture("wallEA");
-          else if (rnd < .9f) t.setTexture("wallEB");
-          else t.setTexture("wallEC");
-        } else if (f.get("N") && !f.get("E") && !f.get("W")) { // SOUTH WALL
-          t.setTexture("wallS");
-        } else if (f.get("S") && !f.get("E") && !f.get("W")) { // NORTH WALL
-          if (rnd < .8f) t.setTexture("wallNA");
-          else t.setTexture("wallNB");
-          Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-        } else {
-          Gdx.app.error("WorldGen","Painting error at " + x + "," + y);
-        }
-      }
-    }
 
-  }
+
+
 
 }
 
