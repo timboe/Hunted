@@ -1,13 +1,11 @@
 package timboe.hunted.entity;
 
 import box2dLight.PointLight;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import sun.nio.cs.ext.MacHebrew;
 import timboe.hunted.Param;
 import timboe.hunted.render.Sprites;
 import timboe.hunted.render.Textures;
@@ -27,11 +25,17 @@ public class EntityBase extends Actor {
   private boolean moving = false;
   protected PointLight torch = null;
 
+  private final short PLAYER_ENTITY = 0x1;    // 0001
+  private final short BIGBAD_ENTITY = 0x1 << 1; // 0010
+  private final short WORLD_ENTITY = 0x1 << 2; // 0100
+
 
   public EntityBase(int x, int y) {
     worldBox = new Rectangle(x, y,1f,1f);
     setBounds(x * Param.TILE_SIZE, y * Param.TILE_SIZE, Param.TILE_SIZE, Param.TILE_SIZE);
   }
+
+  public Body getBody() { return body; }
 
   public void setTexture(String name) {
     textureRegion = Textures.getInstance().getTexture(name);
@@ -65,6 +69,8 @@ public class EntityBase extends Actor {
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = boxShape;
     fixtureDef.density = 1f;
+    fixtureDef.filter.categoryBits = WORLD_ENTITY; // I am a
+    fixtureDef.filter.maskBits = PLAYER_ENTITY; // I collide with
     body.createFixture(fixtureDef);
 
     boxShape.dispose();
@@ -86,8 +92,41 @@ public class EntityBase extends Actor {
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
     fixtureDef.density = 1f;
+    fixtureDef.filter.categoryBits = PLAYER_ENTITY; // I am a
+    fixtureDef.filter.maskBits = WORLD_ENTITY; // I collide with
+    if (this instanceof BigBad) {
+      fixtureDef.filter.categoryBits = BIGBAD_ENTITY; // I am a
+      fixtureDef.filter.maskBits = 0; // I collide with
+    }
     body.createFixture(fixtureDef);
     circleShape.dispose();
+  }
+
+  public void setAsTorchBody(float x, float y, float r) {
+    BodyDef bodyDef = new BodyDef();
+    bodyDef.type = BodyDef.BodyType.StaticBody;
+    bodyDef.position.set(x, y);
+    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+    body.setUserData(this);
+    CircleShape circleShape = new CircleShape();
+    circleShape.setRadius(r);
+    FixtureDef fixtureDef = new FixtureDef();
+    fixtureDef.shape = circleShape;
+    fixtureDef.filter.categoryBits = WORLD_ENTITY; // I am a
+    fixtureDef.filter.maskBits = PLAYER_ENTITY; // I collide with
+    fixtureDef.isSensor = true;
+    body.createFixture(fixtureDef);
+    circleShape.dispose();
+  }
+
+  public void addTorchToEntity(boolean ignoreSelf, float offX, float offY) {
+    torch = new PointLight(Physics.getInstance().rayHandler,
+      Param.RAYS,
+      Param.FLAME,
+      Param.PLAYER_TORCH_STRENGTH,
+      0f, 0f);
+    torch.attachToBody(body, offX, offY);
+    torch.setIgnoreAttachedBody(ignoreSelf);
   }
 
   public void setMoving(boolean m) {

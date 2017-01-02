@@ -18,13 +18,7 @@ public class Player extends EntityBase {
     setTexture("playerE");
     speed = Param.PLAYER_SPEED;
     setAsPlayerBody(0.5f, 0.25f);
-    torch = new PointLight(Physics.getInstance().rayHandler,
-      Param.RAYS,
-      Param.FLAME,
-      Param.PLAYER_TORCH_STRENGTH,
-      0f, 0f);
-    torch.attachToBody(body, 0f, 0.25f);
-    torch.setIgnoreAttachedBody(true);
+    addTorchToEntity(true,0f, 0.25f);
   }
 
   public void updatePhysics() {

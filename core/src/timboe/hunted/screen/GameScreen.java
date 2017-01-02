@@ -54,6 +54,7 @@ public class GameScreen extends HuntedRender {
       room.updatePhysics();
     }
 
+
 //    float cameraX = Math.max( Sprites.getInstance().getPlayer().getX(), Gdx.graphics.getWidth()/2 );
 //    cameraX = Math.min( cameraX, (HuntedGame.TILE_X * HuntedGame.TILE_SIZE) - (Gdx.graphics.getWidth()/2) );
 //    float cameraY = Math.max( Sprites.getInstance().getPlayer().getY(), Gdx.graphics.getHeight()/2 );

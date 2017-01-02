@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Rectangle;
 import timboe.hunted.Param;
+import timboe.hunted.Utility;
 
 import java.util.*;
 
@@ -16,15 +17,12 @@ public class Room extends Rectangle{
   public enum CorridorDirection {VERTICAL, HORIZONTAL, NONE}
 
   private CorridorDirection corridorDirection = CorridorDirection.NONE;
-  private HashMap<Room, Room> linksTo;
+  private HashMap<Room, Room> linksTo = new HashMap<Room, Room>();
   private float scent = 0f;
   private float connections = 0f;
-  private Random r;
 
   Room(float x, float y, float w, float h) {
     super(x,y,w,h);
-    r = new Random();
-    linksTo = new HashMap<Room, Room>();
   }
 
   public void setCorridor(CorridorDirection d, Room a, Room b) {
@@ -107,7 +105,7 @@ public class Room extends Rectangle{
     }
     if (choices.size() == 0) choices.putAll(linksTo); // No un-visited so random choice between all
     List<Room> keys = new ArrayList<Room>(choices.keySet()); // Round-about way of choosing a random entry
-    Room chosen = keys.get(r.nextInt(keys.size()));
+    Room chosen = keys.get(Utility.r.nextInt(keys.size()));
     for (HashMap.Entry<Room,Room> entry : choices.entrySet()) {
       if (entry.getKey() == chosen) {
         return entry;

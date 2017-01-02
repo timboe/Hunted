@@ -29,7 +29,6 @@ public class Tile extends EntityBase {
     setTexture("pitC");
   }
 
-
   public void setIsFloor(Room room) {
     isFloor = true;
     myRoom = room;

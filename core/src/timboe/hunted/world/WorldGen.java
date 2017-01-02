@@ -75,9 +75,9 @@ public class WorldGen {
     }
     addRoomsToTileMap();
     disableInvisibleTiles();
-    textureWalls();
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
+    textureWalls();
     success &= placeBigBad();
     return success;
   }
@@ -250,18 +250,16 @@ public class WorldGen {
   }
 
   private void addRoomsToTileMap() {
-    for (Room room : allRooms) addRoomToTileMap(room);
-  }
-
-  private void addRoomToTileMap(Room room) {
-    for (int x = (int) room.x; x < (int) room.x + (int) room.width; ++x) {
-      for (int y = (int) room.y; y < (int) room.y + (int) room.height; ++y) {
-        if (x >= Param.TILE_X || y >= Param.TILE_Y) {
-          Gdx.app.error("coord", "Invalid coordinate in [" + this + "] (" + x + "," + y + ")");
-          continue;
+    for (Room room : allRooms) {
+      for (int x = (int) room.x; x < (int) room.x + (int) room.width; ++x) {
+        for (int y = (int) room.y; y < (int) room.y + (int) room.height; ++y) {
+          if (x >= Param.TILE_X || y >= Param.TILE_Y) {
+            Gdx.app.error("coord", "Invalid coordinate in [" + this + "] (" + x + "," + y + ")");
+            continue;
+          }
+          Sprites.getInstance().getTile(x, y).setIsFloor(room);
+          if (room.getIsCorridor()) Sprites.getInstance().getTile(x, y).setTexture("floorZ"); //TODO debug
         }
-        Sprites.getInstance().getTile(x, y).setIsFloor(room);
-        if (room.getIsCorridor()) Sprites.getInstance().getTile(x, y).setTexture("floorZ"); //TODO debug
       }
     }
   }
@@ -385,16 +383,20 @@ public class WorldGen {
           && (y+3 >= Param.TILE_Y || Sprites.getInstance().getTile(x,y+3).getIsFloor() == false) ) { //TODO horrid condition
           t.setTexture("wallWTorch");
           Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
+          Physics.getInstance().addTorch(x + .9f, y + 1.2f, .6f);
         } else if (torch && y%Param.TORCH_SPACING==0 && f.get("W") && !f.get("N") && !f.get("S") && f.get("NW") // EAST TORCH
           && (y+3 >= Param.TILE_Y || Sprites.getInstance().getTile(x,y+3).getIsFloor() == false) ) { //TODO horrid condition
           t.setTexture("wallETorch");
           Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
+          Physics.getInstance().addTorch(x + .1f, y + 1.2f, .6f);
         } else if (torch && x%Param.TORCH_SPACING==0 && f.get("N") && !f.get("E") && !f.get("W")) { // SOUTH TORCH
           t.setTexture("wallSTorch");
+          Physics.getInstance().addTorch(x + .5f, y + .9f, .6f);
         } else if (torch && x%Param.TORCH_SPACING==0 && f.get("S") && !f.get("E") && !f.get("W")) { // NORTH TORCH
           if (rnd < .5f) t.setTexture("wallNTorchA");
           else t.setTexture("wallNTorchB");
           Sprites.getInstance().getTile(x, y+1).setVisible(false); // DOUBLE-TILE
+          Physics.getInstance().addTorch(x + .5f, y + .1f, .6f);
           ///////////////////
           ///////////////////
         } else if (f.get("E") && !f.get("N") && !f.get("S")) { // WEST WALL

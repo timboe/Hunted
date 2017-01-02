@@ -52,16 +52,18 @@ public class Sprites {
     }
   }
 
-  private boolean canIncludeInRigidBody(Tile t) {
-    return (t.getIsFloor() == false && t.getHasPhysics() == false);
+  // TODO don't need isVisible here but it helps with the lighting
+  private boolean canIncludeInRigidBody(Tile t, boolean incInvisible) {
+    if (incInvisible) return (!t.getIsFloor() && !t.getHasPhysics());
+    else return (t.isVisible() && !t.getIsFloor() && !t.getHasPhysics());
   }
 
-  private Vector2 expandRigidBody(final int x, final int y) {
+  private Vector2 expandRigidBody(final int x, final int y, boolean incInvisible) {
     Vector2 size = new Vector2(1,1);
     int xNew = x + 1;
     while (xNew < Param.TILE_X) {
       Tile t = getTile(xNew, y);
-      if (canIncludeInRigidBody(t)) {
+      if (canIncludeInRigidBody(t, incInvisible)) {
         size.x += 1;
         ++xNew;
       } else {
@@ -73,7 +75,7 @@ public class Sprites {
       boolean canExpand = true;
       for (int cX = x; cX < x + size.x; ++cX) {
         Tile t = getTile(cX, yNew);
-        if (canIncludeInRigidBody(t) == false) canExpand = false;
+        if (canIncludeInRigidBody(t, incInvisible) == false) canExpand = false;
       }
       if (canExpand) {
         size.y += 1;
@@ -85,19 +87,24 @@ public class Sprites {
     return size;
   }
 
-  public void addTileRigidBodies() {
+    public void addTileRigidBodies() {
+      addTileRigidBodies(false);
+      addTileRigidBodies(true);
+    }
+
+    public void addTileRigidBodies(boolean incInvisible) {
     int count = 0;
     for (int x = 0; x < Param.TILE_X; ++x) {
       for (int y = 0; y < Param.TILE_Y; ++y) {
         Tile t = getTile(x, y); // Find a solid tile
-        if (canIncludeInRigidBody(t)) {
-          Vector2 size = expandRigidBody(x, y);
+        if (canIncludeInRigidBody(t, incInvisible)) {
+          Vector2 size = expandRigidBody(x, y, incInvisible);
           t.setAsPhysicsBody(size.x, size.y);
           ++count;
         }
       }
     }
-    Gdx.app.log("WorldGen", "required " + count + " rigid bodies");
+    Gdx.app.log("WorldGen", "Invisible="+incInvisible+"required " + count + " rigid bodies");
   }
 
   public Player getPlayer() {
