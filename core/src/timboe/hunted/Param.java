@@ -11,7 +11,7 @@ public class Param {
   public static final int TILE_Y = 128;
 
   public static final int RAYS = 256;
-  public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, 1f);
+  public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, .7f);
   public static final Color FLAME = new Color(.1f, .1f, .1f, .5f);
   public static final int PLAYER_TORCH_STRENGTH = 25;
   public static final int WALL_TORCH_STRENGTH = PLAYER_TORCH_STRENGTH/2;
@@ -36,5 +36,6 @@ public class Param {
   public static final short PLAYER_ENTITY = 0x1;    // 0001
   public static final short BIGBAD_ENTITY = 0x1 << 1; // 0010
   public static final short WORLD_ENTITY = 0x1 << 2; // 0100
+  public static final short TORCH_ENTITY = 0x1 << 3; // 1000
 
 }

@@ -20,7 +20,7 @@ public class Torch extends EntityBase {
     if (isOn) return;
     isOn = true;
     Gdx.app.log("Torch", "Turning on " + this);
-    addTorchToEntity(true, false, false, Param.FLAME, 0f, 0f);
+    addTorchToEntity(true, false, false, 90f, Param.FLAME, 0f, 0f);
   }
 
 }

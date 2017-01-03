@@ -27,6 +27,7 @@ public class Physics {
   Color ambientLightMod = Param.AMBIENT_LIGHT.cpy();
 
   private CollisionHandle collisionHandle = null;
+  private boolean resetLights = false;
 
   private Physics() {
   }
@@ -49,17 +50,30 @@ public class Physics {
     }
 
     // Check if torches need dimming
+    // TODO fading here
     float distance = Sprites.getInstance().getPlayer().distanceFromBigBad.len();
-    if (distance <= Param.WALL_TORCH_STRENGTH) {
-      for (Torch t : torches) {
-        if (!t.isOn) continue;
-        t.torchLight.setDistance(distance);
-      }
-    }
-    if (distance <= Param.PLAYER_TORCH_STRENGTH) {
-      Sprites.getInstance().getPlayer().torchLight.setDistance(distance);
+    boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
+    if (canSeePlayer && distance <= Param.PLAYER_TORCH_STRENGTH) {
+      float reductionPercent = distance / (float)Param.PLAYER_TORCH_STRENGTH;
+      //reductionPercent = (float)Math.min(reductionPercent - (1. - reductionPercent), 0f);
+      Sprites.getInstance().getPlayer().torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH * reductionPercent);
+      Sprites.getInstance().getBigBad().torchLight.setDistance(Math.min(Param.PLAYER_TORCH_STRENGTH * reductionPercent + 5f, Param.PLAYER_TORCH_STRENGTH));
       ambientLightMod.a = Param.AMBIENT_LIGHT.a * (distance / (float)Param.PLAYER_TORCH_STRENGTH);
       rayHandler.setAmbientLight(ambientLightMod);
+      for (Torch t : torches) {
+        if (!t.isOn) continue;
+        t.torchLight.setDistance(Param.WALL_TORCH_STRENGTH * reductionPercent);
+      }
+      resetLights = true;
+    } else if (resetLights) {
+      Sprites.getInstance().getPlayer().torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH);
+      Sprites.getInstance().getBigBad().torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH);
+      rayHandler.setAmbientLight(Param.AMBIENT_LIGHT);
+      for (Torch t : torches) {
+        if (!t.isOn) continue;
+        t.torchLight.setDistance(Param.WALL_TORCH_STRENGTH);
+      }
+      resetLights = false;
     }
 
   }

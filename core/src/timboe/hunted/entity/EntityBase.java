@@ -132,14 +132,14 @@ public class EntityBase extends Actor {
     circleShape.setRadius(r);
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
-    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
+    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY | Param.TORCH_ENTITY; // I am a
     fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
     fixtureDef.isSensor = true;
     body.createFixture(fixtureDef);
     circleShape.dispose();
   }
 
-  public void addTorchToEntity(boolean ignoreSelf, boolean staticL, boolean point, Color c, float offX, float offY) {
+  public void addTorchToEntity(boolean ignoreSelf, boolean staticL, boolean point, float range, Color c, float offX, float offY) {
     if (point) {
       torchLight = new PointLight(Physics.getInstance().rayHandler,
         Param.RAYS,
@@ -151,7 +151,7 @@ public class EntityBase extends Actor {
         Param.RAYS,
         c,
         Param.WALL_TORCH_STRENGTH,
-        0f, 0f, body.getAngle(), 90f);
+        0f, 0f, body.getAngle(), range);
     }
     torchLight.attachToBody(body, offX, offY);
     torchLight.setStaticLight(staticL);

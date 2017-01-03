@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.render.Sprites;
@@ -26,7 +25,7 @@ public class BigBad extends EntityBase {
 
   RayCastCallback raycastCallback = null;
   private float raycastMin = 1f;
-  private boolean canSeePlayer;
+  public boolean canSeePlayer;
 
   public BigBad() {
     super(0,0);
@@ -35,11 +34,12 @@ public class BigBad extends EntityBase {
     roomsVisited = new HashSet<Room>();
     setTexture("playerC");
     setAsPlayerBody(0.5f, 0.25f);
-    addTorchToEntity(true, false, true, Param.EVIL_FLAME, 0f, 0.25f);
+    addTorchToEntity(true, false, false, 45f, Param.EVIL_FLAME, 0f, 0.25f);
     movementTargets = new Vector<Vector2>();
     raycastCallback = new RayCastCallback() {
       @Override
       public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+        if ((fixture.getFilterData().categoryBits & Param.TORCH_ENTITY) > 0) return 1;
         if (fraction < Sprites.getInstance().getBigBad().raycastMin) {
           Sprites.getInstance().getBigBad().canSeePlayer = (fixture.getFilterData().categoryBits == Param.PLAYER_ENTITY);
           raycastMin = fraction;

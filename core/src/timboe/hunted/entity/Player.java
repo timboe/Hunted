@@ -22,7 +22,7 @@ public class Player extends EntityBase {
     setTexture("playerE");
     speed = Param.PLAYER_SPEED;
     setAsPlayerBody(0.5f, 0.25f);
-    addTorchToEntity(true, false, true, Param.FLAME, 0f, 0.25f);
+    addTorchToEntity(true, false, true, 0f, Param.FLAME, 0f, 0.25f);
   }
 
   public void updatePhysics() {

@@ -28,6 +28,7 @@ public class WorldGen {
 
   private Room nearestCentre;
   private Room entryRoom;
+  private Vector<Room> keyRooms;
 
   private final int ROOM_PLACE_TRIES = 2000;
   public final int ROOM_MEAN_SIZE = 15;
@@ -42,6 +43,7 @@ public class WorldGen {
     rooms = new Vector<Room>();
     corridors = new Vector<Room>();
     allRooms = new Vector<Room>();
+    keyRooms = new Vector<Room>();
   }
 
   public Vector<Room> getRooms() { return rooms; }
@@ -81,6 +83,7 @@ public class WorldGen {
     Sprites.getInstance().addTileRigidBodies();
     success &= placeBigBad();
     success &= placeEntrance();
+    success &= placeKeyRooms();
     Sprites.getInstance().textureWalls();
     return success;
   }
@@ -89,6 +92,9 @@ public class WorldGen {
     rooms.clear();
     corridors.clear();
     allRooms.clear();
+    keyRooms.clear();
+    entryRoom = null;
+    nearestCentre = null;
     Physics.getInstance().reset();
     Sprites.getInstance().reset();
   }
@@ -179,6 +185,38 @@ public class WorldGen {
     t.setTexture("entry",5);
     Sprites.getInstance().entry = t;
     Sprites.getInstance().addToStage(t);
+    return true;
+  }
+
+  public boolean placeKeyRooms() {
+    final int exclusionDist = Math.min(Param.TILE_X, Param.TILE_Y) / 2;
+    keyRooms.add(entryRoom);
+    int attempt = 0;
+    do {
+      Room room = rooms.get( Utility.r.nextInt(rooms.size()) );
+      if (room.getConnectedRooms().size() > 2) continue; // Room can have at most two connections
+      if (room.width < 9 || room.height < 7) continue; // Room has to be large enough
+      Vector2 roomPos = new Vector2();
+      roomPos = room.getPosition(roomPos);
+      boolean vetoed = false;
+      for (Room testRoom : keyRooms) {
+        Vector2 testPos = new Vector2();
+        testPos = testRoom.getPosition(testPos);
+        if (roomPos.dst(testPos) < exclusionDist) {
+          vetoed = true;
+          break;
+        }
+      }
+      if (!vetoed) {
+        keyRooms.add(room);
+      }
+    } while (keyRooms.size() != 4 && ++attempt < ROOM_PLACE_TRIES);
+    keyRooms.remove(entryRoom);
+    // Do we have three rooms?
+    if (keyRooms.size() != 3) {
+      Gdx.app.log("WorldGen","Unable to place three key rooms, only managed " + keyRooms.size());
+      return false;
+    }
     return true;
   }
 
