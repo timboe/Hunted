@@ -76,7 +76,7 @@ public class GameScreen extends HuntedRender {
     debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
     debugSpriteBatch.begin();
     for (Room room : WorldGen.getInstance().getAllRooms()) {
-      debugFont.draw(debugSpriteBatch, Float.toString(room.getScent()*100f), room.getX()*Param.TILE_SIZE, room.getY()*Param.TILE_SIZE);
+      debugFont.draw(debugSpriteBatch, Float.toString(room.getScent()*100f) + "|" + Integer.toString(room.getConnectedRooms().size()) + (room.getIsCorridor() ? "|C" : "|R"), room.getX()*Param.TILE_SIZE, room.getY()*Param.TILE_SIZE);
     }
     debugSpriteBatch.end();
 

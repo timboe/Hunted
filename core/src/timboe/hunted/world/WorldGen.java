@@ -23,7 +23,7 @@ public class WorldGen {
 
   private Vector<Room> rooms;
   private Vector<Room> corridors;
-  private HashSet<Room> allRooms;
+  private Vector<Room> allRooms;
   private Random r;
 
   private Room nearestCentre;
@@ -35,20 +35,20 @@ public class WorldGen {
   private final int ROOM_BORDER_X = 2; // minimum spacing between rooms
   private final int ROOM_BORDER_Y = 4;
   private final int CORRIDOR_MAX_LENGTH = 20;
-  private final int CORRIDOR_CHANCE = 90; //%
+  private final int CORRIDOR_CHANCE = 95; //%
 
   private WorldGen() {
     r = new Random();
     rooms = new Vector<Room>();
     corridors = new Vector<Room>();
-    allRooms = new HashSet<Room>();
+    allRooms = new Vector<Room>();
   }
 
   public Vector<Room> getRooms() { return rooms; }
 
   public Vector<Room> getCorridors() { return corridors; }
 
-  public HashSet<Room> getAllRooms() { return allRooms; }
+  public Vector<Room> getAllRooms() { return allRooms; }
 
   public void generateWorld() {
     int tryN = 0;
@@ -72,7 +72,7 @@ public class WorldGen {
     makeCorridors();
     removeUnconnected();
     if (!getAllConnected()) {
-      Gdx.app.log("WorldGen", "Warning - world not fully navigable");
+      Gdx.app.error("WorldGen", "Warning - world not fully navigable");
       return false;
     }
     addRoomsToTileMap();
@@ -140,7 +140,7 @@ public class WorldGen {
       }
     }
     if (nearestCentre == null) {
-      Gdx.app.log("WorldGen","Waning - could not place BigBad");
+      Gdx.app.error("WorldGen","Warning - could not place BigBad");
       return false;
     }
     // Place baddy
@@ -165,7 +165,7 @@ public class WorldGen {
       if (!hasNortherer) entryRoomOptions.add(room);
     }
     if (entryRoomOptions.size() == 0) {
-      Gdx.app.log("WorldGen", "Warning - Could not find a maze entrance");
+      Gdx.app.error("WorldGen", "Warning - Could not find a maze entrance");
       return false;
     }
     entryRoom = entryRoomOptions.elementAt( r.nextInt(entryRoomOptions.size()) );
@@ -195,6 +195,7 @@ public class WorldGen {
     }
     rooms.removeAll(toRemove);
     allRooms.removeAll(toRemove);
+    if (toRemove.size() > 0) Gdx.app.log("WorldGen","Removing " + toRemove.size() + " unconnected rooms.");
   }
 
   private boolean getAllConnected() {
