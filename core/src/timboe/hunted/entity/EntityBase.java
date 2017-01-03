@@ -1,6 +1,9 @@
 package timboe.hunted.entity;
 
+import box2dLight.ConeLight;
 import box2dLight.PointLight;
+import box2dLight.PositionalLight;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,11 +31,8 @@ public class EntityBase extends Actor {
   private float angle = 0;
   protected float speed = 0;
   private boolean moving = false;
-  protected PointLight torch = null;
+  public PositionalLight torchLight = null;
 
-  private final short PLAYER_ENTITY = 0x1;    // 0001
-  private final short BIGBAD_ENTITY = 0x1 << 1; // 0010
-  private final short WORLD_ENTITY = 0x1 << 2; // 0100
 
 
   public EntityBase(int x, int y) {
@@ -80,6 +80,7 @@ public class EntityBase extends Actor {
     bodyDef.type = BodyDef.BodyType.StaticBody;
     bodyDef.position.set(worldBox.x + newWidth2, worldBox.y + newHeight2);
     body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+    body.setUserData(this);
 
     PolygonShape boxShape = new PolygonShape();
     boxShape.setAsBox(newWidth2, newHeight2);
@@ -87,8 +88,8 @@ public class EntityBase extends Actor {
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = boxShape;
     fixtureDef.density = 1f;
-    fixtureDef.filter.categoryBits = WORLD_ENTITY; // I am a
-    fixtureDef.filter.maskBits = PLAYER_ENTITY; // I collide with
+    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
+    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
     body.createFixture(fixtureDef);
 
     boxShape.dispose();
@@ -103,6 +104,7 @@ public class EntityBase extends Actor {
     bodyDef.fixedRotation = true; // No spiny physics
     bodyDef.position.set(worldBox.x + newWidth2, worldBox.y + heightMod - offsetMod);
     body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+    body.setUserData(this);
 
     CircleShape circleShape = new CircleShape();
     circleShape.setRadius(newWidth2);
@@ -110,10 +112,10 @@ public class EntityBase extends Actor {
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
     fixtureDef.density = 1f;
-    fixtureDef.filter.categoryBits = PLAYER_ENTITY; // I am a
-    fixtureDef.filter.maskBits = WORLD_ENTITY; // I collide with
+    fixtureDef.filter.categoryBits = Param.PLAYER_ENTITY; // I am a
+    fixtureDef.filter.maskBits = Param.WORLD_ENTITY; // I collide with
     if (this instanceof BigBad) {
-      fixtureDef.filter.categoryBits = BIGBAD_ENTITY; // I am a
+      fixtureDef.filter.categoryBits = Param.BIGBAD_ENTITY; // I am a
       fixtureDef.filter.maskBits = 0; // I collide with
     }
     body.createFixture(fixtureDef);
@@ -130,21 +132,30 @@ public class EntityBase extends Actor {
     circleShape.setRadius(r);
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
-    fixtureDef.filter.categoryBits = WORLD_ENTITY; // I am a
-    fixtureDef.filter.maskBits = PLAYER_ENTITY; // I collide with
+    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
+    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
     fixtureDef.isSensor = true;
     body.createFixture(fixtureDef);
     circleShape.dispose();
   }
 
-  public void addTorchToEntity(boolean ignoreSelf, float offX, float offY) {
-    torch = new PointLight(Physics.getInstance().rayHandler,
-      Param.RAYS,
-      Param.FLAME,
-      Param.PLAYER_TORCH_STRENGTH,
-      0f, 0f);
-    torch.attachToBody(body, offX, offY);
-    torch.setIgnoreAttachedBody(ignoreSelf);
+  public void addTorchToEntity(boolean ignoreSelf, boolean staticL, boolean point, Color c, float offX, float offY) {
+    if (point) {
+      torchLight = new PointLight(Physics.getInstance().rayHandler,
+        Param.RAYS,
+        c,
+        Param.PLAYER_TORCH_STRENGTH,
+        0f, 0f);
+    } else {
+      torchLight = new ConeLight(Physics.getInstance().rayHandler,
+        Param.RAYS,
+        c,
+        Param.WALL_TORCH_STRENGTH,
+        0f, 0f, body.getAngle(), 90f);
+    }
+    torchLight.attachToBody(body, offX, offY);
+    torchLight.setStaticLight(staticL);
+    torchLight.setIgnoreAttachedBody(ignoreSelf);
   }
 
   public void setMoving(boolean m) {

@@ -43,22 +43,6 @@ public class GameScreen extends HuntedRender {
   protected void updatePhysics() {
 
     stage.act(Gdx.graphics.getDeltaTime());
-    Sprites.getInstance().getPlayer().updatePhysics();
-    Sprites.getInstance().getBigBad().updatePhysics();
-    Physics.getInstance().worldBox2D.step(Gdx.graphics.getDeltaTime(), 6, 2);
-    Physics.getInstance().rayHandler.update();
-    Sprites.getInstance().getPlayer().updatePosition();
-    Sprites.getInstance().getBigBad().updatePosition();
-
-    for (Room room : WorldGen.getInstance().getAllRooms()) {
-      room.updatePhysics();
-    }
-
-
-//    float cameraX = Math.max( Sprites.getInstance().getPlayer().getX(), Gdx.graphics.getWidth()/2 );
-//    cameraX = Math.min( cameraX, (HuntedGame.TILE_X * HuntedGame.TILE_SIZE) - (Gdx.graphics.getWidth()/2) );
-//    float cameraY = Math.max( Sprites.getInstance().getPlayer().getY(), Gdx.graphics.getHeight()/2 );
-//    cameraY = Math.min( cameraY, (HuntedGame.TILE_Y * HuntedGame.TILE_SIZE) - (Gdx.graphics.getHeight()/2) );
 
     float cameraX = Sprites.getInstance().getPlayer().getX();
     float cameraY = Sprites.getInstance().getPlayer().getY();
@@ -76,7 +60,7 @@ public class GameScreen extends HuntedRender {
     debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
     debugSpriteBatch.begin();
     for (Room room : WorldGen.getInstance().getAllRooms()) {
-      debugFont.draw(debugSpriteBatch, Float.toString(room.getScent()*100f) + "|" + Integer.toString(room.getConnectedRooms().size()) + (room.getIsCorridor() ? "|C" : "|R"), room.getX()*Param.TILE_SIZE, room.getY()*Param.TILE_SIZE);
+      debugFont.draw(debugSpriteBatch, Float.toString(room.getScent()*100f), room.getX()*Param.TILE_SIZE, room.getY()*Param.TILE_SIZE);
     }
     debugSpriteBatch.end();
 

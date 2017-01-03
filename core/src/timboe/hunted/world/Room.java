@@ -60,6 +60,7 @@ public class Room extends Rectangle {
 
   public Vector<Room> getCorridors() {
     Vector<Room> v = new Vector<Room>();
+    if (getIsCorridor()) return v; // Corridor has no corridor links
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
       v.add(entry.getKey());
     }
@@ -76,19 +77,19 @@ public class Room extends Rectangle {
 
   public void addToScent(float toAdd) {
     scent = Math.min(scent + toAdd, 1f);
+    for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
+      if (getIsCorridor()) {
+        entry.getValue().scent = Math.min(entry.getValue().scent + toAdd/2f, .975f); // Spread to rooms
+      } else {
+        entry.getKey().scent = Math.min(entry.getKey().scent + toAdd/2f, .975f); // Spread to corridors
+        entry.getValue().scent = Math.min(entry.getValue().scent + toAdd/4f, .95f); // And to rooms
+      }
+    }
   }
 
   public void updatePhysics() {
-    // Spread scent about
-    float toSpread = scent * Param.SMELL_SPREAD;
-    scent -= toSpread;
-    if (scent < 1e-6) scent = 0f;
-    toSpread *= Param.SMELL_DISSAPATE; // Only spread half, other half is gone for good
-    toSpread /= connections;
-    for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
-      if (getIsCorridor()) entry.getValue().addToScent( toSpread ); // Spread to rooms
-      else entry.getKey().addToScent( toSpread ); // Spread to corridors
-    }
+    // Scent dies away
+    scent = Math.max(scent - Param.SMELL_DISSAPATE, 0f);
   }
 
   public float getScent() { return scent; }
@@ -103,7 +104,17 @@ public class Room extends Rectangle {
     return toReturn;
   }
 
-  public HashMap.Entry<Room,Room> getRandomNeighbourRoom(HashSet<Room> roomsVisited) {
+  public HashMap.Entry<Room,Room> getConnectionTo(Room toGetTo) {
+    for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
+      if (entry.getKey() == toGetTo) return entry; // if toGetTo was a corridor
+      else if (entry.getValue() == toGetTo) return entry; // if toGetTo was a room
+    }
+    Gdx.app.log("getConnectionTo","No immediate connection to player room");
+    return null;
+  }
+
+
+    public HashMap.Entry<Room,Room> getRandomNeighbourRoom(HashSet<Room> roomsVisited) {
     // Try and choose a room not visited
     HashMap<Room, Room> choices = new HashMap<Room, Room>();
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {

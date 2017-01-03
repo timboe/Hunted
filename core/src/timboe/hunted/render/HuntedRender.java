@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import timboe.hunted.HuntedGame;
+import timboe.hunted.world.Physics;
 
 /**
  * Created by Tim on 28/12/2016.
@@ -63,6 +64,7 @@ public class HuntedRender  implements Screen, InputProcessor {
 
     renderClear();
     renderBackground();
+    Physics.getInstance().updatePhysics();
     updatePhysics();
 
 //    renderFX(delta);

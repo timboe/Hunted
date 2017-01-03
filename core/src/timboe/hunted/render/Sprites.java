@@ -95,7 +95,7 @@ public class Sprites {
   }
 
     public void addTileRigidBodies() {
-      addTileRigidBodies(false);
+      //addTileRigidBodies(false);
       addTileRigidBodies(true);
     }
 
@@ -233,20 +233,20 @@ public class Sprites {
           && (y+3 >= Param.TILE_Y || !getTile(x,y+3).getIsFloor()) ) { //TODO horrid condition
           t.setTexture("wallWTorch");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .9f, y + 1.2f, .6f);
+          Physics.getInstance().addTorch(x + .5f, y + 1.2f, 1f, 0f);
         } else if (torch && y%Param.TORCH_SPACING==0 && f.get("W") && !f.get("N") && !f.get("S") && f.get("NW") // EAST TORCH
           && (y+3 >= Param.TILE_Y || !getTile(x,y+3).getIsFloor()) ) { //TODO horrid condition
           t.setTexture("wallETorch");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .1f, y + 1.2f, .6f);
+          Physics.getInstance().addTorch(x + .5f, y + 1.2f, 1f, (float)Math.PI);
         } else if (torch && x%Param.TORCH_SPACING==0 && f.get("N") && !f.get("E") && !f.get("W")) { // SOUTH TORCH
           t.setTexture("wallSTorch");
-          Physics.getInstance().addTorch(x + .5f, y + .9f, .6f);
+          Physics.getInstance().addTorch(x + .5f, y + .8f, .7f, (float)Math.PI/2f);
         } else if (torch && x%Param.TORCH_SPACING==0 && f.get("S") && !f.get("E") && !f.get("W")) { // NORTH TORCH
           if (rnd < .5f) t.setTexture("wallNTorchA");
           else t.setTexture("wallNTorchB");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .5f, y + .1f, .6f);
+          Physics.getInstance().addTorch(x + .5f, y + 0.9f, 1.4f, (float)Math.PI*3f/2f);
           ///////////////////
           ///////////////////
         } else if (f.get("E") && !f.get("N") && !f.get("S")) { // WEST WALL

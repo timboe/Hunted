@@ -2,9 +2,13 @@ package timboe.hunted.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
-import timboe.hunted.render.Textures;
+import timboe.hunted.render.Sprites;
+import timboe.hunted.world.Physics;
 import timboe.hunted.world.Room;
 
 import java.util.*;
@@ -20,6 +24,9 @@ public class BigBad extends EntityBase {
   HashSet<Room> roomsVisited;
   Vector2 pathingVector; //TODO this is debug
 
+  RayCastCallback raycastCallback = null;
+  private float raycastMin = 1f;
+  private boolean canSeePlayer;
 
   public BigBad() {
     super(0,0);
@@ -28,7 +35,18 @@ public class BigBad extends EntityBase {
     roomsVisited = new HashSet<Room>();
     setTexture("playerC");
     setAsPlayerBody(0.5f, 0.25f);
+    addTorchToEntity(true, false, true, Param.EVIL_FLAME, 0f, 0.25f);
     movementTargets = new Vector<Vector2>();
+    raycastCallback = new RayCastCallback() {
+      @Override
+      public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+        if (fraction < Sprites.getInstance().getBigBad().raycastMin) {
+          Sprites.getInstance().getBigBad().canSeePlayer = (fixture.getFilterData().categoryBits == Param.PLAYER_ENTITY);
+          raycastMin = fraction;
+        }
+        return 1;
+      }
+    };
   }
 
 //  @Override
@@ -37,7 +55,9 @@ public class BigBad extends EntityBase {
     Tile t = getTileUnderEntity();
     t.setIsWeb();
     roomsVisited.add(t.getTilesRoom());
-//    super.updatePhysics();
+    // Bounce a ray to the player - does it intersect anything else first?
+    raycastMin = 9999f;
+    Physics.getInstance().worldBox2D.rayCast(raycastCallback, body.getPosition(), Sprites.getInstance().getPlayer().getBody().getPosition());
   }
 
   public void runAI() {
@@ -102,8 +122,13 @@ public class BigBad extends EntityBase {
 
   private void chooseDestination() {
     // First try and follow scent trail
-    HashMap.Entry<Room,Room> toGoTo;
-    if ( true || Utility.prob(getRoomUnderEntity().getScent()) ) { // Follow scent
+    float distanceFromPlayer = Sprites.getInstance().getPlayer().distanceFromBigBad.len();
+    Room playerRoom = Sprites.getInstance().getPlayer().getRoomUnderEntity();
+    HashMap.Entry<Room, Room> toGoTo = getRoomUnderEntity().getConnectionTo(playerRoom);
+    // TODO what if same room as player
+    if (canSeePlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE && toGoTo != null) {
+      Gdx.app.log("AI","Got visual on player in neighbouring room/corridor");
+    } else if (Utility.prob(getRoomUnderEntity().getScent()) ) { // Follow scent
       toGoTo = getRoomUnderEntity().getNeighborRoomWithHighestScentTrail();
       Gdx.app.log("AI","Got scent of " + getRoomUnderEntity().getScent()*100 + "% following to " + toGoTo.getValue() + " with scent " + toGoTo.getValue().getScent()*100);
     } else { // Pick random, prefer new rooms

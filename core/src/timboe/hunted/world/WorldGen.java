@@ -212,6 +212,7 @@ public class WorldGen {
         }
       }
     }
+    Gdx.app.log("WorldGen","Connections between " + connectedRooms.size() + " of " + rooms.size() + " rooms.");
     return (connectedRooms.size() == rooms.size());
   }
 
