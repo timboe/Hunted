@@ -36,7 +36,9 @@ public class BigBad extends EntityBase {
     setTexture("playerC");
     setAsPlayerBody(0.5f, 0.25f);
     addTorchToEntity(true, false, false, 45f, Param.EVIL_FLAME, 0f, 0.25f);
-    torchDistanceRef = Param.PLAYER_TORCH_STRENGTH;
+    torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH);
+    addTorchToEntity(true, false, true, 0f, Param.EVIL_FLAME, 0f, 0.25f);
+    torchLight.setDistance(1f);
     movementTargets = new Vector<Vector2>();
     raycastCallback = new RayCastCallback() {
       @Override

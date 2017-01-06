@@ -161,10 +161,10 @@ public class EntityBase extends Actor {
   }
 
   public void flicker() {
-    if (Math.abs(torchDistanceCurrent - torchDistanceTarget) < 1e-3) {
-      torchDistanceTarget = torchDistanceRef + ((float)Utility.r.nextGaussian() * Param.TORCH_FLICKER);
-    }
-    torchDistanceCurrent = torchDistanceCurrent + (0.1f * (torchDistanceTarget - torchDistanceCurrent));
+    //if (Math.abs(torchDistanceCurrent - torchDistanceTarget) < 1e-3) {
+    //  torchDistanceTarget = torchDistanceRef + ((float)Utility.r.nextGaussian() * Param.TORCH_FLICKER);
+    //}
+    torchDistanceCurrent = torchDistanceRef;// rchDistanceCurrent + (0.1f * (torchDistanceTarget - torchDistanceCurrent));
     torchLight.setDistance(torchDistanceCurrent);
   }
 

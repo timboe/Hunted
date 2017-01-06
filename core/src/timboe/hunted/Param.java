@@ -16,7 +16,7 @@ public class Param {
   public static final int CAMERA_LEAD = TILE_SIZE*2;
 
   public static final int RAYS = 256;
-  public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, .7f);
+  public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, .75f);
   public static final Color PLAYER_FLAME = new Color(.1f, .1f, .1f, .7f);
   public static final Color WALL_FLAME = new Color(.1f, .1f, .1f, .5f);
   public static final int PLAYER_TORCH_STRENGTH = 15;
@@ -26,7 +26,7 @@ public class Param {
   public static final int TORCH_SPACING = 5;
   public static final float TORCH_FLICKER = 2f;
 
-  public static final float PLAYER_SPEED = 10f;
+  public static final float PLAYER_SPEED = 10f/2f;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED = .75f * PLAYER_SPEED;
   public static final float BIGBAD_ANGULAR_SPEED = (float)Math.PI/90f;
