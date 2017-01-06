@@ -175,9 +175,10 @@ public class WorldGen {
       return false;
     }
     entryRoom = entryRoomOptions.elementAt( r.nextInt(entryRoomOptions.size()) );
-    int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
+    final int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
+    final int yStart = (int)(entryRoom.y + entryRoom.height);
     for (int x = xStart; x < xStart + 3; ++x) {
-      Sprites.getInstance().getTile(x, (int)(entryRoom.y + entryRoom.height)).setVisible(false);
+      Sprites.getInstance().getTile(x, yStart).setVisible(false);
     }
     Sprites.getInstance().getPlayer().setPhysicsPosition(entryRoom.x + entryRoom.width/2f,
       entryRoom.y + entryRoom.height/2f);
@@ -185,6 +186,10 @@ public class WorldGen {
     t.setTexture("entry",5);
     Sprites.getInstance().entry = t;
     Sprites.getInstance().addToStage(t);
+    Sprites.getInstance().getTile(xStart + 0, yStart - 1).setTexture("blobR",2);
+    Sprites.getInstance().getTile(xStart + 1, yStart - 1).setTexture("blobG",2);
+    Sprites.getInstance().getTile(xStart + 2, yStart - 1).setTexture("blobB",2);
+    Sprites.getInstance().getTile(xStart + 1, yStart - 2).setTexture("switch",7);
     return true;
   }
 
