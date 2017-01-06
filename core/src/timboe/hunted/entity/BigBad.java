@@ -39,7 +39,7 @@ public class BigBad extends EntityBase {
     raycastCallback = new RayCastCallback() {
       @Override
       public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-        if ((fixture.getFilterData().categoryBits & Param.TORCH_ENTITY) > 0) return 1;
+        if ((fixture.getFilterData().categoryBits & Param.TORCH_SENSOR_ENTITY) > 0) return 1;
         if (fraction < Sprites.getInstance().getBigBad().raycastMin) {
           Sprites.getInstance().getBigBad().canSeePlayer = (fixture.getFilterData().categoryBits == Param.PLAYER_ENTITY);
           raycastMin = fraction;

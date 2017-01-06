@@ -25,6 +25,7 @@ public class Physics {
   public RayHandler rayHandler = null;
   public HashSet<Torch> torches = null;
   Color ambientLightMod = Param.AMBIENT_LIGHT.cpy();
+  float currentReductionPercent = 1f;
 
   private CollisionHandle collisionHandle = null;
   private boolean resetLights = false;
@@ -50,30 +51,29 @@ public class Physics {
     }
 
     // Check if torches need dimming
-    // TODO fading here
     float distance = Sprites.getInstance().getPlayer().distanceFromBigBad.len();
     boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
+    boolean update = false;
     if (canSeePlayer && distance <= Param.PLAYER_TORCH_STRENGTH) {
-      float reductionPercent = distance / (float)Param.PLAYER_TORCH_STRENGTH;
-      //reductionPercent = (float)Math.min(reductionPercent - (1. - reductionPercent), 0f);
-      Sprites.getInstance().getPlayer().torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH * reductionPercent);
-      Sprites.getInstance().getBigBad().torchLight.setDistance(Math.min(Param.PLAYER_TORCH_STRENGTH * reductionPercent + 5f, Param.PLAYER_TORCH_STRENGTH));
+      float desiredReductionPercent = distance / (float)Param.PLAYER_TORCH_STRENGTH;
+      currentReductionPercent = currentReductionPercent + (0.05f * (desiredReductionPercent - currentReductionPercent));
+      update = true;
+      resetLights = true;
+    } else if (resetLights) {
+      float desiredReductionPercent = 1f;
+      currentReductionPercent = currentReductionPercent + (0.05f * (desiredReductionPercent - currentReductionPercent));
+      update = true;
+      if (Math.abs(currentReductionPercent - 1f) < 1e-4) resetLights = false;
+    }
+    if (update) {
+      Sprites.getInstance().getPlayer().torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH * currentReductionPercent);
+      Sprites.getInstance().getBigBad().torchLight.setDistance(Math.min(Param.PLAYER_TORCH_STRENGTH * currentReductionPercent + 5f, Param.PLAYER_TORCH_STRENGTH));
       ambientLightMod.a = Param.AMBIENT_LIGHT.a * (distance / (float)Param.PLAYER_TORCH_STRENGTH);
       rayHandler.setAmbientLight(ambientLightMod);
       for (Torch t : torches) {
         if (!t.isOn) continue;
-        t.torchLight.setDistance(Param.WALL_TORCH_STRENGTH * reductionPercent);
+        t.torchLight.setDistance(Param.WALL_TORCH_STRENGTH * currentReductionPercent);
       }
-      resetLights = true;
-    } else if (resetLights) {
-      Sprites.getInstance().getPlayer().torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH);
-      Sprites.getInstance().getBigBad().torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH);
-      rayHandler.setAmbientLight(Param.AMBIENT_LIGHT);
-      for (Torch t : torches) {
-        if (!t.isOn) continue;
-        t.torchLight.setDistance(Param.WALL_TORCH_STRENGTH);
-      }
-      resetLights = false;
     }
 
   }

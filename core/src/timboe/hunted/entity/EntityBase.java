@@ -1,7 +1,6 @@
 package timboe.hunted.entity;
 
 import box2dLight.ConeLight;
-import box2dLight.PointLight;
 import box2dLight.PositionalLight;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -14,8 +13,6 @@ import timboe.hunted.render.Sprites;
 import timboe.hunted.render.Textures;
 import timboe.hunted.world.Physics;
 import timboe.hunted.world.Room;
-
-import java.util.Vector;
 
 /**
  * Created by Tim on 30/12/2016.
@@ -89,7 +86,7 @@ public class EntityBase extends Actor {
     fixtureDef.shape = boxShape;
     fixtureDef.density = 1f;
     fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.SENSOR_ENTITY; // I collide with
     body.createFixture(fixtureDef);
 
     boxShape.dispose();
@@ -113,10 +110,10 @@ public class EntityBase extends Actor {
     fixtureDef.shape = circleShape;
     fixtureDef.density = 1f;
     fixtureDef.filter.categoryBits = Param.PLAYER_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.WORLD_ENTITY | Param.BIGBAD_ENTITY | Param.PLAYER_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.WORLD_ENTITY | Param.BIGBAD_ENTITY | Param.PLAYER_ENTITY | Param.SENSOR_ENTITY; // I collide with
     if (this instanceof BigBad) {
       fixtureDef.filter.categoryBits = Param.BIGBAD_ENTITY; // I am a
-      fixtureDef.filter.maskBits = 0; // I collide with
+//      fixtureDef.filter.maskBits = Param.SENSOR_ENTITY; // I collide with
     }
     body.createFixture(fixtureDef);
     circleShape.dispose();
@@ -132,7 +129,7 @@ public class EntityBase extends Actor {
     circleShape.setRadius(r);
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
-    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY | Param.TORCH_ENTITY; // I am a
+    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY | Param.TORCH_SENSOR_ENTITY; // I am a
     fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
     fixtureDef.isSensor = true;
     body.createFixture(fixtureDef);
@@ -153,7 +150,7 @@ public class EntityBase extends Actor {
         Param.WALL_TORCH_STRENGTH,
         0f, 0f, body.getAngle(), range);
     }
-    torchLight.setContactFilter(Sprites.getInstance().getPlayer().getBody().getFixtureList().first().getFilterData()); // I am a, 0, I collide with
+    torchLight.setContactFilter(Param.SENSOR_ENTITY, (short)0, (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
     torchLight.attachToBody(body, offX, offY);
     torchLight.setStaticLight(staticL);
     torchLight.setIgnoreAttachedBody(ignoreSelf);

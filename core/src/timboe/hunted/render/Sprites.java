@@ -34,7 +34,6 @@ public class Sprites {
 
   public void reset() {
     player = new Player();
-    player.addTorchToEntity(true, false, true, 0f, Param.FLAME, 0f, 0.25f);
 
     bigBad = new BigBad();
     tileSet = new Group();

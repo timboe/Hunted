@@ -13,6 +13,8 @@ public class Param {
   public static final int DISPLAY_X = 1280;
   public static final int DISPLAY_Y = 720;
 
+  public static final int CAMERA_LEAD = TILE_SIZE*2;
+
   public static final int RAYS = 256;
   public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, .7f);
   public static final Color FLAME = new Color(.1f, .1f, .1f, .5f);
@@ -39,6 +41,8 @@ public class Param {
   public static final short PLAYER_ENTITY = 0x1;    // 0001
   public static final short BIGBAD_ENTITY = 0x1 << 1; // 0010
   public static final short WORLD_ENTITY = 0x1 << 2; // 0100
-  public static final short TORCH_ENTITY = 0x1 << 3; // 1000
+  public static final short TORCH_SENSOR_ENTITY = 0x1 << 3; // 1000
+  public static final short SENSOR_ENTITY = 0x1 << 4; // 10000
+
 
 }

@@ -2,10 +2,12 @@ package timboe.hunted.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import timboe.hunted.Param;
@@ -28,6 +30,11 @@ public class GameScreen extends HuntedRender {
   BitmapFont debugFont = new BitmapFont();
   SpriteBatch debugSpriteBatch = new SpriteBatch();
 
+  Vector2 currentPos = new Vector2();
+  Vector2 desiredPos = new Vector2();
+  float currentZoom = 1f;
+  float desiredZoom = 1f;
+
   @Override
   public void init() {
     cullBox = new Rectangle(0, 0, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2); //TODO remove /2
@@ -44,12 +51,34 @@ public class GameScreen extends HuntedRender {
 
     stage.act(Gdx.graphics.getDeltaTime());
 
-    float cameraX = Sprites.getInstance().getPlayer().getX();
-    float cameraY = Sprites.getInstance().getPlayer().getY();
+    desiredPos.set( Sprites.getInstance().getPlayer().getX(), Sprites.getInstance().getPlayer().getY() );
+    float angle =  Sprites.getInstance().getPlayer().getBody().getAngle();
 
-    stage.getCamera().position.set(cameraX, cameraY, 0);
-    stage.getCamera().update();
-    cullBox.setCenter(cameraX, cameraY);
+    desiredPos.x += Math.cos(angle) * Param.CAMERA_LEAD;
+    desiredPos.y += Math.sin(angle) * Param.CAMERA_LEAD;
+
+    currentPos.x = currentPos.x + (0.07f * (desiredPos.x - currentPos.x));
+    currentPos.y = currentPos.y + (0.07f * (desiredPos.y - currentPos.y));
+
+    if (keyN || keyE || keyS || keyW) desiredZoom = .6f;
+    else desiredZoom = .4f;
+
+//    if (desiredZoom > currentZoom)
+      currentZoom = currentZoom + (0.05f * (desiredZoom - currentZoom));
+//    else currentZoom = currentZoom - (0.07f * (currentZoom - desiredZoom));
+
+    camera.position.set(currentPos, 0);
+    camera.zoom = currentZoom;
+//    cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, 100/cam.viewportWidth);
+//    stage.getCamera().
+//    float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
+//    float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
+//
+//    cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, 100 - effectiveViewportWidth / 2f);
+//    cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, 100 - effectiveViewportHeight / 2f);
+//    stage.getCamera().
+    camera.update();
+    cullBox.setCenter(currentPos);
   }
 
   @Override
@@ -64,7 +93,7 @@ public class GameScreen extends HuntedRender {
     }
     debugSpriteBatch.end();
 
-    debugMatrix = stage.getCamera().combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
+    debugMatrix = camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
 
     Physics.getInstance().rayHandler.setCombinedMatrix(debugMatrix);
     Physics.getInstance().rayHandler.render();
