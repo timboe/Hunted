@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import timboe.hunted.Param;
+import timboe.hunted.Utility;
 import timboe.hunted.render.HuntedRender;
 import timboe.hunted.render.Sprites;
 import timboe.hunted.world.Physics;
@@ -30,6 +31,7 @@ public class GameScreen extends HuntedRender {
   BitmapFont debugFont = new BitmapFont();
   SpriteBatch debugSpriteBatch = new SpriteBatch();
 
+  Vector2 shakePos = new Vector2();
   Vector2 currentPos = new Vector2();
   Vector2 desiredPos = new Vector2();
   float currentZoom = 1f;
@@ -60,14 +62,25 @@ public class GameScreen extends HuntedRender {
     currentPos.x = currentPos.x + (0.07f * (desiredPos.x - currentPos.x));
     currentPos.y = currentPos.y + (0.07f * (desiredPos.y - currentPos.y));
 
-    if (keyN || keyE || keyS || keyW) desiredZoom = .6f;
+    final boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
+    final float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
+
+    shakePos.set(currentPos);
+    if (canSeePlayer && distance < Param.PLAYER_TORCH_STRENGTH) {
+      int shakeAmount = (int)Math.ceil((Param.PLAYER_TORCH_STRENGTH - distance)/2f);
+      shakePos.x = shakePos.x - shakeAmount + Utility.r.nextInt(2*shakeAmount);
+      shakePos.y = shakePos.y - shakeAmount + Utility.r.nextInt(2*shakeAmount);
+    }
+
+
+      if (keyN || keyE || keyS || keyW) desiredZoom = .6f;
     else desiredZoom = .4f;
 
 //    if (desiredZoom > currentZoom)
       currentZoom = currentZoom + (0.05f * (desiredZoom - currentZoom));
 //    else currentZoom = currentZoom - (0.07f * (currentZoom - desiredZoom));
 
-    camera.position.set(currentPos, 0);
+    camera.position.set(shakePos, 0);
     camera.zoom = currentZoom;
 //    cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, 100/cam.viewportWidth);
 //    stage.getCamera().

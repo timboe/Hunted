@@ -74,7 +74,6 @@ public class Sprites {
     PEA.setPosition(position.x * Param.TILE_SIZE, position.y * Param.TILE_SIZE);
     tileSet.addActor(PEA);
     particles.add(PEA);
-    Gdx.app.log("addFlame","To " + PEA.getX() + "," + PEA.getY());
   }
 
   // TODO don't need isVisible here but it helps with the lighting
@@ -100,7 +99,7 @@ public class Sprites {
       boolean canExpand = true;
       for (int cX = x; cX < x + size.x; ++cX) {
         Tile t = getTile(cX, yNew);
-        if (canIncludeInRigidBody(t, incInvisible) == false) canExpand = false;
+        if (!canIncludeInRigidBody(t, incInvisible)) canExpand = false;
       }
       if (canExpand) {
         size.y += 1;
@@ -129,7 +128,7 @@ public class Sprites {
         }
       }
     }
-    Gdx.app.log("Sprites", "Invisible="+incInvisible+"required " + count + " rigid bodies");
+    Gdx.app.log("Sprites", "Invisible="+incInvisible+" required " + count + " rigid bodies");
   }
 
   private void getNeighbourFloor(final int x, final int y, HashMap<String, Boolean> map) {

@@ -53,7 +53,7 @@ public class Physics {
 
 
     // Check if torches need dimming
-    float distance = Sprites.getInstance().getPlayer().distanceFromBigBad.len();
+    float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
     boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
     boolean update = false;
     if (canSeePlayer && distance <= Param.PLAYER_TORCH_STRENGTH) {

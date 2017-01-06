@@ -10,7 +10,6 @@ import timboe.hunted.render.Sprites;
  */
 public class Player extends EntityBase {
 
-  public Vector2 distanceFromBigBad = new Vector2();
 
   public Player() {
     super(0,0);
@@ -22,8 +21,6 @@ public class Player extends EntityBase {
   }
 
   public void updatePhysics() {
-    distanceFromBigBad.set( Sprites.getInstance().getBigBad().getBody().getPosition() );
-    distanceFromBigBad = distanceFromBigBad.sub( body.getPosition() );
     getRoomUnderEntity().addToScent( Param.PLAYER_SMELL );  // Add player smelliness
     flicker();
   }

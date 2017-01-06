@@ -26,6 +26,7 @@ public class BigBad extends EntityBase {
   RayCastCallback raycastCallback = null;
   private float raycastMin = 1f;
   public boolean canSeePlayer;
+  public float distanceFromPlayer;
 
   public BigBad() {
     super(0,0);
@@ -52,12 +53,12 @@ public class BigBad extends EntityBase {
 
 //  @Override
   public void updatePhysics() {
+    distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
     runAI();
     Tile t = getTileUnderEntity();
     t.setIsWeb();
     roomsVisited.add(t.getTilesRoom());
-    // Bounce a ray to the player - does it intersect anything else first?
-    raycastMin = 9999f;
+    raycastMin = 9999f;     // Bounce a ray to the player - does it intersect anything else first?
     Physics.getInstance().worldBox2D.rayCast(raycastCallback, body.getPosition(), Sprites.getInstance().getPlayer().getBody().getPosition());
     flicker();
   }
@@ -124,7 +125,6 @@ public class BigBad extends EntityBase {
 
   private void chooseDestination() {
     // First try and follow scent trail
-    float distanceFromPlayer = Sprites.getInstance().getPlayer().distanceFromBigBad.len();
     Room playerRoom = Sprites.getInstance().getPlayer().getRoomUnderEntity();
     HashMap.Entry<Room, Room> toGoTo = getRoomUnderEntity().getConnectionTo(playerRoom);
     // TODO what if same room as player
