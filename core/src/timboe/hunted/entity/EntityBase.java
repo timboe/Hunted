@@ -113,7 +113,7 @@ public class EntityBase extends Actor {
     fixtureDef.shape = circleShape;
     fixtureDef.density = 1f;
     fixtureDef.filter.categoryBits = Param.PLAYER_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.WORLD_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.WORLD_ENTITY | Param.BIGBAD_ENTITY | Param.PLAYER_ENTITY; // I collide with
     if (this instanceof BigBad) {
       fixtureDef.filter.categoryBits = Param.BIGBAD_ENTITY; // I am a
       fixtureDef.filter.maskBits = 0; // I collide with
@@ -141,11 +141,11 @@ public class EntityBase extends Actor {
 
   public void addTorchToEntity(boolean ignoreSelf, boolean staticL, boolean point, float range, Color c, float offX, float offY) {
     if (point) {
-      torchLight = new PointLight(Physics.getInstance().rayHandler,
+      torchLight = new ConeLight(Physics.getInstance().rayHandler,
         Param.RAYS,
         c,
-        Param.PLAYER_TORCH_STRENGTH,
-        0f, 0f);
+        Param.WALL_TORCH_STRENGTH,
+        0f, 0f, body.getAngle(), 180f);
     } else {
       torchLight = new ConeLight(Physics.getInstance().rayHandler,
         Param.RAYS,
@@ -153,6 +153,7 @@ public class EntityBase extends Actor {
         Param.WALL_TORCH_STRENGTH,
         0f, 0f, body.getAngle(), range);
     }
+    torchLight.setContactFilter(Sprites.getInstance().getPlayer().getBody().getFixtureList().first().getFilterData()); // I am a, 0, I collide with
     torchLight.attachToBody(body, offX, offY);
     torchLight.setStaticLight(staticL);
     torchLight.setIgnoreAttachedBody(ignoreSelf);

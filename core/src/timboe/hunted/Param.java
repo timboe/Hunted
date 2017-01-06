@@ -10,6 +10,9 @@ public class Param {
   public static final int TILE_X = 128;
   public static final int TILE_Y = 128;
 
+  public static final int DISPLAY_X = 1280;
+  public static final int DISPLAY_Y = 720;
+
   public static final int RAYS = 256;
   public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, .7f);
   public static final Color FLAME = new Color(.1f, .1f, .1f, .5f);

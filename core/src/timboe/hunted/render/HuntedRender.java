@@ -9,8 +9,11 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import timboe.hunted.HuntedGame;
+import timboe.hunted.Param;
 import timboe.hunted.world.Physics;
 
 /**
@@ -19,7 +22,6 @@ import timboe.hunted.world.Physics;
 public class HuntedRender  implements Screen, InputProcessor {
 
   protected float deltaTot;
-//  protected Table table; // UI
   protected Stage stage;
 
   protected GestureDetector gestureDetector = null;
@@ -29,7 +31,7 @@ public class HuntedRender  implements Screen, InputProcessor {
 
 
   public HuntedRender() {
-    stage = new Stage(new ScreenViewport()); //TODO choose a better renderer here
+    stage = new Stage(new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y)); //TODO choose a better renderer here
     if (HuntedGame.debug) {
       stage.setDebugAll(true);
       shapeRenderer = new ShapeRenderer();
@@ -82,7 +84,7 @@ public class HuntedRender  implements Screen, InputProcessor {
 
 
   protected void renderClear() {
-    Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+    Gdx.gl.glClearColor(.184f, .157f, .227f, 1);
     Gdx.graphics.getGL20().glClear(GL20 .GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
   }
 
@@ -92,6 +94,7 @@ public class HuntedRender  implements Screen, InputProcessor {
 
   public void resize (int width, int height) {
     Gdx.app.log("Resize", "ReSize in Render ["+this+"] ("+width+","+height+")");
+    stage.getViewport().update(width, height, true);
     //Constrain
 //		stage.setViewport(SpaceTrade.CAMERA_WIDTH, SpaceTrade.CAMERA_HEIGHT, true);
 //		stage.getCamera().translate(-stage.getGutterWidth(), -stage.getGutterHeight(), 0);
