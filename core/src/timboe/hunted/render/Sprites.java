@@ -1,17 +1,20 @@
 package timboe.hunted.render;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.entity.BigBad;
+import timboe.hunted.entity.ParticleEffectActor;
 import timboe.hunted.entity.Player;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.world.Physics;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by Tim on 28/12/2016.
@@ -25,6 +28,7 @@ public class Sprites {
 
   private Group tileSet;
   private HashMap<Integer, Tile> tileMap;
+  private HashSet<ParticleEffectActor> particles;
   private Player player;
   private BigBad bigBad;
   public Tile entry;
@@ -38,6 +42,7 @@ public class Sprites {
     bigBad = new BigBad();
     tileSet = new Group();
 
+    particles = new HashSet<ParticleEffectActor>();
     tileMap = new HashMap<Integer, Tile>();
     for (int x = 0; x < Param.TILE_X; ++x) {
       for (int y = 0; y < Param.TILE_Y; ++y) {
@@ -58,6 +63,18 @@ public class Sprites {
         if (t.isVisible() == true) tileSet.addActor(t);
       }
     }
+  }
+
+  public void addFlameEffect(Vector2 position) {
+    ParticleEffect effect = new ParticleEffect();
+    effect.load(Gdx.files.internal("flame.p"), Textures.getInstance().getAtlas());
+    effect.scaleEffect(0.2f);
+    effect.start();
+    ParticleEffectActor PEA = new ParticleEffectActor(effect);
+    PEA.setPosition(position.x * Param.TILE_SIZE, position.y * Param.TILE_SIZE);
+    tileSet.addActor(PEA);
+    particles.add(PEA);
+    Gdx.app.log("addFlame","To " + PEA.getX() + "," + PEA.getY());
   }
 
   // TODO don't need isVisible here but it helps with the lighting

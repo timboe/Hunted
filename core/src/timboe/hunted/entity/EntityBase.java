@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.Param;
+import timboe.hunted.Utility;
 import timboe.hunted.render.Sprites;
 import timboe.hunted.render.Textures;
 import timboe.hunted.world.Physics;
@@ -29,7 +30,9 @@ public class EntityBase extends Actor {
   protected float speed = 0;
   private boolean moving = false;
   public PositionalLight torchLight = null;
-
+  public float torchDistanceRef;
+  private float torchDistanceCurrent;
+  private float torchDistanceTarget;
 
 
   public EntityBase(int x, int y) {
@@ -137,23 +140,32 @@ public class EntityBase extends Actor {
   }
 
   public void addTorchToEntity(boolean ignoreSelf, boolean staticL, boolean point, float range, Color c, float offX, float offY) {
+    torchDistanceRef = Param.WALL_TORCH_STRENGTH;
     if (point) {
       torchLight = new ConeLight(Physics.getInstance().rayHandler,
         Param.RAYS,
         c,
-        Param.WALL_TORCH_STRENGTH,
+        torchDistanceRef,
         0f, 0f, body.getAngle(), 180f);
     } else {
       torchLight = new ConeLight(Physics.getInstance().rayHandler,
         Param.RAYS,
         c,
-        Param.WALL_TORCH_STRENGTH,
+        torchDistanceRef,
         0f, 0f, body.getAngle(), range);
     }
     torchLight.setContactFilter(Param.SENSOR_ENTITY, (short)0, (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
     torchLight.attachToBody(body, offX, offY);
     torchLight.setStaticLight(staticL);
     torchLight.setIgnoreAttachedBody(ignoreSelf);
+  }
+
+  public void flicker() {
+    if (Math.abs(torchDistanceCurrent - torchDistanceTarget) < 1e-3) {
+      torchDistanceTarget = torchDistanceRef + ((float)Utility.r.nextGaussian() * Param.TORCH_FLICKER);
+    }
+    torchDistanceCurrent = torchDistanceCurrent + (0.1f * (torchDistanceTarget - torchDistanceCurrent));
+    torchLight.setDistance(torchDistanceCurrent);
   }
 
   public void setMoving(boolean m) {

@@ -17,12 +17,14 @@ public class Param {
 
   public static final int RAYS = 256;
   public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, .7f);
-  public static final Color FLAME = new Color(.1f, .1f, .1f, .5f);
-  public static final int PLAYER_TORCH_STRENGTH = 25;
+  public static final Color PLAYER_FLAME = new Color(.1f, .1f, .1f, .7f);
+  public static final Color WALL_FLAME = new Color(.1f, .1f, .1f, .5f);
+  public static final int PLAYER_TORCH_STRENGTH = 15;
   public static final int WALL_TORCH_STRENGTH = PLAYER_TORCH_STRENGTH/2;
-  public static final Color AMBIENT_LIGHT = new Color(.1f, .1f, .1f, .1f);
+  public static final Color AMBIENT_LIGHT = new Color(.1f, .1f, .1f, .02f);
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
   public static final int TORCH_SPACING = 5;
+  public static final float TORCH_FLICKER = 2f;
 
   public static final float PLAYER_SPEED = 10f;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;

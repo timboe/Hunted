@@ -35,6 +35,7 @@ public class BigBad extends EntityBase {
     setTexture("playerC");
     setAsPlayerBody(0.5f, 0.25f);
     addTorchToEntity(true, false, false, 45f, Param.EVIL_FLAME, 0f, 0.25f);
+    torchDistanceRef = Param.PLAYER_TORCH_STRENGTH;
     movementTargets = new Vector<Vector2>();
     raycastCallback = new RayCastCallback() {
       @Override
@@ -58,6 +59,7 @@ public class BigBad extends EntityBase {
     // Bounce a ray to the player - does it intersect anything else first?
     raycastMin = 9999f;
     Physics.getInstance().worldBox2D.rayCast(raycastCallback, body.getPosition(), Sprites.getInstance().getPlayer().getBody().getPosition());
+    flicker();
   }
 
   public void runAI() {

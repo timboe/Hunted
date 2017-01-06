@@ -21,6 +21,7 @@ public class Textures {
     return atlas.findRegion(name);
   }
 
+  public TextureAtlas getAtlas() { return  atlas; }
   public void dispose() {
     atlas.dispose();
   }

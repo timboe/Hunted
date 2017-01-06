@@ -24,6 +24,7 @@ public class Physics {
   public World worldBox2D = null;
   public RayHandler rayHandler = null;
   public HashSet<Torch> torches = null;
+  public HashSet<Torch> litTorches = null;
   Color ambientLightMod = Param.AMBIENT_LIGHT.cpy();
   float currentReductionPercent = 1f;
 
@@ -47,8 +48,9 @@ public class Physics {
     Sprites.getInstance().getBigBad().updatePosition();
 
     for (Room room : WorldGen.getInstance().getAllRooms()) {
-      room.updatePhysics(); // Smell disapation
+      room.updatePhysics(); // Smell dissipation
     }
+
 
     // Check if torches need dimming
     float distance = Sprites.getInstance().getPlayer().distanceFromBigBad.len();
@@ -66,14 +68,17 @@ public class Physics {
       if (Math.abs(currentReductionPercent - 1f) < 1e-4) resetLights = false;
     }
     if (update) {
-      Sprites.getInstance().getPlayer().torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH * currentReductionPercent);
-      Sprites.getInstance().getBigBad().torchLight.setDistance(Math.min(Param.PLAYER_TORCH_STRENGTH * currentReductionPercent + 5f, Param.PLAYER_TORCH_STRENGTH));
+      Sprites.getInstance().getPlayer().torchDistanceRef = Param.PLAYER_TORCH_STRENGTH * currentReductionPercent;
+      Sprites.getInstance().getBigBad().torchDistanceRef = Math.min(Param.PLAYER_TORCH_STRENGTH * currentReductionPercent + 5f, Param.PLAYER_TORCH_STRENGTH);
       ambientLightMod.a = Param.AMBIENT_LIGHT.a * (distance / (float)Param.PLAYER_TORCH_STRENGTH);
       rayHandler.setAmbientLight(ambientLightMod);
-      for (Torch t : torches) {
-        if (!t.isOn) continue;
-        t.torchLight.setDistance(Param.WALL_TORCH_STRENGTH * currentReductionPercent);
+      for (Torch t : litTorches) {
+        t.torchDistanceRef = Param.WALL_TORCH_STRENGTH * currentReductionPercent;
       }
+    }
+
+    for (Torch t : litTorches) {
+      t.flicker();
     }
 
   }
@@ -85,6 +90,7 @@ public class Physics {
     worldBox2D.setContactListener(collisionHandle);
     rayHandler = new RayHandler(worldBox2D);
     torches = new HashSet<Torch>();
+    litTorches = new HashSet<Torch>();
 
     RayHandler.setGammaCorrection(false);     // enable or disable gamma correction
     RayHandler.useDiffuseLight(false);       // enable or disable diffused lighting
