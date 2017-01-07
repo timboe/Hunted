@@ -34,9 +34,14 @@ public class Physics {
   private Physics() {
   }
 
-  public void addTorch(float x, float y, float r, float angle) {
-    Torch t = new Torch(x,y,r,angle);
+  public Torch addTorch(float x, float y, float lX, float lY, float r, boolean partial, float angle) {
+    Torch t = new Torch(x,y,lX,lY,r,partial,angle);
     torches.add(t);
+    return t;
+  }
+
+  public Torch addTorch(float x, float y, float lX, float lY, float r) {
+    return addTorch(x,y,lX,lY,r,false,0f);
   }
 
   public void updatePhysics() {

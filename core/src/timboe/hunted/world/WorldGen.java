@@ -186,43 +186,56 @@ public class WorldGen {
     t.setTexture("entry",5);
     Sprites.getInstance().entry = t;
     Sprites.getInstance().addToStage(t);
-    Sprites.getInstance().getTile(xStart + 0, yStart - 1).setTexture("blobR",2);
-    Sprites.getInstance().getTile(xStart + 1, yStart - 1).setTexture("blobG",2);
-    Sprites.getInstance().getTile(xStart + 2, yStart - 1).setTexture("blobB",2);
+    Sprites.getInstance().getTile(xStart + 0, yStart - 1).setTexture("blobRed",2);
+    Sprites.getInstance().getTile(xStart + 1, yStart - 1).setTexture("blobGreen",2);
+    Sprites.getInstance().getTile(xStart + 2, yStart - 1).setTexture("blobBlue",2);
     Sprites.getInstance().getTile(xStart + 1, yStart - 2).setTexture("switch",7);
     return true;
   }
 
   public boolean placeKeyRooms() {
-    final int exclusionDist = Math.min(Param.TILE_X, Param.TILE_Y) / 2;
-    keyRooms.add(entryRoom);
+    final int exclusionDist = Math.min(Param.TILE_X, Param.TILE_Y) / 4; // Rooms must be far apart
+    final Vector2 entryRoomPos = entryRoom.getPosition(new Vector2());
     int attempt = 0;
-    do {
+    while (keyRooms.size() != Param.KEY_ROOMS && ++attempt < ROOM_PLACE_TRIES) {
       Room room = rooms.get( Utility.r.nextInt(rooms.size()) );
       if (room.getConnectedRooms().size() > 2) continue; // Room can have at most two connections
-      if (room.width < 9 || room.height < 7) continue; // Room has to be large enough
-      Vector2 roomPos = new Vector2();
-      roomPos = room.getPosition(roomPos);
-      boolean vetoed = false;
+      if (room.width < 10 || room.height < 10) continue; // Room has to be large enough
+      Vector2 roomPos = room.getPosition(new Vector2());
+      boolean vetoed = roomPos.dst(entryRoomPos) < exclusionDist;
       for (Room testRoom : keyRooms) {
-        Vector2 testPos = new Vector2();
-        testPos = testRoom.getPosition(testPos);
-        if (roomPos.dst(testPos) < exclusionDist) {
-          vetoed = true;
-          break;
+        Vector2 testPos = testRoom.getPosition(new Vector2());
+        vetoed |= (roomPos.dst(testPos) < exclusionDist);
+        if (vetoed) break;
+      }
+      if (vetoed) continue;
+      Vector<Rectangle> options = new Vector<Rectangle>();
+      Vector<Room> connectedCorridors = room.getCorridors();
+      // Can I fit in the machinery?
+      for (int x = (int)room.x + 3; x < room.x + room.width - 6; ++x) {
+        for (int y = (int)room.y + 3; y < room.y + room.height - 6; ++y) {
+          Rectangle r = new Rectangle(x, y, 4, 4);
+          boolean overlaps = false;
+          for (Room corridor : connectedCorridors ) {
+            overlaps |= r.overlaps(corridor.corridorProjection);
+          }
+          if (!overlaps) options.add(r);
         }
       }
-      if (!vetoed) {
-        keyRooms.add(room);
-      }
-    } while (keyRooms.size() != 4 && ++attempt < ROOM_PLACE_TRIES);
-    keyRooms.remove(entryRoom);
+      if (options.size() == 0) continue;
+      installKeyRoom(room, options.get(Utility.r.nextInt(options.size())), keyRooms.size());
+    }
     // Do we have three rooms?
-    if (keyRooms.size() != 3) {
-      Gdx.app.log("WorldGen","Unable to place three key rooms, only managed " + keyRooms.size());
+    if (keyRooms.size() != Param.KEY_ROOMS) {
+      Gdx.app.log("WorldGen","Unable to place "+Param.KEY_ROOMS+" key rooms, only managed " + keyRooms.size());
       return false;
     }
     return true;
+  }
+
+  private void installKeyRoom(Room room, Rectangle keyLoc, int shrineN) {
+    Sprites.getInstance().addKeyShrine((int)keyLoc.x, (int)keyLoc.y, shrineN);
+    keyRooms.add(room);
   }
 
   private void shrinkRooms() {

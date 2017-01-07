@@ -65,6 +65,36 @@ public class Sprites {
     }
   }
 
+  public void addKeyShrine(int x, int y, int n) {
+    Tile shrine = new Tile(x + 1, y + 1);
+    Tile lightA = new Tile(x, y + 1);
+    Tile lightB = new Tile(x + 3, y + 1);
+    String colour = new String();
+    switch (n) {
+      case 0: colour = "Red"; break;
+      case 1: colour = "Green"; break;
+      case 2: colour = "Blue"; break;
+      default:Gdx.app.error("Sprites::addKeyShrine","FATAL n = " + n); Gdx.app.exit();
+    }
+    shrine.setTexture(Utility.prob(.5f) ? "totemA" + colour : "totemB" + colour, 2);
+    getTile(x + 2, y).setTexture("blob" + colour, 2);
+    lightA.setTexture("lamp" + colour,2);
+    lightB.setTexture("lamp" + colour,2);
+    getTile(x + 1, y).setTexture("switch", 7);
+    Tile torchA = new Tile(x, y + 2);
+    torchA.setTexture("torchTall");
+    Tile torchB = new Tile(x + 3, y + 2);
+    torchB.setTexture("torchTall");
+    addToStage(torchA);
+    addToStage(torchB);
+    addToStage(lightA);
+    addToStage(lightB);
+    addToStage(shrine);
+    Physics.getInstance().addTorch(x + 3.5f, y + 3.2f, x + 3.5f, y + 3.2f, .5f).doCollision();
+    Physics.getInstance().addTorch(x + .5f, y + 3.2f, x + .5f, y + 3.2f, .5f).doCollision();
+
+  }
+
   public void addFlameEffect(Vector2 position) {
     ParticleEffect effect = new ParticleEffect();
     effect.load(Gdx.files.internal("flame.p"), Textures.getInstance().getAtlas());
@@ -250,20 +280,20 @@ public class Sprites {
           && (y+3 >= Param.TILE_Y || !getTile(x,y+3).getIsFloor()) ) { //TODO horrid condition
           t.setTexture("wallWTorch");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .5f, y + 1.2f, 1f, 0f);
+          Physics.getInstance().addTorch(x + .25f, y + 1.3f, x + .85f, y + 1.3f, 1.75f, true, 0f);
         } else if (torch && y%Param.TORCH_SPACING==0 && f.get("W") && !f.get("N") && !f.get("S") && f.get("NW") // EAST TORCH
           && (y+3 >= Param.TILE_Y || !getTile(x,y+3).getIsFloor()) ) { //TODO horrid condition
           t.setTexture("wallETorch");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .5f, y + 1.2f, 1f, (float)Math.PI);
+          Physics.getInstance().addTorch(x + .75f, y + 1.3f, x + .15f, y + 1.3f, 1.75f, true, (float)Math.PI);
         } else if (torch && x%Param.TORCH_SPACING==0 && f.get("N") && !f.get("E") && !f.get("W")) { // SOUTH TORCH
           t.setTexture("wallSTorch");
-          Physics.getInstance().addTorch(x + .5f, y + .8f, .7f, (float)Math.PI/2f);
+          Physics.getInstance().addTorch(x + .5f, y + .25f, x + .5f, y + .85f, 1.75f, true, (float)Math.PI/2f);
         } else if (torch && x%Param.TORCH_SPACING==0 && f.get("S") && !f.get("E") && !f.get("W")) { // NORTH TORCH
           if (rnd < .5f) t.setTexture("wallNTorchA");
           else t.setTexture("wallNTorchB");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .5f, y + 0.9f, 1.4f, (float)Math.PI*3f/2f);
+          Physics.getInstance().addTorch(x + .5f, y + 1.2f, x + .5f, y + 1.f, 2.2f, true, (float)Math.PI*3f/2f);
           ///////////////////
           ///////////////////
         } else if (f.get("E") && !f.get("N") && !f.get("S")) { // WEST WALL

@@ -26,7 +26,7 @@ public class Param {
   public static final int TORCH_SPACING = 5;
   public static final float TORCH_FLICKER = 2f;
 
-  public static final float PLAYER_SPEED = 10f/2f;
+  public static final float PLAYER_SPEED = 10f;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED = .75f * PLAYER_SPEED;
   public static final float BIGBAD_ANGULAR_SPEED = (float)Math.PI/90f;
@@ -37,6 +37,7 @@ public class Param {
   public static final float SMELL_DISSAPATE = PLAYER_SMELL/10f; // How much of the moving smell is lost
 
   public static final int MIN_ROOM_SIZE = 5;
+  public static final int KEY_ROOMS = 3;
   public static final int CORRIDOR_SIZE = MIN_ROOM_SIZE;
 
   // Physics
