@@ -1,6 +1,7 @@
 package timboe.hunted.world;
 
 import com.badlogic.gdx.physics.box2d.*;
+import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Torch;
 import timboe.hunted.render.Sprites;
 
@@ -26,7 +27,7 @@ public class CollisionHandle implements ContactListener {
       Object myEntity = playerHit.getUserData();
 
       // Colision between player and off-torch
-      if (myEntity instanceof Torch) {
+      if (myEntity instanceof Torch && !(myEntity instanceof BigBad)) {
         Torch t = (Torch) myEntity;
         t.doCollision();
       }

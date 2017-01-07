@@ -58,10 +58,14 @@ public class EntityBase extends Actor {
   }
 
   public void setAsPhysicsBody(float width, float height) {
+    setAsPhysicsBody(worldBox.x, worldBox.y, width, height);
+  }
+
+  public void setAsPhysicsBody(float x, float y, float width, float height) {
     // This may extend over many sprites - make sure we flag them all
     for (int w = 0; w < (int)width; ++ w) {
       for (int h = 0; h < (int)height; ++h) {
-        Sprites.getInstance().getTile((int)(worldBox.x + w), (int)(worldBox.y + h)).setHasPhysics(true);
+        Sprites.getInstance().getTile((int)(x + w), (int)(y + h)).setHasPhysics(true);
       }
     }
 
@@ -69,7 +73,7 @@ public class EntityBase extends Actor {
     float newWidth2 = (width * worldBox.width) / 2f;
     float newHeight2 = (height * worldBox.height) / 2f;
     bodyDef.type = BodyDef.BodyType.StaticBody;
-    bodyDef.position.set(worldBox.x + newWidth2, worldBox.y + newHeight2);
+    bodyDef.position.set(x + newWidth2, y + newHeight2);
     body = Physics.getInstance().worldBox2D.createBody(bodyDef);
     body.setUserData(this);
 

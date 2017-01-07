@@ -139,14 +139,14 @@ public class BigBad extends Torch {
       float commonX = corridor.x + Param.CORRIDOR_SIZE/2f;
       Gdx.app.log("AI","Go through V corridor at common X:" + commonX);
       float finalY = target.y + Param.CORRIDOR_SIZE/2f;
-      if (target.y < corridor.y) finalY = target.y + target.height - 1 - Param.CORRIDOR_SIZE/2f;
+      if (target.y < corridor.y) finalY = target.y + target.height - Param.CORRIDOR_SIZE/2f;
       movementTargets.add( new Vector2(commonX, body.getPosition().y) );
       movementTargets.add( new Vector2(commonX, finalY));
     } else {
       float commonY = corridor.y + Param.CORRIDOR_SIZE/2f;
       Gdx.app.log("AI","Go through H corridor at common Y:" + commonY);
       float finalX = target.x + Param.CORRIDOR_SIZE/2f;
-      if (target.x < corridor.x) finalX = target.x + target.width - 1 - Param.CORRIDOR_SIZE/2f;
+      if (target.x < corridor.x) finalX = target.x + target.width - Param.CORRIDOR_SIZE/2f;
       movementTargets.add( new Vector2(body.getPosition().x, commonY) );
       movementTargets.add( new Vector2(finalX, commonY) );
     }

@@ -83,6 +83,8 @@ public class Sprites {
     getTile(xStart + 1, yStart - 2).setTexture("switch",7);
     Tile torchA = new Tile(xStart - 1, yStart - 2);
     Tile torchB = new Tile(xStart + 3, yStart - 2);
+    torchA.setAsPhysicsBody(xStart - 1 + .35f, yStart - 2, .3f, 1.2f);
+    torchB.setAsPhysicsBody(xStart + 3 + .35f, yStart - 2, .3f, 1.2f);;
     torchA.setTexture("torchTall");
     torchB.setTexture("torchTall");
     addToStage(torchA);
@@ -96,6 +98,9 @@ public class Sprites {
     Tile shrine = new Tile(x + 1, y + 1);
     Tile lightA = new Tile(x, y + 1);
     Tile lightB = new Tile(x + 3, y + 1);
+    shrine.setAsPhysicsBody(x + 1.5f, y + 1.25f, 1f, 2f);
+    lightA.setAsPhysicsBody(x + 0.2f, y + 1.1f, .6f, .8f);
+    lightB.setAsPhysicsBody(x + 3.2f, y + 1.1f, .6f, .8f);;
     String colour = new String();
     switch (n) {
       case 0: colour = "Red"; break;
@@ -112,6 +117,8 @@ public class Sprites {
     Tile torchB = new Tile(x + 3, y + 2);
     torchA.setTexture("torchTall");
     torchB.setTexture("torchTall");
+    torchA.setAsPhysicsBody(x + .35f, y + 2, .3f, 1.2f);
+    torchB.setAsPhysicsBody(x + 3 + .35f, y + 2, .3f, 1.2f);;
     addToStage(torchA);
     addToStage(torchB);
     addToStage(lightA);
