@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by Tim on 31/12/2016.
  */
-public class BigBad extends EntityBase {
+public class BigBad extends Torch {
 
   enum AIState {IDLE, ROTATE, PATHING}
   AIState aiState = AIState.IDLE;
@@ -35,10 +35,10 @@ public class BigBad extends EntityBase {
     roomsVisited = new HashSet<Room>();
     setTexture("playerC");
     setAsPlayerBody(0.5f, 0.25f);
-    addTorchToEntity(true, false, false, 45f, Param.EVIL_FLAME, 0f, 0.25f);
-    torchLight.setDistance(Param.PLAYER_TORCH_STRENGTH);
-    addTorchToEntity(true, false, true, 0f, Param.EVIL_FLAME, 0f, 0.25f);
-    torchLight.setDistance(1f);
+    addTorchToEntity(true, false, false, 45f, Param.EVIL_FLAME, true, null);
+    torchLight[0].setDistance(Param.PLAYER_TORCH_STRENGTH);
+    addTorchToEntity(true, false, true, 0f, Param.EVIL_FLAME, true, null);
+    torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
     movementTargets = new Vector<Vector2>();
     raycastCallback = new RayCastCallback() {
       @Override
@@ -84,20 +84,12 @@ public class BigBad extends EntityBase {
       case PATHING: path(); break;
     }
   }
-
-  private float getTargetAngle() {
-    Vector2 target = movementTargets.get(0);
-    float targetAngle = (float) Math.atan2(target.y - body.getPosition().y, target.x - body.getPosition().x);
-    if (targetAngle < 0) targetAngle += (float)2*Math.PI;
-    return targetAngle;
-  }
-
   private boolean atDestination() {
     return movementTargets.get(0).epsilonEquals(body.getPosition(),.1f);
   }
 
   private void rotate() {
-    float targetAngle = getTargetAngle();
+    float targetAngle = Utility.getTargetAngle(movementTargets.get(0), body);
     if (Math.abs(body.getAngle() - targetAngle) < Math.toRadians(10)) {
       aiState = AIState.PATHING;
     } else {
@@ -120,7 +112,7 @@ public class BigBad extends EntityBase {
         aiState = AIState.ROTATE;
       }
     } else {
-      float targetAngle = getTargetAngle();
+      float targetAngle = Utility.getTargetAngle(movementTargets.get(0), body);
       setMoveDirection(targetAngle, true);
     }
   }

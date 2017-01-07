@@ -160,7 +160,7 @@ public class WorldGen {
     Vector<Room> entryRoomOptions = new Vector<Room>();
     for (final Room room : rooms) {
       if (room.y < 3*Param.TILE_Y/4) continue;
-      if (room.width < 7) continue;
+      if (room.width < 9) continue;
       boolean hasNortherer = false;
       for (Room connected : room.getConnectedRooms()) {
         if (connected.y > room.y) {
@@ -175,21 +175,7 @@ public class WorldGen {
       return false;
     }
     entryRoom = entryRoomOptions.elementAt( r.nextInt(entryRoomOptions.size()) );
-    final int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
-    final int yStart = (int)(entryRoom.y + entryRoom.height);
-    for (int x = xStart; x < xStart + 3; ++x) {
-      Sprites.getInstance().getTile(x, yStart).setVisible(false);
-    }
-    Sprites.getInstance().getPlayer().setPhysicsPosition(entryRoom.x + entryRoom.width/2f,
-      entryRoom.y + entryRoom.height/2f);
-    Tile t = new Tile(xStart, (int)(entryRoom.y + entryRoom.height));
-    t.setTexture("entry",5);
-    Sprites.getInstance().entry = t;
-    Sprites.getInstance().addToStage(t);
-    Sprites.getInstance().getTile(xStart + 0, yStart - 1).setTexture("blobRed",2);
-    Sprites.getInstance().getTile(xStart + 1, yStart - 1).setTexture("blobGreen",2);
-    Sprites.getInstance().getTile(xStart + 2, yStart - 1).setTexture("blobBlue",2);
-    Sprites.getInstance().getTile(xStart + 1, yStart - 2).setTexture("switch",7);
+    Sprites.getInstance().addEntryRoom(entryRoom);
     return true;
   }
 

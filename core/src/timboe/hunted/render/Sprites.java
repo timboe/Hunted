@@ -12,6 +12,7 @@ import timboe.hunted.entity.ParticleEffectActor;
 import timboe.hunted.entity.Player;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.world.Physics;
+import timboe.hunted.world.Room;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,7 +66,33 @@ public class Sprites {
     }
   }
 
-  public void addKeyShrine(int x, int y, int n) {
+  public void addEntryRoom(Room entryRoom) {
+    final int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
+    final int yStart = (int)(entryRoom.y + entryRoom.height);
+    for (int x = xStart; x < xStart + 3; ++x) {
+      getTile(x, yStart).setVisible(false);
+    }
+    player.setPhysicsPosition(entryRoom.x + entryRoom.width/2f, entryRoom.y + entryRoom.height/2f);
+    Tile t = new Tile(xStart, (int)(entryRoom.y + entryRoom.height));
+    t.setTexture("entry",5);
+    entry = t;
+    addToStage(t);
+    getTile(xStart + 0, yStart - 1).setTexture("blobRed",2);
+    getTile(xStart + 1, yStart - 1).setTexture("blobGreen",2);
+    getTile(xStart + 2, yStart - 1).setTexture("blobBlue",2);
+    getTile(xStart + 1, yStart - 2).setTexture("switch",7);
+    Tile torchA = new Tile(xStart - 1, yStart - 2);
+    Tile torchB = new Tile(xStart + 3, yStart - 2);
+    torchA.setTexture("torchTall");
+    torchB.setTexture("torchTall");
+    addToStage(torchA);
+    addToStage(torchB);
+    Physics.getInstance().addTorch(xStart + -.5f, yStart - .8f, .5f).doCollision();
+    Physics.getInstance().addTorch(xStart + 3.5f, yStart - .8f, .5f).doCollision();
+  }
+
+
+    public void addKeyShrine(int x, int y, int n) {
     Tile shrine = new Tile(x + 1, y + 1);
     Tile lightA = new Tile(x, y + 1);
     Tile lightB = new Tile(x + 3, y + 1);
@@ -82,16 +109,16 @@ public class Sprites {
     lightB.setTexture("lamp" + colour,2);
     getTile(x + 1, y).setTexture("switch", 7);
     Tile torchA = new Tile(x, y + 2);
-    torchA.setTexture("torchTall");
     Tile torchB = new Tile(x + 3, y + 2);
+    torchA.setTexture("torchTall");
     torchB.setTexture("torchTall");
     addToStage(torchA);
     addToStage(torchB);
     addToStage(lightA);
     addToStage(lightB);
     addToStage(shrine);
-    Physics.getInstance().addTorch(x + 3.5f, y + 3.2f, x + 3.5f, y + 3.2f, .5f).doCollision();
-    Physics.getInstance().addTorch(x + .5f, y + 3.2f, x + .5f, y + 3.2f, .5f).doCollision();
+    Physics.getInstance().addTorch(x + 3.5f, y + 3.2f, .5f).doCollision();
+    Physics.getInstance().addTorch(x + .5f, y + 3.2f, .5f).doCollision();
 
   }
 

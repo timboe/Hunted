@@ -1,5 +1,8 @@
 package timboe.hunted;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+
 import java.util.Random;
 
 /**
@@ -20,5 +23,15 @@ public class Utility {
 
   static public boolean prob(float chanceOfPass) {
     return (r.nextFloat() <= chanceOfPass);
+  }
+
+  static public float getTargetAngle(Vector2 target, Body from) {
+    return getTargetAngle(target, from.getPosition());
+  }
+
+  static public float getTargetAngle(Vector2 target, Vector2 from) {
+    float targetAngle = (float) Math.atan2(target.y - from.y, target.x - from.x);
+    if (targetAngle < 0) targetAngle += (float)2*Math.PI;
+    return targetAngle;
   }
 }

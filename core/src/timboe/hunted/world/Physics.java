@@ -44,6 +44,10 @@ public class Physics {
     return addTorch(x,y,lX,lY,r,false,0f);
   }
 
+  public Torch addTorch(float x, float y, float r) {
+    return addTorch(x,y,x,y,r,false,0f);
+  }
+
   public void updatePhysics() {
     Sprites.getInstance().getPlayer().updatePhysics();
     Sprites.getInstance().getBigBad().updatePhysics();

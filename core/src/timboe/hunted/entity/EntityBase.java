@@ -1,15 +1,11 @@
 package timboe.hunted.entity;
 
-import box2dLight.ConeLight;
-import box2dLight.PositionalLight;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.Param;
-import timboe.hunted.Utility;
 import timboe.hunted.render.Sprites;
 import timboe.hunted.render.Textures;
 import timboe.hunted.world.Physics;
@@ -29,11 +25,6 @@ public class EntityBase extends Actor {
   private float angle = 0;
   protected float speed = 0;
   private boolean moving = false;
-  public PositionalLight torchLight = null;
-  public float torchDistanceRef;
-  private float torchDistanceCurrent;
-  private float torchDistanceTarget;
-
 
   public EntityBase(int x, int y) {
     worldBox = new Rectangle(x, y,1f,1f);
@@ -120,52 +111,6 @@ public class EntityBase extends Actor {
     }
     body.createFixture(fixtureDef);
     circleShape.dispose();
-  }
-
-  public void setAsTorchBody(float x, float y, float r) {
-    BodyDef bodyDef = new BodyDef();
-    bodyDef.type = BodyDef.BodyType.StaticBody;
-    bodyDef.position.set(x, y);
-    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
-    body.setUserData(this);
-    CircleShape circleShape = new CircleShape();
-    circleShape.setRadius(r);
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = circleShape;
-    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY | Param.TORCH_SENSOR_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
-    fixtureDef.isSensor = true;
-    body.createFixture(fixtureDef);
-    circleShape.dispose();
-  }
-
-  public void addTorchToEntity(boolean ignoreSelf, boolean staticL, boolean point, float range, Color c, float offX, float offY) {
-    torchDistanceRef = Param.WALL_TORCH_STRENGTH;
-    if (point) {
-      torchLight = new ConeLight(Physics.getInstance().rayHandler,
-        Param.RAYS,
-        c,
-        torchDistanceRef,
-        0f, 0f, body.getAngle(), 180f);
-    } else {
-      torchLight = new ConeLight(Physics.getInstance().rayHandler,
-        Param.RAYS,
-        c,
-        torchDistanceRef,
-        0f, 0f, body.getAngle(), range);
-    }
-    torchLight.setContactFilter(Param.SENSOR_ENTITY, (short)0, (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
-    torchLight.attachToBody(body, offX, offY);
-    torchLight.setStaticLight(staticL);
-    torchLight.setIgnoreAttachedBody(ignoreSelf);
-  }
-
-  public void flicker() {
-    //if (Math.abs(torchDistanceCurrent - torchDistanceTarget) < 1e-3) {
-    //  torchDistanceTarget = torchDistanceRef + ((float)Utility.r.nextGaussian() * Param.TORCH_FLICKER);
-    //}
-    torchDistanceCurrent = torchDistanceRef;// rchDistanceCurrent + (0.1f * (torchDistanceTarget - torchDistanceCurrent));
-    torchLight.setDistance(torchDistanceCurrent);
   }
 
   public void setMoving(boolean m) {

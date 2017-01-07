@@ -8,7 +8,7 @@ import timboe.hunted.render.Sprites;
 /**
  * Created by Tim on 28/12/2016.
  */
-public class Player extends EntityBase {
+public class Player extends Torch {
 
 
   public Player() {
@@ -16,7 +16,7 @@ public class Player extends EntityBase {
     setTexture("playerE");
     speed = Param.PLAYER_SPEED;
     setAsPlayerBody(0.5f, 0.25f);
-    addTorchToEntity(true, false, true, 0f, Param.PLAYER_FLAME, 0f, 0.25f);
+    addTorchToEntity(true, false, true, 0f, Param.PLAYER_FLAME, true, null);
     torchDistanceRef = Param.PLAYER_TORCH_STRENGTH;
   }
 

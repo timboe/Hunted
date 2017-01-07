@@ -16,11 +16,14 @@ public class Param {
   public static final int CAMERA_LEAD = TILE_SIZE*2;
 
   public static final int RAYS = 256;
-  public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, .75f);
-  public static final Color PLAYER_FLAME = new Color(.1f, .1f, .1f, .7f);
-  public static final Color WALL_FLAME = new Color(.1f, .1f, .1f, .5f);
+  public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, 1f);
+  public static final Color PLAYER_FLAME = new Color(.5f, .5f, .2f, .7f);
+  public static final Color WALL_FLAME_CAST = new Color(.5f, .5f, .2f, .7f);
+  public static final Color WALL_FLAME_SPOT = new Color(1f, 0f, 0f, .8f);
+
   public static final int PLAYER_TORCH_STRENGTH = 15;
   public static final int WALL_TORCH_STRENGTH = PLAYER_TORCH_STRENGTH/2;
+  public static final float SMALL_TORCH_STRENGTH = 1.5f;
   public static final Color AMBIENT_LIGHT = new Color(.1f, .1f, .1f, .02f);
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
   public static final int TORCH_SPACING = 5;
