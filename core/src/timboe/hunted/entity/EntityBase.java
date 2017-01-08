@@ -16,7 +16,7 @@ import timboe.hunted.world.Room;
  */
 public class EntityBase extends Actor {
   protected TextureRegion[] textureRegion = new TextureRegion[10];
-  protected int currentFrame;
+  public int currentFrame;
   protected int nFrames;
 
   protected Body body = null;
@@ -84,7 +84,7 @@ public class EntityBase extends Actor {
     fixtureDef.shape = boxShape;
     fixtureDef.density = 1f;
     fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.SENSOR_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.TORCH_ENTITY; // I collide with
     body.createFixture(fixtureDef);
 
     boxShape.dispose();
@@ -108,10 +108,10 @@ public class EntityBase extends Actor {
     fixtureDef.shape = circleShape;
     fixtureDef.density = 1f;
     fixtureDef.filter.categoryBits = Param.PLAYER_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.WORLD_ENTITY | Param.BIGBAD_ENTITY | Param.PLAYER_ENTITY | Param.SENSOR_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.WORLD_ENTITY | Param.BIGBAD_ENTITY | Param.PLAYER_ENTITY | Param.TORCH_ENTITY; // I collide with
     if (this instanceof BigBad) {
       fixtureDef.filter.categoryBits = Param.BIGBAD_ENTITY; // I am a
-//      fixtureDef.filter.maskBits = Param.SENSOR_ENTITY; // I collide with
+//      fixtureDef.filter.maskBits = Param.TORCH_ENTITY; // I collide with
     }
     body.createFixture(fixtureDef);
     circleShape.dispose();

@@ -4,8 +4,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.entity.Torch;
+import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
-import timboe.hunted.manager.Physics;
 
 /**
  * Created by Tim on 02/01/2017.
@@ -37,8 +37,8 @@ public class CollisionHandle implements ContactListener {
       if (myEntity instanceof Tile) {
         Tile t = (Tile) myEntity;
         if (t.switchID == -2) return;
-        else if (t.switchID == -1) Physics.getInstance().switchEntry = true;
-        else Physics.getInstance().switchKeyRoom[ t.switchID ] = true;
+        else if (t.switchID == -1) GameState.getInstance().switchExit = true;
+        else GameState.getInstance().switchKeyRoom[ t.switchID ] = true;
       }
     }
 
@@ -52,8 +52,8 @@ public class CollisionHandle implements ContactListener {
       if (myEntity instanceof Tile) {
         Tile t = (Tile) myEntity;
         if (t.switchID == -2) return;
-        else if (t.switchID == -1) Physics.getInstance().switchEntry = false;
-        else Physics.getInstance().switchKeyRoom[t.switchID] = false;
+        else if (t.switchID == -1) GameState.getInstance().switchExit = false;
+        else GameState.getInstance().switchKeyRoom[t.switchID] = false;
       }
     }
   }

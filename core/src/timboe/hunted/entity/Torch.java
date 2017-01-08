@@ -75,7 +75,7 @@ public class Torch extends EntityBase {
         torchDistanceRef,
         0f, 0f, body.getAngle(), range);
     }
-    torchLight[nLight].setContactFilter(Param.SENSOR_ENTITY,
+    torchLight[nLight].setContactFilter(Param.TORCH_ENTITY,
       (short)0,
       (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
     if (addToBody) {

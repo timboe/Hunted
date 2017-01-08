@@ -26,7 +26,7 @@ public class WorldGen {
   private Random r;
 
   private Room nearestCentre;
-  private Room entryRoom;
+  private Room exitRoom;
   private Vector<Room> keyRooms;
 
   private final int ROOM_PLACE_TRIES = 2000;
@@ -51,10 +51,16 @@ public class WorldGen {
 
   public Vector<Room> getAllRooms() { return allRooms; }
 
+  public void updatePhysics() {
+    for (Room room : allRooms) {
+      room.updatePhysics(); // Smell dissipation
+    }
+  }
+
   public void generateWorld() {
     int tryN = 0;
     boolean success = false;
-    while (!success && ++tryN < 10 ) {
+    while (!success && ++tryN < 25) {
       success = tryWorld();
     }
     if (!success) {
@@ -80,7 +86,7 @@ public class WorldGen {
     Sprites.getInstance().addTileRigidBodies();
     success &= placeBigBad();
     if (!success) return success;
-    success &= placeEntrance();
+    success &= placeExit();
     if (!success) return success;
     success &= placeKeyRooms();
     Sprites.getInstance().textureWalls();
@@ -92,7 +98,7 @@ public class WorldGen {
     corridors.clear();
     allRooms.clear();
     keyRooms.clear();
-    entryRoom = null;
+    exitRoom = null;
     nearestCentre = null;
     timboe.hunted.manager.Physics.getInstance().reset();
     Sprites.getInstance().reset();
@@ -154,7 +160,7 @@ public class WorldGen {
     return true;
   }
 
-  private boolean placeEntrance() {
+  private boolean placeExit() {
     // Find a room at the top. Needs to be in top 75%, wide enough, no north connections
     Vector<Room> entryRoomOptions = new Vector<Room>();
     for (final Room room : rooms) {
@@ -173,19 +179,24 @@ public class WorldGen {
       Gdx.app.error("WorldGen", "Warning - Could not find a maze entrance");
       return false;
     }
-    entryRoom = entryRoomOptions.elementAt( r.nextInt(entryRoomOptions.size()) );
-    Sprites.getInstance().addEntryRoom(entryRoom);
+    exitRoom = entryRoomOptions.elementAt( r.nextInt(entryRoomOptions.size()) );
+    Sprites.getInstance().addEntryRoom(exitRoom);
     return true;
   }
 
   public boolean placeKeyRooms() {
     final int exclusionDist = Math.min(Param.TILE_X, Param.TILE_Y) / 4; // Rooms must be far apart
-    final Vector2 entryRoomPos = entryRoom.getPosition(new Vector2());
+    final Vector2 entryRoomPos = exitRoom.getPosition(new Vector2());
     int attempt = 0;
-    while (keyRooms.size() != Param.KEY_ROOMS && ++attempt < ROOM_PLACE_TRIES) {
-      Room room = rooms.get( Utility.r.nextInt(rooms.size()) );
+    Vector<Room> possibleRooms = new Vector<Room>();
+    for (Room room : rooms) {
       if (room.getConnectedRooms().size() > 2) continue; // Room can have at most two connections
-      if (room.width < 10 || room.height < 10) continue; // Room has to be large enough
+      if (room.width < 10 || room.height < 10) continue; // Room has to be large enough // TODO magic numbers
+      possibleRooms.add(room);
+    }
+    if (possibleRooms.size() < Param.KEY_ROOMS) return false;
+    while (keyRooms.size() != Param.KEY_ROOMS && ++attempt < ROOM_PLACE_TRIES) {
+      Room room = possibleRooms.get( Utility.r.nextInt(possibleRooms.size()) );
       Vector2 roomPos = room.getPosition(new Vector2());
       boolean vetoed = roomPos.dst(entryRoomPos) < exclusionDist;
       for (Room testRoom : keyRooms) {

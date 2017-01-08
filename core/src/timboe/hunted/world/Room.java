@@ -123,7 +123,7 @@ public class Room extends Rectangle {
       }
     }
     if (choices.size() == 0) choices.putAll(linksTo); // No un-visited so random choice between all
-    List<Room> keys = new ArrayList<Room>(choices.keySet()); // Round-about way of choosing a random entry
+    List<Room> keys = new ArrayList<Room>(choices.keySet()); // Round-about way of choosing a random exitDoor
     Room chosen = keys.get(Utility.r.nextInt(keys.size()));
     for (HashMap.Entry<Room,Room> entry : choices.entrySet()) {
       if (entry.getKey() == chosen) {

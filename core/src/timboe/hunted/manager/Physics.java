@@ -30,9 +30,6 @@ public class Physics {
   Color ambientLightMod = Param.AMBIENT_LIGHT.cpy();
   float currentReductionPercent = 1f;
 
-  public boolean switchEntry = false;
-  public boolean[] switchKeyRoom = new boolean[Param.KEY_ROOMS];
-
   private CollisionHandle collisionHandle = null;
   private boolean resetLights = false;
 
@@ -54,18 +51,16 @@ public class Physics {
   }
 
   public void updatePhysics() {
-    Sprites.getInstance().getPlayer().updatePhysics();
-    Sprites.getInstance().getBigBad().updatePhysics();
-    Physics.getInstance().worldBox2D.step(Gdx.graphics.getDeltaTime(), 6, 2);
-    Physics.getInstance().rayHandler.update();
-    Sprites.getInstance().getPlayer().updatePosition();
-    Sprites.getInstance().getBigBad().updatePosition();
+    GameState.getInstance().updatePhysics();
+    Sprites.getInstance().updatePhysics();
+    worldBox2D.step(Gdx.graphics.getDeltaTime(), 6, 2);
+    rayHandler.update();
+    Sprites.getInstance().updatePosition();
+    WorldGen.getInstance().updatePhysics();
+    torchPhysics();
+  }
 
-    for (Room room : WorldGen.getInstance().getAllRooms()) {
-      room.updatePhysics(); // Smell dissipation
-    }
-
-
+  public void torchPhysics() {
     // Check if torches need dimming
     float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
     boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
@@ -94,7 +89,6 @@ public class Physics {
     for (Torch t : litTorches) {
       t.flicker();
     }
-
   }
 
   public void reset() {
