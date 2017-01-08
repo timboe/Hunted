@@ -57,8 +57,7 @@ public class EntityBase extends Actor {
     setHeight(textureRegion[0].getRegionHeight());
     if (dupeMiddleFrame) {
       assert(frames == 3); // TODO make this work for arb. length
-      textureRegion[frames] = textureRegion[frames-1];
-      textureRegion[frames-1] = textureRegion[1];
+      textureRegion[frames] = textureRegion[1];
       ++nFrames;
     }
   }
