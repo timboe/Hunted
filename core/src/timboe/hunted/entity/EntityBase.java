@@ -34,13 +34,13 @@ public class EntityBase extends Actor {
   public Body getBody() { return body; }
 
   public void setTexture(String name) {
-    setTexture(name, 0);
+    setTexture(name, 1);
   }
 
   public void setTexture(String name, int frames) {
     nFrames = frames;
     currentFrame = 0;
-    if (frames == 0) {
+    if (frames == 1) {
       textureRegion[0] = Textures.getInstance().getTexture(name);
     } else {
       for (int i = 0; i < frames; ++i) {
@@ -151,7 +151,7 @@ public class EntityBase extends Actor {
 
   @Override
   public void draw(Batch batch, float alpha) {
-    batch.draw(textureRegion[currentFrame] ,this.getX(),this.getY());
+    batch.draw(textureRegion[currentFrame % nFrames] ,this.getX(),this.getY());
   }
 
 }

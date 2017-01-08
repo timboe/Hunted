@@ -28,6 +28,9 @@ public class Physics {
   Color ambientLightMod = Param.AMBIENT_LIGHT.cpy();
   float currentReductionPercent = 1f;
 
+  public boolean switchEntry = false;
+  public boolean[] switchKeyRoom = new boolean[Param.KEY_ROOMS];
+
   private CollisionHandle collisionHandle = null;
   private boolean resetLights = false;
 

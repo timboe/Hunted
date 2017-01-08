@@ -81,6 +81,7 @@ public class Sprites {
     getTile(xStart + 1, yStart - 1).setTexture("blobGreen",2);
     getTile(xStart + 2, yStart - 1).setTexture("blobBlue",2);
     getTile(xStart + 1, yStart - 2).setTexture("switch",7);
+    getTile(xStart + 1, yStart - 2).addSwitchSensor(-1);
     Tile torchA = new Tile(xStart - 1, yStart - 2);
     Tile torchB = new Tile(xStart + 3, yStart - 2);
     torchA.setAsPhysicsBody(xStart - 1 + .35f, yStart - 2, .3f, 1.2f);
@@ -98,6 +99,8 @@ public class Sprites {
     Tile shrine = new Tile(x + 1, y + 1);
     Tile lightA = new Tile(x, y + 1);
     Tile lightB = new Tile(x + 3, y + 1);
+    Tile torchA = new Tile(x, y + 2);
+    Tile torchB = new Tile(x + 3, y + 2);
     shrine.setAsPhysicsBody(x + 1.5f, y + 1.25f, 1f, 2.5f);
     lightA.setAsPhysicsBody(x + 0.2f, y + 1.1f, .6f, .8f);
     lightB.setAsPhysicsBody(x + 3.2f, y + 1.1f, .6f, .8f);;
@@ -110,15 +113,14 @@ public class Sprites {
     }
     shrine.setTexture(Utility.prob(.5f) ? "totemA" + colour : "totemB" + colour, 2);
     getTile(x + 2, y).setTexture("blob" + colour, 2);
-    lightA.setTexture("lamp" + colour,2);
-    lightB.setTexture("lamp" + colour,2);
     getTile(x + 1, y).setTexture("switch", 7);
-    Tile torchA = new Tile(x, y + 2);
-    Tile torchB = new Tile(x + 3, y + 2);
+    getTile(x + 1, y).addSwitchSensor(n);
     torchA.setTexture("torchTall");
     torchB.setTexture("torchTall");
     torchA.setAsPhysicsBody(x + .35f, y + 2, .3f, 1.2f);
-    torchB.setAsPhysicsBody(x + 3 + .35f, y + 2, .3f, 1.2f);;
+    torchB.setAsPhysicsBody(x + 3 + .35f, y + 2, .3f, 1.2f);
+    lightA.setTexture("lamp" + colour,2);
+    lightB.setTexture("lamp" + colour,2);
     addToStage(torchA);
     addToStage(torchB);
     addToStage(lightA);
