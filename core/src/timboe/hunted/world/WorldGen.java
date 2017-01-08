@@ -288,26 +288,31 @@ public class WorldGen {
           }
           final int corridorLength = (int) (above.getY() - (below.getY() + below.getHeight()));
           if (corridorLength <= CORRIDOR_MAX_LENGTH && Utility.prob(CORRIDOR_CHANCE)) { // It fits
-            int startX = 0;
             int possibleOffset = (int) intersectionY.getWidth() - Param.CORRIDOR_SIZE;
-            if (possibleOffset > 0) startX = r.nextInt(possibleOffset);
-            Room c = new Room(intersectionY.getX() + startX,
-              below.getY() + below.getHeight(),
-              Param.CORRIDOR_SIZE,
-              corridorLength);
-            // Check that the corridor does not intercept any other large rooms
-            boolean overlap = false;
-            Room fatC = new Room(c.getX() - 2, c.getY(), c.getWidth() + 4, c.getHeight());
-            for (Room overlapCheck : rooms) {
-              if (overlapCheck.overlaps(fatC)) overlap = true;
+            // Check possible offsets
+            Vector<Room> possibleCorridors = new Vector<Room>();
+            for (int startX = 0; startX <= possibleOffset; ++startX) {
+              Room c = new Room(intersectionY.getX() + startX,
+                below.getY() + below.getHeight(),
+                Param.CORRIDOR_SIZE,
+                corridorLength);
+              // Check that the corridor does not intercept any other large rooms
+              boolean overlap = false;
+              Room fatC = new Room(c.getX() - 2, c.getY(), c.getWidth() + 4, c.getHeight());
+              for (Room overlapCheck : rooms) {
+                if (overlapCheck.overlaps(fatC)) overlap = true;
+              }
+              if (!overlap) possibleCorridors.add(c);
             }
-            if (!overlap) {
-              c.setCorridor(Room.CorridorDirection.VERTICAL, below, above);
-              corridors.add(c);
-              allRooms.add(c);
+            if (possibleCorridors.size() > 0) {
+              int id = r.nextInt(possibleCorridors.size());
+              possibleCorridors.get(id).setCorridor(Room.CorridorDirection.VERTICAL, below, above);
+              corridors.add(possibleCorridors.get(id));
+              allRooms.add(possibleCorridors.get(id));
             }
           }
         }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         boolean overlapX = Intersector.intersectRectangles(extendedX, toCheck, intersectionX);
         if (overlapX && intersectionX.getHeight() >= Param.CORRIDOR_SIZE) { // Enough space for a corridor
           Room left = room;
@@ -318,23 +323,27 @@ public class WorldGen {
           }
           final int corridorLength = (int) (right.getX() - (left.getX() + left.getWidth()));
           if (corridorLength <= CORRIDOR_MAX_LENGTH && Utility.prob(CORRIDOR_CHANCE)) { // It fits
-            int startY = 0;
             int possibleOffset = (int) intersectionX.getHeight() - Param.CORRIDOR_SIZE;
-            if (possibleOffset > 0) startY = r.nextInt(possibleOffset);
-            Room c = new Room(left.getX() + left.getWidth(),
-              intersectionX.getY() + startY,
-              corridorLength,
-              Param.CORRIDOR_SIZE);
-            // Check that the corridor does not intercept any other large rooms
-            boolean overlap = false;
-            Room fatC = new Room(c.getX(), c.getY() - 3, c.getWidth(), c.getHeight() + 6);
-            for (Room overlapCheck : rooms) {
-              if (overlapCheck.overlaps(fatC)) overlap = true;
+            // Check possible offsets
+            Vector<Room> possibleCorridors = new Vector<Room>();
+            for (int startY = 0; startY <= possibleOffset; ++startY) {
+              Room c = new Room(left.getX() + left.getWidth(),
+                intersectionX.getY() + startY,
+                corridorLength,
+                Param.CORRIDOR_SIZE);
+              // Check that the corridor does not intercept any other large rooms
+              boolean overlap = false;
+              Room fatC = new Room(c.getX(), c.getY() - 3, c.getWidth(), c.getHeight() + 6);
+              for (Room overlapCheck : rooms) {
+                if (overlapCheck.overlaps(fatC)) overlap = true;
+              }
+              if (!overlap) possibleCorridors.add(c);
             }
-            if (!overlap) {
-              c.setCorridor(Room.CorridorDirection.HORIZONTAL, left, right);
-              corridors.add(c);
-              allRooms.add(c);
+            if (possibleCorridors.size() > 0) {
+              int id = r.nextInt(possibleCorridors.size());
+              possibleCorridors.get(id).setCorridor(Room.CorridorDirection.HORIZONTAL, left, right);
+              corridors.add(possibleCorridors.get(id));
+              allRooms.add(possibleCorridors.get(id));
             }
           }
         }

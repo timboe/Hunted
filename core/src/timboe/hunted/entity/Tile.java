@@ -5,12 +5,17 @@ import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Physics;
+import timboe.hunted.manager.Sprites;
+import timboe.hunted.pathfinding.Node;
 import timboe.hunted.world.Room;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Tim on 28/12/2016.
  */
-public class Tile extends EntityBase {
+public class Tile extends EntityBase implements Node<Tile> {
 
   private boolean isFloor = false;
   private boolean hasPhysics = false;
@@ -18,6 +23,7 @@ public class Tile extends EntityBase {
   private Room myRoom = null;
   public int switchID = -1; // -1 is invalid, 0=exitDoor. 1-N are rooms
   public int activationID = -1; // Which switch causes me to animate when true? -1 is invalid
+  private HashSet<Tile> webNeighbours = new HashSet<Tile>();
 
   public Tile(int x, int y) {
     super(x, y);
@@ -33,6 +39,12 @@ public class Tile extends EntityBase {
   }
 
   public void setIsWeb() {
+    // TODO don't do this on every frame.... waste
+    updateNeighbours(); // Update my neighbours
+    HashSet<Tile> cpy = (HashSet<Tile>) webNeighbours.clone();
+    for (Tile t : cpy) {
+      t.updateNeighbours(); // And theirs (they need to add me)
+    }
     if (isWeb) return;
     setTexture("webA");
     isWeb = true;
@@ -75,6 +87,10 @@ public class Tile extends EntityBase {
     return isFloor;
   }
 
+  public boolean getIsWeb() {
+    return isWeb;
+  }
+
   public boolean getHasPhysics() {
     return hasPhysics;
   }
@@ -83,7 +99,20 @@ public class Tile extends EntityBase {
     hasPhysics = p;
   }
 
-//  public void setIsCorridor() {
-//    texture =  Textures.getInstance().dummyCorridor;
-//  }
+  public double getHeuristic(Tile goal) {
+    return Math.sqrt( Math.pow( getX() - goal.getX(), 2) + Math.pow( getY() - goal.getY(), 2) );
+  }
+
+  public double getTraversalCost(Tile neighbour) {
+    return 1f; // Web tiles are always one apart and always accessible
+  }
+
+  private void updateNeighbours() {
+    webNeighbours.clear();
+    Sprites.getInstance().getNeighbourWeb((int)getX()/Param.TILE_SIZE, (int)getY()/Param.TILE_SIZE, webNeighbours);
+  }
+
+  public Set<Tile> getNeighbours() {
+    return webNeighbours;
+  }
 }

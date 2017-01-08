@@ -6,9 +6,11 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.world.Room;
+import timboe.hunted.world.WorldGen;
 
 import java.util.*;
 
@@ -55,6 +57,10 @@ public class BigBad extends ParticleEffectActor {
 
 //  @Override
   public void updatePhysics() {
+    speed = Param.BIGBAD_SPEED;
+    for (int i = 1; i <= Param.KEY_ROOMS; ++i) {
+      if (GameState.getInstance().progress[i] == Param.SWITCH_TIME) speed += Param.BIGBAD_SPEED_BOOST;
+    }
     distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
     runAI();
     Tile t = getTileUnderEntity();

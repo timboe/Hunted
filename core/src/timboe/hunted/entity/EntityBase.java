@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.Param;
+import timboe.hunted.Utility;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Textures;
 import timboe.hunted.manager.Physics;
@@ -166,4 +167,8 @@ public class EntityBase extends Actor {
     batch.draw(textureRegion[currentFrame % nFrames] ,this.getX(),this.getY());
   }
 
+//  // TODO check for danger here
+//  public int hashCode() {
+//    return Utility.xyToID((int)getX(), (int)getY());
+//  }
 }

@@ -8,12 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.entity.*;
+import timboe.hunted.pathfinding.PathFinding;
 import timboe.hunted.world.Room;
 import timboe.hunted.world.WorldGen;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by Tim on 28/12/2016.
@@ -234,6 +233,27 @@ public class Sprites {
     Gdx.app.log("Sprites", "Invisible="+incInvisible+" required " + count + " rigid bodies");
   }
 
+  public Set<Tile> getNeighbourWeb(final int x, final int y, Set<Tile> returnSet) {
+//    Gdx.app.log("getN", "x "+x+" y " + y );
+    for (int cX = x - 1; cX < x + 2; ++cX) {
+      Tile t = getTile(cX, y);
+      if (t.getIsWeb()) returnSet.add(t);
+    }
+    for (int cY = y - 1; cY < y + 2; ++cY) {
+      Tile t = getTile(x, cY);
+      if (t.getIsWeb()) returnSet.add(t);
+    }
+    return returnSet;
+  }
+
+  public List<Tile> findPath(int xStart, int yStart, int xGoal, int yGoal) {
+    return PathFinding.doAStar(getTile(xStart, yStart), getTile(xGoal, yGoal));
+  }
+
+  public List<Tile> findPath(Tile start, Tile end) {
+    return PathFinding.doAStar(start, end);
+  }
+
   private void getNeighbourFloor(final int x, final int y, HashMap<String, Boolean> map) {
     map.clear(); // Should not be needed
     for (int d = 0; d < 8; ++d) {
@@ -279,7 +299,7 @@ public class Sprites {
           break;
       }
       if (cX >= Param.TILE_X || cY >= Param.TILE_Y || cX < 0 || cY < 0) map.put(id, Boolean.FALSE);
-      else map.put(id, Sprites.getInstance().getTile(cX, cY).getIsFloor());
+      else map.put(id, getTile(cX, cY).getIsFloor());
     }
   }
 

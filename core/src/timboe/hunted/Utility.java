@@ -16,8 +16,8 @@ public class Utility {
   public static Random r = new Random();
 
   public static Integer xyToID(int x, int y) {
-    assert (y < 1024);
-    return (1024 * x) + y;
+    assert (y < 2048);
+    return (2048 * x) + y;
   }
 
   static public boolean prob(int chanceOfPass) {

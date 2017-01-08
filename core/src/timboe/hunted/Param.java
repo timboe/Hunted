@@ -34,7 +34,8 @@ public class Param {
 
   public static final float PLAYER_SPEED = 10f;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
-  public static final float BIGBAD_SPEED = .75f * PLAYER_SPEED;
+  public static final float BIGBAD_SPEED = .5f * PLAYER_SPEED;
+  public static final float BIGBAD_SPEED_BOOST = .2f * PLAYER_SPEED;
   public static final float BIGBAD_ANGULAR_SPEED = (float)Math.PI/90f;
 
   public static final float BIGBAD_SENSE_DISTANCE = 20f; // Within what line of sight can we see the player
