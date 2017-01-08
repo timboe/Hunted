@@ -6,8 +6,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
-import timboe.hunted.render.Sprites;
-import timboe.hunted.world.Physics;
+import timboe.hunted.manager.Sprites;
+import timboe.hunted.manager.Physics;
 import timboe.hunted.world.Room;
 
 import java.util.*;

@@ -6,8 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
-import timboe.hunted.entity.Tile;
-import timboe.hunted.render.Sprites;
+import timboe.hunted.manager.*;
 
 import java.util.*;
 
@@ -95,7 +94,7 @@ public class WorldGen {
     keyRooms.clear();
     entryRoom = null;
     nearestCentre = null;
-    Physics.getInstance().reset();
+    timboe.hunted.manager.Physics.getInstance().reset();
     Sprites.getInstance().reset();
   }
 

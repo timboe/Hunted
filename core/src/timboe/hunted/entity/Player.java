@@ -1,9 +1,7 @@
 package timboe.hunted.entity;
 
-import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
-import timboe.hunted.render.Sprites;
 
 
 /**

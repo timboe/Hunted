@@ -1,7 +1,6 @@
-package timboe.hunted.render;
+package timboe.hunted.manager;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -11,7 +10,6 @@ import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.ParticleEffectActor;
 import timboe.hunted.entity.Player;
 import timboe.hunted.entity.Tile;
-import timboe.hunted.world.Physics;
 import timboe.hunted.world.Room;
 
 import java.util.HashMap;

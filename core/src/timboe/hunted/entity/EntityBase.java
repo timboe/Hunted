@@ -6,9 +6,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.Param;
-import timboe.hunted.render.Sprites;
-import timboe.hunted.render.Textures;
-import timboe.hunted.world.Physics;
+import timboe.hunted.manager.Sprites;
+import timboe.hunted.manager.Textures;
+import timboe.hunted.manager.Physics;
 import timboe.hunted.world.Room;
 
 /**

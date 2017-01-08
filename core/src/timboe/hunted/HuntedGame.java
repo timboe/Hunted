@@ -1,10 +1,10 @@
 package timboe.hunted;
 
 import com.badlogic.gdx.Game;
-import timboe.hunted.render.Sprites;
-import timboe.hunted.render.Textures;
+import timboe.hunted.manager.Sprites;
+import timboe.hunted.manager.Textures;
 import timboe.hunted.screen.GameScreen;
-import timboe.hunted.world.Physics;
+import timboe.hunted.manager.Physics;
 
 public class HuntedGame extends Game {
 

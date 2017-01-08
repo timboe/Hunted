@@ -1,11 +1,11 @@
 package timboe.hunted.world;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.entity.Torch;
-import timboe.hunted.render.Sprites;
+import timboe.hunted.manager.Sprites;
+import timboe.hunted.manager.Physics;
 
 /**
  * Created by Tim on 02/01/2017.

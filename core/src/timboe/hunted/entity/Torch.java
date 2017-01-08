@@ -9,9 +9,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import timboe.hunted.Param;
-import timboe.hunted.Utility;
-import timboe.hunted.render.Sprites;
-import timboe.hunted.world.Physics;
+import timboe.hunted.manager.Sprites;
+import timboe.hunted.manager.Physics;
 
 /**
  * Created by Tim on 02/01/2017.

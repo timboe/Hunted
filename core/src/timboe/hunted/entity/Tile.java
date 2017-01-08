@@ -1,19 +1,10 @@
 package timboe.hunted.entity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
-import timboe.hunted.render.Textures;
-import timboe.hunted.world.Physics;
+import timboe.hunted.manager.Physics;
 import timboe.hunted.world.Room;
-
-import java.util.Random;
 
 /**
  * Created by Tim on 28/12/2016.

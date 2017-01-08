@@ -1,4 +1,4 @@
-package timboe.hunted.world;
+package timboe.hunted.manager;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
@@ -7,7 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import timboe.hunted.Param;
 import timboe.hunted.entity.Torch;
-import timboe.hunted.render.Sprites;
+import timboe.hunted.world.CollisionHandle;
+import timboe.hunted.world.Room;
+import timboe.hunted.world.WorldGen;
 
 import java.util.HashSet;
 
