@@ -3,6 +3,7 @@ package timboe.hunted.entity;
 import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.world.Room;
 
@@ -15,7 +16,7 @@ public class Tile extends EntityBase {
   private boolean hasPhysics = false;
   private boolean isWeb = false;
   private Room myRoom = null;
-  public int switchID = -2; // -1 is entry/exit. 0-N are rooms
+  public int switchID = -2; // -1 is exitDoor/exitDoor. 0-N are rooms
 
   public Tile(int x, int y) {
     super(x, y);
@@ -48,7 +49,7 @@ public class Tile extends EntityBase {
     circleShape.setRadius(1f);
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
-    fixtureDef.filter.categoryBits = Param.SENSOR_ENTITY; // I am a
+    fixtureDef.filter.categoryBits = Param.TORCH_ENTITY; // I am a
     fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
     fixtureDef.isSensor = true;
     body.createFixture(fixtureDef);
@@ -59,8 +60,8 @@ public class Tile extends EntityBase {
   public void act (float delta) {
     // TODO do we need to call on the super here? We don't animate any of these so prob not
     if (switchID == -2) return;
-    if (switchID == -1 && Physics.getInstance().switchEntry) ++currentFrame;
-    else if (switchID >= 0 && Physics.getInstance().switchKeyRoom[switchID]) ++currentFrame;
+    if (switchID == -1) currentFrame = (int) ((GameState.getInstance().progressExit / (float)Param.SWITCH_TIME) * nFrames);
+    else if (switchID >= 0) currentFrame = (int) ((GameState.getInstance().progressKeyRoom[switchID] / (float)Param.SWITCH_TIME) * nFrames);
   }
 
   public Room getTilesRoom() {

@@ -30,7 +30,9 @@ public class Sprites {
   private HashSet<ParticleEffectActor> particles;
   private Player player;
   private BigBad bigBad;
-  public Tile entry;
+  public Tile exitDoor;
+  public Tile exitSwitch;
+  public Tile[] keySwitch = new Tile[Param.KEY_ROOMS];
 
   private Sprites() {
   }
@@ -64,6 +66,17 @@ public class Sprites {
     }
   }
 
+  public void updatePhysics() {
+    player.updatePhysics();
+    bigBad.updatePhysics();
+  }
+
+  public void updatePosition() {
+    player.updatePosition();
+    bigBad.updatePosition();
+  }
+
+
   public void addEntryRoom(Room entryRoom) {
     final int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
     final int yStart = (int)(entryRoom.y + entryRoom.height);
@@ -73,13 +86,14 @@ public class Sprites {
     player.setPhysicsPosition(entryRoom.x + entryRoom.width/2f, entryRoom.y + entryRoom.height/2f);
     Tile t = new Tile(xStart, (int)(entryRoom.y + entryRoom.height));
     t.setTexture("entry",5);
-    entry = t;
+    exitDoor = t;
     addToStage(t);
     getTile(xStart + 0, yStart - 1).setTexture("blobRed",2);
     getTile(xStart + 1, yStart - 1).setTexture("blobGreen",2);
     getTile(xStart + 2, yStart - 1).setTexture("blobBlue",2);
-    getTile(xStart + 1, yStart - 2).setTexture("switch",7);
-    getTile(xStart + 1, yStart - 2).addSwitchSensor(-1);
+    exitSwitch = getTile(xStart + 1, yStart - 2);
+    exitSwitch.setTexture("switch",7);
+    exitSwitch.addSwitchSensor(-1);
     Tile torchA = new Tile(xStart - 1, yStart - 2);
     Tile torchB = new Tile(xStart + 3, yStart - 2);
     torchA.setAsPhysicsBody(xStart - 1 + .35f, yStart - 2, .3f, 1.2f);
@@ -111,8 +125,9 @@ public class Sprites {
     }
     shrine.setTexture(Utility.prob(.5f) ? "totemA" + colour : "totemB" + colour, 2);
     getTile(x + 2, y).setTexture("blob" + colour, 2);
-    getTile(x + 1, y).setTexture("switch", 7);
-    getTile(x + 1, y).addSwitchSensor(n);
+    keySwitch[n] = getTile(x + 1, y);
+    keySwitch[n].setTexture("switch", 7);
+    keySwitch[n].addSwitchSensor(n);
     torchA.setTexture("torchTall");
     torchB.setTexture("torchTall");
     torchA.setAsPhysicsBody(x + .35f, y + 2, .3f, 1.2f);
