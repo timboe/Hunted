@@ -98,7 +98,7 @@ public class Sprites {
     Tile shrine = new Tile(x + 1, y + 1);
     Tile lightA = new Tile(x, y + 1);
     Tile lightB = new Tile(x + 3, y + 1);
-    shrine.setAsPhysicsBody(x + 1.5f, y + 1.25f, 1f, 2f);
+    shrine.setAsPhysicsBody(x + 1.5f, y + 1.25f, 1f, 2.5f);
     lightA.setAsPhysicsBody(x + 0.2f, y + 1.1f, .6f, .8f);
     lightB.setAsPhysicsBody(x + 3.2f, y + 1.1f, .6f, .8f);;
     String colour = new String();
@@ -129,13 +129,11 @@ public class Sprites {
 
   }
 
+
+
   public void addFlameEffect(Vector2 position) {
-    ParticleEffect effect = new ParticleEffect();
-    effect.load(Gdx.files.internal("flame.p"), Textures.getInstance().getAtlas());
-    effect.scaleEffect(0.2f);
-    effect.start();
-    ParticleEffectActor PEA = new ParticleEffectActor(effect);
-    PEA.setPosition(position.x * Param.TILE_SIZE, position.y * Param.TILE_SIZE);
+    ParticleEffectActor PEA = new ParticleEffectActor(Utility.getNewFlameEffect());
+    PEA.setPosition((position.x - .5f) * Param.TILE_SIZE, (position.y - .5f) * Param.TILE_SIZE);
     tileSet.addActor(PEA);
     particles.add(PEA);
   }

@@ -73,16 +73,16 @@ public class WorldGen {
     shrinkRooms();
     makeCorridors();
     removeUnconnected();
-    if (!getAllConnected()) {
-      Gdx.app.error("WorldGen", "Warning - world not fully navigable");
-      return false;
-    }
+    success &= getAllConnected();
+    if (!success) return success;
     addRoomsToTileMap();
     Sprites.getInstance().disableInvisibleTiles();
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
     success &= placeBigBad();
+    if (!success) return success;
     success &= placeEntrance();
+    if (!success) return success;
     success &= placeKeyRooms();
     Sprites.getInstance().textureWalls();
     return success;

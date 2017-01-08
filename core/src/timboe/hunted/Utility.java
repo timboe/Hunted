@@ -1,7 +1,10 @@
 package timboe.hunted;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import timboe.hunted.render.Textures;
 
 import java.util.Random;
 
@@ -33,5 +36,13 @@ public class Utility {
     float targetAngle = (float) Math.atan2(target.y - from.y, target.x - from.x);
     if (targetAngle < 0) targetAngle += (float)2*Math.PI;
     return targetAngle;
+  }
+
+  static public ParticleEffect getNewFlameEffect() {
+    ParticleEffect effect = new ParticleEffect();
+    effect.load(Gdx.files.internal("flame.p"), Textures.getInstance().getAtlas());
+    effect.scaleEffect(0.2f);
+    effect.start();
+    return effect;
   }
 }

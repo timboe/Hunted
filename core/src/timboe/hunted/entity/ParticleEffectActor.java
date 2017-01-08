@@ -9,32 +9,34 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 /**
  * Created by Tim on 06/01/2017.
  */
-public class ParticleEffectActor extends Actor {
-  ParticleEffect particleEffect;
+public class ParticleEffectActor extends Torch {
+  public ParticleEffect particleEffect = null;
   Vector2 acc = new Vector2();
 
+  public ParticleEffectActor(int x, int y) {
+    super(x,y);
+  }
+
   public ParticleEffectActor(ParticleEffect pe) {
-    super();
+    super(0,0);
     particleEffect = pe;
   }
 
   @Override
   public void draw(Batch batch, float parentAlpha) {
-    particleEffect.draw(batch);
+    if (particleEffect != null) particleEffect.draw(batch);
+    if (textureRegion[currentFrame] != null) super.draw(batch, parentAlpha);
   }
 
   @Override
   public void act(float delta) {
     super.act(delta);
-    acc.set(getWidth()/2, getHeight()/2);
-    localToStageCoordinates(acc);
-    particleEffect.setPosition(acc.x, acc.y);
-    particleEffect.update(delta);
-  }
-
-
-  public void start() {
-    particleEffect.start();
+    if (particleEffect != null) {
+      acc.set(getWidth() / 2, getHeight() / 2);
+      localToStageCoordinates(acc);
+      particleEffect.setPosition(acc.x, acc.y);
+      particleEffect.update(delta);
+    }
   }
 
   public void allowCompletion() {

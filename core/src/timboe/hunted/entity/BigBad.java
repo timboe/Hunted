@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by Tim on 31/12/2016.
  */
-public class BigBad extends Torch {
+public class BigBad extends ParticleEffectActor {
 
   enum AIState {IDLE, ROTATE, PATHING}
   AIState aiState = AIState.IDLE;

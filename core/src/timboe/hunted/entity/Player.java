@@ -2,13 +2,14 @@ package timboe.hunted.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
+import timboe.hunted.Utility;
 import timboe.hunted.render.Sprites;
 
 
 /**
  * Created by Tim on 28/12/2016.
  */
-public class Player extends Torch {
+public class Player extends ParticleEffectActor {
 
 
   public Player() {
@@ -18,6 +19,7 @@ public class Player extends Torch {
     setAsPlayerBody(0.5f, 0.25f);
     addTorchToEntity(true, false, true, 0f, Param.PLAYER_FLAME, true, null);
     torchDistanceRef = Param.PLAYER_TORCH_STRENGTH;
+    particleEffect = Utility.getNewFlameEffect();
   }
 
   public void updatePhysics() {
