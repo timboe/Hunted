@@ -52,5 +52,7 @@ public class Param {
 
   public static final int SWITCH_TIME = 250;
 
+  public static final int ANIM_SPEED = 10; // Frames per anim update
+
 
 }

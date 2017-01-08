@@ -36,9 +36,8 @@ public class CollisionHandle implements ContactListener {
 
       if (myEntity instanceof Tile) {
         Tile t = (Tile) myEntity;
-        if (t.switchID == -2) return;
-        else if (t.switchID == -1) GameState.getInstance().switchExit = true;
-        else GameState.getInstance().switchKeyRoom[ t.switchID ] = true;
+        if (t.switchID == -1) return;
+        else GameState.getInstance().switchStatus[ t.switchID ] = true;
       }
     }
 
@@ -51,9 +50,8 @@ public class CollisionHandle implements ContactListener {
 
       if (myEntity instanceof Tile) {
         Tile t = (Tile) myEntity;
-        if (t.switchID == -2) return;
-        else if (t.switchID == -1) GameState.getInstance().switchExit = false;
-        else GameState.getInstance().switchKeyRoom[t.switchID] = false;
+        if (t.switchID == -1) return;
+        else GameState.getInstance().switchStatus[ t.switchID ] = false;
       }
     }
   }

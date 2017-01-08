@@ -16,7 +16,8 @@ public class Tile extends EntityBase {
   private boolean hasPhysics = false;
   private boolean isWeb = false;
   private Room myRoom = null;
-  public int switchID = -2; // -1 is exitDoor/exitDoor. 0-N are rooms
+  public int switchID = -1; // -1 is invalid, 0=exitDoor. 1-N are rooms
+  public int activationID = -1; // Which switch causes me to animate when true? -1 is invalid
 
   public Tile(int x, int y) {
     super(x, y);
@@ -59,9 +60,11 @@ public class Tile extends EntityBase {
   @Override
   public void act (float delta) {
     // TODO do we need to call on the super here? We don't animate any of these so prob not
-    if (switchID == -2) return;
-    if (switchID == -1) currentFrame = (int) ((GameState.getInstance().progressExit / (float)Param.SWITCH_TIME) * nFrames);
-    else if (switchID >= 0) currentFrame = (int) ((GameState.getInstance().progressKeyRoom[switchID] / (float)Param.SWITCH_TIME) * nFrames);
+    if (switchID >= 0) {
+      currentFrame = (int) ((GameState.getInstance().progress[switchID] / (float) Param.SWITCH_TIME) * nFrames);
+    } else if (activationID >= 0 && GameState.getInstance().progress[activationID] == Param.SWITCH_TIME) {
+      if (GameState.getInstance().frame % Param.ANIM_SPEED == 0) ++currentFrame;
+    }
   }
 
   public Room getTilesRoom() {

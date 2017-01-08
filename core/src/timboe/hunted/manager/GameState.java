@@ -7,11 +7,9 @@ import timboe.hunted.Param;
  */
 public class GameState {
 
-  public boolean switchExit = false;
-  public boolean[] switchKeyRoom = new boolean[Param.KEY_ROOMS];
-
-  public int progressExit = 0;
-  public int[] progressKeyRoom = new int[Param.KEY_ROOMS];
+  public int frame = 0;
+  public boolean[] switchStatus = new boolean[Param.KEY_ROOMS + 1];
+  public int[] progress = new int[Param.KEY_ROOMS + 1];
 
   private static GameState ourInstance = new GameState();
 
@@ -25,14 +23,10 @@ public class GameState {
   public void updatePhysics() {
 
     // Update logic
-    if (progressExit < Param.SWITCH_TIME) {
-      if (switchExit) ++progressExit;
-      else if (progressExit > 0) --progressExit;
-    }
-    for (int i = 0; i < Param.KEY_ROOMS; ++i) {
-      if (progressKeyRoom[i] < Param.SWITCH_TIME) {
-        if (switchKeyRoom[i]) ++progressKeyRoom[i];
-        else if (progressKeyRoom[i]> 0) --progressKeyRoom[i];
+    for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) {
+      if (progress[i] < Param.SWITCH_TIME) {
+        if (switchStatus[i]) ++progress[i];
+        else if (progress[i]> 0) --progress[i];
       }
     }
 

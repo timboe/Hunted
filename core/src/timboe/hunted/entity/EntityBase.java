@@ -1,5 +1,6 @@
 package timboe.hunted.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -151,6 +152,7 @@ public class EntityBase extends Actor {
 
   @Override
   public void draw(Batch batch, float alpha) {
+    if (currentFrame > 0) Gdx.app.log("DBG","iam "+textureRegion[0]+" "+currentFrame + " mod " + nFrames + " is " + currentFrame%nFrames);
     batch.draw(textureRegion[currentFrame % nFrames] ,this.getX(),this.getY());
   }
 

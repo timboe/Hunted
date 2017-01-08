@@ -31,8 +31,7 @@ public class Sprites {
   private Player player;
   private BigBad bigBad;
   public Tile exitDoor;
-  public Tile exitSwitch;
-  public Tile[] keySwitch = new Tile[Param.KEY_ROOMS];
+  public Tile[] keySwitch = new Tile[Param.KEY_ROOMS + 1];
 
   private Sprites() {
   }
@@ -91,9 +90,12 @@ public class Sprites {
     getTile(xStart + 0, yStart - 1).setTexture("blobRed",2);
     getTile(xStart + 1, yStart - 1).setTexture("blobGreen",2);
     getTile(xStart + 2, yStart - 1).setTexture("blobBlue",2);
-    exitSwitch = getTile(xStart + 1, yStart - 2);
-    exitSwitch.setTexture("switch",7);
-    exitSwitch.addSwitchSensor(-1);
+    getTile(xStart + 0, yStart - 1).activationID = 1;
+    getTile(xStart + 1, yStart - 1).activationID = 2;
+    getTile(xStart + 2, yStart - 1).activationID = 3;
+    keySwitch[0] = getTile(xStart + 1, yStart - 2);
+    keySwitch[0].setTexture("switch",7);
+    keySwitch[0].addSwitchSensor(0);
     Tile torchA = new Tile(xStart - 1, yStart - 2);
     Tile torchB = new Tile(xStart + 3, yStart - 2);
     torchA.setAsPhysicsBody(xStart - 1 + .35f, yStart - 2, .3f, 1.2f);
@@ -123,17 +125,21 @@ public class Sprites {
       case 2: colour = "Blue"; break;
       default:Gdx.app.error("Sprites::addKeyShrine","FATAL n = " + n); Gdx.app.exit();
     }
-    shrine.setTexture(Utility.prob(.5f) ? "totemA" + colour : "totemB" + colour, 2);
+    shrine.setTexture(Utility.prob(.5f) ? "totemA" + colour : "totemB" + colour, 3);
     getTile(x + 2, y).setTexture("blob" + colour, 2);
-    keySwitch[n] = getTile(x + 1, y);
-    keySwitch[n].setTexture("switch", 7);
-    keySwitch[n].addSwitchSensor(n);
+    getTile(x + 2, y).activationID = n+1;
+    shrine.activationID = n+1;
+    lightA.activationID = n+1;
+    lightB.activationID = n+1;
+    keySwitch[n+1] = getTile(x + 1, y);
+    keySwitch[n+1].setTexture("switch", 7);
+    keySwitch[n+1].addSwitchSensor(n+1);
     torchA.setTexture("torchTall");
     torchB.setTexture("torchTall");
     torchA.setAsPhysicsBody(x + .35f, y + 2, .3f, 1.2f);
     torchB.setAsPhysicsBody(x + 3 + .35f, y + 2, .3f, 1.2f);
-    lightA.setTexture("lamp" + colour,2);
-    lightB.setTexture("lamp" + colour,2);
+    lightA.setTexture("lamp" + colour,3);
+    lightB.setTexture("lamp" + colour,3);
     addToStage(torchA);
     addToStage(torchB);
     addToStage(lightA);
@@ -141,7 +147,6 @@ public class Sprites {
     addToStage(shrine);
     Physics.getInstance().addTorch(x + 3.5f, y + 3.2f, .5f).doCollision();
     Physics.getInstance().addTorch(x + .5f, y + 3.2f, .5f).doCollision();
-
   }
 
 
