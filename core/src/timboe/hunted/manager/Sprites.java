@@ -1,19 +1,19 @@
 package timboe.hunted.manager;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
-import timboe.hunted.entity.BigBad;
-import timboe.hunted.entity.ParticleEffectActor;
-import timboe.hunted.entity.Player;
-import timboe.hunted.entity.Tile;
+import timboe.hunted.entity.*;
 import timboe.hunted.world.Room;
+import timboe.hunted.world.WorldGen;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Vector;
 
 /**
  * Created by Tim on 28/12/2016.
@@ -30,7 +30,7 @@ public class Sprites {
   private HashSet<ParticleEffectActor> particles;
   private Player player;
   private BigBad bigBad;
-  public Tile exitDoor;
+  public ExitDoor exitDoor;
   public Tile[] keySwitch = new Tile[Param.KEY_ROOMS + 1];
 
   private Sprites() {
@@ -83,7 +83,7 @@ public class Sprites {
       getTile(x, yStart).setVisible(false);
     }
     player.setPhysicsPosition(entryRoom.x + entryRoom.width/2f, entryRoom.y + entryRoom.height/2f);
-    Tile t = new Tile(xStart, (int)(entryRoom.y + entryRoom.height));
+    ExitDoor t = new ExitDoor(xStart, (int)(entryRoom.y + entryRoom.height));
     t.setTexture("entry",5);
     exitDoor = t;
     addToStage(t);
@@ -109,7 +109,7 @@ public class Sprites {
   }
 
 
-    public void addKeyShrine(int x, int y, int n) {
+    public void addKeyShrine(int x, int y, int n, Room r) {
     Tile shrine = new Tile(x + 1, y + 1);
     Tile lightA = new Tile(x, y + 1);
     Tile lightB = new Tile(x + 3, y + 1);
@@ -125,7 +125,7 @@ public class Sprites {
       case 2: colour = "Blue"; break;
       default:Gdx.app.error("Sprites::addKeyShrine","FATAL n = " + n); Gdx.app.exit();
     }
-    shrine.setTexture(Utility.prob(.5f) ? "totemA" + colour : "totemB" + colour, 3);
+    shrine.setTexture(Utility.prob(.5f) ? "totemA" + colour : "totemB" + colour, 3, true);
     getTile(x + 2, y).setTexture("blob" + colour, 2);
     getTile(x + 2, y).activationID = n+1;
     shrine.activationID = n+1;
@@ -138,8 +138,8 @@ public class Sprites {
     torchB.setTexture("torchTall");
     torchA.setAsPhysicsBody(x + .35f, y + 2, .3f, 1.2f);
     torchB.setAsPhysicsBody(x + 3 + .35f, y + 2, .3f, 1.2f);
-    lightA.setTexture("lamp" + colour,3);
-    lightB.setTexture("lamp" + colour,3);
+    lightA.setTexture("lamp" + colour,3, true);
+    lightB.setTexture("lamp" + colour,3, true);
     addToStage(torchA);
     addToStage(torchB);
     addToStage(lightA);
@@ -147,8 +147,29 @@ public class Sprites {
     addToStage(shrine);
     Physics.getInstance().addTorch(x + 3.5f, y + 3.2f, .5f).doCollision();
     Physics.getInstance().addTorch(x + .5f, y + 3.2f, .5f).doCollision();
+    for (int i = 0; i < Utility.r.nextInt(Param.MAX_MINI_LIGHT); ++i) {
+      int rX = (int)r.getX() + Utility.r.nextInt((int)r.getWidth()-1);
+      int rY = (int)r.getY() + Utility.r.nextInt((int)r.getHeight()-1);
+      if (getClear(rX,rY)) {
+        Tile miniTorch = new Tile(rX, rY);
+        miniTorch.setTexture("lampS" + colour, 3, true);
+        miniTorch.activationID = n+1;
+        addToStage(miniTorch);
+      }
+    }
   }
 
+  public boolean getClear(int x, int y) {
+    Tile t = getTile(x,y);
+    if (!t.getIsFloor()) return false;
+    Room r = t.getTilesRoom();
+    Vector<Room> connectedCorridors = r.getCorridors();
+    Rectangle rect = new Rectangle(x, y, 1, 1);
+    for (Room corridor : connectedCorridors ) {
+      if (rect.overlaps(corridor.corridorProjection)) return false;
+    }
+    return true;
+  }
 
 
   public void addFlameEffect(Vector2 position) {

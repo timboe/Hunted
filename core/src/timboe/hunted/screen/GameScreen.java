@@ -232,10 +232,10 @@ public class GameScreen implements Screen, InputProcessor {
       }
     }
     // World space Xs
-    if (GameState.getInstance().switchStatus[0] && GameState.getInstance().frame % (2*Param.ANIM_SPEED) < Param.ANIM_SPEED) {
+    if (GameState.getInstance().switchStatus[0] && GameState.getInstance().frame % (8*Param.ANIM_SPEED) < 4*Param.ANIM_SPEED) {
       Tile s = Sprites.getInstance().keySwitch[0];
       for (int i = 0; i < Param.KEY_ROOMS; ++i) {
-        if (!GameState.getInstance().switchStatus[i + 1]) {
+        if (GameState.getInstance().progress[i + 1] < Param.SWITCH_TIME) {
           drawX(s.getX() - Param.TILE_SIZE + (i * Param.TILE_SIZE), s.getY() + Param.TILE_SIZE);
         }
       }

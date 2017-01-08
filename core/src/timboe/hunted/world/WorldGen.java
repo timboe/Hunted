@@ -60,7 +60,7 @@ public class WorldGen {
   public void generateWorld() {
     int tryN = 0;
     boolean success = false;
-    while (!success && ++tryN < 25) {
+    while (!success && ++tryN < Param.WORLDGEN_TRIES) {
       success = tryWorld();
     }
     if (!success) {
@@ -230,7 +230,7 @@ public class WorldGen {
   }
 
   private void installKeyRoom(Room room, Rectangle keyLoc, int shrineN) {
-    Sprites.getInstance().addKeyShrine((int)keyLoc.x, (int)keyLoc.y, shrineN);
+    Sprites.getInstance().addKeyShrine((int)keyLoc.x, (int)keyLoc.y, shrineN, room);
     keyRooms.add(room);
   }
 
@@ -327,7 +327,7 @@ public class WorldGen {
               Param.CORRIDOR_SIZE);
             // Check that the corridor does not intercept any other large rooms
             boolean overlap = false;
-            Room fatC = new Room(c.getX(), c.getY() - 2, c.getWidth(), c.getHeight() + 4);
+            Room fatC = new Room(c.getX(), c.getY() - 3, c.getWidth(), c.getHeight() + 6);
             for (Room overlapCheck : rooms) {
               if (overlapCheck.overlaps(fatC)) overlap = true;
             }

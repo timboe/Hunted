@@ -13,6 +13,8 @@ public class Param {
   public static final int DISPLAY_X = 1280;
   public static final int DISPLAY_Y = 720;
 
+  public static final int WORLDGEN_TRIES = 100;
+
   public static final int CAMERA_LEAD = TILE_SIZE*2;
 
   public static final int RAYS = 256;
@@ -28,6 +30,7 @@ public class Param {
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
   public static final int TORCH_SPACING = 5;
   public static final float TORCH_FLICKER = 2f;
+  public static final int MAX_MINI_LIGHT = 20; // Mini lights per key room
 
   public static final float PLAYER_SPEED = 10f;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
@@ -53,6 +56,6 @@ public class Param {
   public static final int SWITCH_TIME = 250;
 
   public static final int ANIM_SPEED = 10; // Frames per anim update
-
+  public static final int MAX_FRAMES = 7;
 
 }

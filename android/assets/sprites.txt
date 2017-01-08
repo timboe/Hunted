@@ -444,77 +444,77 @@ lampRed0
   orig: 32, 32
   offset: 0, 0
   index: -1
-lampSBlue0
+lampRed1
   rotate: false
   xy: 477, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lampSBlue1
+lampRed2
   rotate: false
   xy: 171, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lampSBlue2
+lampSBlue0
   rotate: false
   xy: 273, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lampSGreen0
+lampSBlue1
   rotate: false
   xy: 375, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lampSGreen1
+lampSBlue2
   rotate: false
   xy: 341, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lampSGreen2
+lampSGreen0
   rotate: false
   xy: 409, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lampSRed0
+lampSGreen1
   rotate: false
   xy: 307, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lampSRed1
+lampSGreen2
   rotate: false
   xy: 239, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lampSRed2
+lampSRed0
   rotate: false
   xy: 205, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lightRed1
+lampSRed1
   rotate: false
   xy: 1, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-lightRed2
+lampSRed2
   rotate: false
   xy: 443, 1
   size: 32, 32
@@ -843,7 +843,7 @@ totemBRed1
   orig: 64, 96
   offset: 0, 0
   index: -1
-totoemBRed2
+totemBRed2
   rotate: false
   xy: 265, 535
   size: 64, 96

@@ -16,7 +16,7 @@ import timboe.hunted.world.Room;
  * Created by Tim on 30/12/2016.
  */
 public class EntityBase extends Actor {
-  protected TextureRegion[] textureRegion = new TextureRegion[10];
+  protected TextureRegion[] textureRegion = new TextureRegion[Param.MAX_FRAMES];
   public int currentFrame;
   protected int nFrames;
 
@@ -35,10 +35,15 @@ public class EntityBase extends Actor {
   public Body getBody() { return body; }
 
   public void setTexture(String name) {
-    setTexture(name, 1);
+    setTexture(name, 1, false);
   }
 
   public void setTexture(String name, int frames) {
+    setTexture(name, frames, false);
+  }
+
+  public void setTexture(String name, int frames, boolean dupeMiddleFrame) {
+    assert(frames <= Param.MAX_FRAMES);
     nFrames = frames;
     currentFrame = 0;
     if (frames == 1) {
@@ -50,6 +55,12 @@ public class EntityBase extends Actor {
     }
     setWidth(textureRegion[0].getRegionWidth());
     setHeight(textureRegion[0].getRegionHeight());
+    if (dupeMiddleFrame) {
+      assert(frames == 3); // TODO make this work for arb. length
+      textureRegion[frames] = textureRegion[frames-1];
+      textureRegion[frames-1] = textureRegion[1];
+      ++nFrames;
+    }
   }
 
 
@@ -152,7 +163,7 @@ public class EntityBase extends Actor {
 
   @Override
   public void draw(Batch batch, float alpha) {
-    if (currentFrame > 0) Gdx.app.log("DBG","iam "+textureRegion[0]+" "+currentFrame + " mod " + nFrames + " is " + currentFrame%nFrames);
+//    if (currentFrame > 0) Gdx.app.log("DBG","iam "+textureRegion[0]+" "+currentFrame + " mod " + nFrames + " is " + currentFrame%nFrames);
     batch.draw(textureRegion[currentFrame % nFrames] ,this.getX(),this.getY());
   }
 
