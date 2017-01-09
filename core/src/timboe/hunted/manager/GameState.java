@@ -1,6 +1,7 @@
 package timboe.hunted.manager;
 
 import timboe.hunted.Param;
+import timboe.hunted.entity.Tile;
 
 /**
  * Created by Tim on 08/01/2017.
@@ -10,6 +11,8 @@ public class GameState {
   public int frame = 0;
   public boolean[] switchStatus = new boolean[Param.KEY_ROOMS + 1];
   public int[] progress = new int[Param.KEY_ROOMS + 1];
+  public Tile aiDestination = null;
+  public int aiCooldown = 0;
 
   private static GameState ourInstance = new GameState();
 
@@ -21,6 +24,9 @@ public class GameState {
   }
 
   public void updatePhysics() {
+
+    // Update cooldown
+    if (aiCooldown > 0) --aiCooldown;
 
     // Update logic for key switches
     boolean allKeys = true;

@@ -1,6 +1,8 @@
 package timboe.hunted.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
+import timboe.hunted.Param;
 import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.entity.Torch;
@@ -36,8 +38,12 @@ public class CollisionHandle implements ContactListener {
 
       if (myEntity instanceof Tile) {
         Tile t = (Tile) myEntity;
-        if (t.switchID == -1) return;
-        else GameState.getInstance().switchStatus[ t.switchID ] = true;
+        if (t.switchID >= 0) {
+          GameState.getInstance().switchStatus[t.switchID] = true;
+        } else if (t.getIsWeb() && GameState.getInstance().aiCooldown == 0) {
+          GameState.getInstance().aiCooldown = Param.BIGBAD_AI_COOLDOWN;
+
+        }
       }
     }
 
@@ -50,8 +56,9 @@ public class CollisionHandle implements ContactListener {
 
       if (myEntity instanceof Tile) {
         Tile t = (Tile) myEntity;
-        if (t.switchID == -1) return;
-        else GameState.getInstance().switchStatus[ t.switchID ] = false;
+        if (t.switchID >= 0) {
+          GameState.getInstance().switchStatus[t.switchID] = false;
+        }
       }
     }
   }

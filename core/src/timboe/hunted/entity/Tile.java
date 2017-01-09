@@ -47,6 +47,7 @@ public class Tile extends EntityBase implements Node<Tile> {
     }
     if (isWeb) return;
     setTexture("webA");
+    addWebSensor();
     isWeb = true;
   }
 
@@ -60,6 +61,24 @@ public class Tile extends EntityBase implements Node<Tile> {
     bodyDef.type = BodyDef.BodyType.StaticBody;
     CircleShape circleShape = new CircleShape();
     circleShape.setRadius(1f);
+    FixtureDef fixtureDef = new FixtureDef();
+    fixtureDef.shape = circleShape;
+    fixtureDef.filter.categoryBits = Param.TORCH_ENTITY; // I am a
+    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
+    fixtureDef.isSensor = true;
+    body.createFixture(fixtureDef);
+    circleShape.dispose();
+  }
+
+  public void addWebSensor() {
+    BodyDef bodyDef = new BodyDef();
+    bodyDef.type = BodyDef.BodyType.StaticBody;
+    bodyDef.position.set(getX()/Param.TILE_SIZE + .5f, getY()/Param.TILE_SIZE + .5f);
+    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+    body.setUserData(this);
+    bodyDef.type = BodyDef.BodyType.StaticBody;
+    CircleShape circleShape = new CircleShape();
+    circleShape.setRadius(.35f);
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
     fixtureDef.filter.categoryBits = Param.TORCH_ENTITY; // I am a
@@ -99,7 +118,7 @@ public class Tile extends EntityBase implements Node<Tile> {
     hasPhysics = p;
   }
 
-  public double getHeuristic(Tile goal) {
+  public double getHeuristic(Tile goal) { // Straight line distance
     return Math.sqrt( Math.pow( getX() - goal.getX(), 2) + Math.pow( getY() - goal.getY(), 2) );
   }
 

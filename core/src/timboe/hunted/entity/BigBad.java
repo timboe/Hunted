@@ -19,16 +19,19 @@ import java.util.*;
  */
 public class BigBad extends ParticleEffectActor {
 
-  enum AIState {IDLE, ROTATE, PATHING}
+  enum AIState {IDLE, ROTATE, PATHING, HUNTPATHING, DOASTAR}
   AIState aiState = AIState.IDLE;
-  Vector<Vector2> movementTargets;
+  LinkedList<Tile> movementTargets;
   HashSet<Room> roomsVisited;
   Vector2 pathingVector; //TODO this is debug
+  Vector2 atDestinationVector = new Vector2();
 
   RayCastCallback raycastCallback = null;
   private float raycastMin = 1f;
+  private float angularSpeed;
   public boolean canSeePlayer;
   public float distanceFromPlayer;
+
 
   public BigBad() {
     super(0,0);
@@ -41,7 +44,7 @@ public class BigBad extends ParticleEffectActor {
     torchLight[0].setDistance(Param.PLAYER_TORCH_STRENGTH);
     addTorchToEntity(true, false, true, 0f, Param.EVIL_FLAME, true, null);
     torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
-    movementTargets = new Vector<Vector2>();
+    movementTargets = new LinkedList<Tile>();
     raycastCallback = new RayCastCallback() {
       @Override
       public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
@@ -57,9 +60,14 @@ public class BigBad extends ParticleEffectActor {
 
 //  @Override
   public void updatePhysics() {
+    angularSpeed = Param.BIGBAD_ANGULAR_SPEED;
     speed = Param.BIGBAD_SPEED;
     for (int i = 1; i <= Param.KEY_ROOMS; ++i) {
       if (GameState.getInstance().progress[i] == Param.SWITCH_TIME) speed += Param.BIGBAD_SPEED_BOOST;
+    }
+    if (aiState == AIState.HUNTPATHING) {
+      speed = Param.BIGBAD_RUSH;
+      angularSpeed = Param.BIGBAD_ANGULAR_RUSH;
     }
     distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
     runAI();
@@ -87,15 +95,18 @@ public class BigBad extends ParticleEffectActor {
     switch (aiState) {
       case IDLE: chooseDestination(); break;
       case ROTATE: rotate(); break;
-      case PATHING: path(); break;
+      case PATHING: case HUNTPATHING: path(); break;
+      case DOASTAR: doAStar(); break;
     }
   }
   private boolean atDestination() {
-    return movementTargets.get(0).epsilonEquals(body.getPosition(),.1f);
+    atDestinationVector.set( (movementTargets.get(0).getX() / Param.TILE_SIZE) + .5f,
+      (movementTargets.get(0).getY() / Param.TILE_SIZE) + .5f);
+    return atDestinationVector.epsilonEquals( body.getPosition(),.1f);
   }
 
   private void rotate() {
-    float targetAngle = Utility.getTargetAngle(movementTargets.get(0), body);
+    float targetAngle = getTargetAngle();
     if (Math.abs(body.getAngle() - targetAngle) < Math.toRadians(10)) {
       aiState = AIState.PATHING;
     } else {
@@ -105,6 +116,12 @@ public class BigBad extends ParticleEffectActor {
 //      Gdx.app.log("AI","Target: " + Math.toDegrees(targetAngle) + ". Rotate from  " + Math.toDegrees(body.getAngle()) + " to " + Math.toDegrees(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED)));
       setMoveDirection(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED), false);
     }
+  }
+
+  private float getTargetAngle() {
+    return Utility.getTargetAngle((movementTargets.get(0).getX() / Param.TILE_SIZE) + .5f,
+      (movementTargets.get(0).getY() / Param.TILE_SIZE) + .5f,
+      body.getPosition());
   }
 
   private void path() {
@@ -118,8 +135,7 @@ public class BigBad extends ParticleEffectActor {
         aiState = AIState.ROTATE;
       }
     } else {
-      float targetAngle = Utility.getTargetAngle(movementTargets.get(0), body);
-      setMoveDirection(targetAngle, true);
+      setMoveDirection(getTargetAngle(), true);
     }
   }
 
@@ -142,25 +158,32 @@ public class BigBad extends ParticleEffectActor {
   private void basicPathing(Room corridor, Room target) {
     Gdx.app.log("AI","Starting - " + body.getPosition());
     if (corridor.getCorridorDirection() == Room.CorridorDirection.VERTICAL) {
-      float commonX = corridor.x + Param.CORRIDOR_SIZE/2f;
+      int commonX = (int)(corridor.x + Param.CORRIDOR_SIZE/2f);
       Gdx.app.log("AI","Go through V corridor at common X:" + commonX);
-      float finalY = target.y + Param.CORRIDOR_SIZE/2f;
-      if (target.y < corridor.y) finalY = target.y + target.height - Param.CORRIDOR_SIZE/2f;
-      movementTargets.add( new Vector2(commonX, body.getPosition().y) );
-      movementTargets.add( new Vector2(commonX, finalY));
+      int finalY = (int)(target.y + Param.CORRIDOR_SIZE/2f);
+      if (target.y < corridor.y) finalY = (int)(target.y + target.height - Param.CORRIDOR_SIZE/2f);
+      movementTargets.add( Sprites.getInstance().getTile(commonX, (int)body.getPosition().y) );//   new Vector2(commonX, body.getPosition().y) );
+      movementTargets.add( Sprites.getInstance().getTile(commonX, finalY));//new Vector2(commonX, finalY));
     } else {
-      float commonY = corridor.y + Param.CORRIDOR_SIZE/2f;
+      int commonY = (int)(corridor.y + Param.CORRIDOR_SIZE/2f);
       Gdx.app.log("AI","Go through H corridor at common Y:" + commonY);
-      float finalX = target.x + Param.CORRIDOR_SIZE/2f;
-      if (target.x < corridor.x) finalX = target.x + target.width - Param.CORRIDOR_SIZE/2f;
-      movementTargets.add( new Vector2(body.getPosition().x, commonY) );
-      movementTargets.add( new Vector2(finalX, commonY) );
+      int finalX = (int)(target.x + Param.CORRIDOR_SIZE/2f);
+      if (target.x < corridor.x) finalX = (int)(target.x + target.width - Param.CORRIDOR_SIZE/2f);
+      movementTargets.add( Sprites.getInstance().getTile((int)body.getPosition().x, commonY) );
+      movementTargets.add( Sprites.getInstance().getTile(finalX, commonY) );
     }
     // Check we are not already at our first target
 //    for (Vector2 t : movementTargets) {
 //      Gdx.app.log("AI","Movement target - " + t);
 //    }
     aiState = AIState.ROTATE;
+  }
+
+  private void doAStar() {
+    final Tile dest = GameState.getInstance().aiDestination;
+    movementTargets = Sprites.getInstance().findPath(getTileUnderEntity(), dest);
+    Gdx.app.log("AI","Pathing from " + this + " to " + dest);
+    aiState = AIState.HUNTPATHING;
   }
 
 }

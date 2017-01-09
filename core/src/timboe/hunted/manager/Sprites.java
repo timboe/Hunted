@@ -246,11 +246,11 @@ public class Sprites {
     return returnSet;
   }
 
-  public List<Tile> findPath(int xStart, int yStart, int xGoal, int yGoal) {
+  public LinkedList<Tile> findPath(int xStart, int yStart, int xGoal, int yGoal) {
     return PathFinding.doAStar(getTile(xStart, yStart), getTile(xGoal, yGoal));
   }
 
-  public List<Tile> findPath(Tile start, Tile end) {
+  public LinkedList<Tile> findPath(Tile start, Tile end) {
     return PathFinding.doAStar(start, end);
   }
 

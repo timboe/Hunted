@@ -32,10 +32,10 @@ public class PathFinding {
    *            Goal node
    * @return Shortest path from start to goal, or null if none found
    */
-  public static <T extends Node<T>> List<T> doAStar(T start, T goal) {
+  public static <T extends Node<T>> LinkedList<T> doAStar(T start, T goal) {
     Set<T> closed = new HashSet<T>();
     Map<T, T> fromMap = new HashMap<T, T>();
-    List<T> route = new LinkedList<T>();
+    LinkedList<T> route = new LinkedList<T>();
     Map<T, Double> gScore = new HashMap<T, Double>();
     final Map<T, Double> fScore = new HashMap<T, Double>();
     PriorityQueue<T> open = new PriorityQueue<T>(11, new Comparator<T>() {
