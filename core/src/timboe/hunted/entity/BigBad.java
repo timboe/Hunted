@@ -19,16 +19,15 @@ import java.util.*;
  */
 public class BigBad extends ParticleEffectActor {
 
-  enum AIState {IDLE, ROTATE, PATHING, HUNTPATHING, DOASTAR}
-  AIState aiState = AIState.IDLE;
-  LinkedList<Tile> movementTargets;
-  HashSet<Room> roomsVisited;
-  Vector2 pathingVector; //TODO this is debug
-  Vector2 atDestinationVector = new Vector2();
+  public enum AIState {IDLE, ROTATE, PATHING, HUNTPATHING, DOASTAR}
+  public AIState aiState = AIState.IDLE;
+  private LinkedList<Tile> movementTargets;
+  private HashSet<Room> roomsVisited;
+  private Vector2 pathingVector; //TODO this is debug
+  private Vector2 atDestinationVector = new Vector2();
 
-  RayCastCallback raycastCallback = null;
+  private RayCastCallback raycastCallback = null;
   private float raycastMin = 1f;
-  private float angularSpeed;
   public boolean canSeePlayer;
   public float distanceFromPlayer;
 
@@ -60,14 +59,12 @@ public class BigBad extends ParticleEffectActor {
 
 //  @Override
   public void updatePhysics() {
-    angularSpeed = Param.BIGBAD_ANGULAR_SPEED;
     speed = Param.BIGBAD_SPEED;
     for (int i = 1; i <= Param.KEY_ROOMS; ++i) {
       if (GameState.getInstance().progress[i] == Param.SWITCH_TIME) speed += Param.BIGBAD_SPEED_BOOST;
     }
     if (aiState == AIState.HUNTPATHING) {
       speed = Param.BIGBAD_RUSH;
-      angularSpeed = Param.BIGBAD_ANGULAR_RUSH;
     }
     distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
     runAI();
@@ -102,7 +99,7 @@ public class BigBad extends ParticleEffectActor {
   private boolean atDestination() {
     atDestinationVector.set( (movementTargets.get(0).getX() / Param.TILE_SIZE) + .5f,
       (movementTargets.get(0).getY() / Param.TILE_SIZE) + .5f);
-    return atDestinationVector.epsilonEquals( body.getPosition(),.1f);
+    return atDestinationVector.epsilonEquals( body.getPosition(),.25f);
   }
 
   private void rotate() {
@@ -111,9 +108,7 @@ public class BigBad extends ParticleEffectActor {
       aiState = AIState.PATHING;
     } else {
       float diff = targetAngle - body.getAngle();
-//      int sign = (diff >= Math.PI && diff <= 2*Math.PI) || (diff <= 0 && diff >= -Math.PI) ? -1 : 1;
       int sign = (diff >= 0 && diff <= Math.PI) || (diff <= -Math.PI && diff >= -2*Math.PI) ? 1 : -1;
-//      Gdx.app.log("AI","Target: " + Math.toDegrees(targetAngle) + ". Rotate from  " + Math.toDegrees(body.getAngle()) + " to " + Math.toDegrees(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED)));
       setMoveDirection(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED), false);
     }
   }
@@ -128,14 +123,17 @@ public class BigBad extends ParticleEffectActor {
     if (atDestination()) {
       movementTargets.remove(0);
       Gdx.app.log("AI","Reached target - " + movementTargets.size() + " more targets");
-      if (movementTargets.size() == 0) {
+      if (movementTargets.size() == 0) { // Reached destination
         setMoving(false);
         aiState = AIState.IDLE;
-      } else {
-        aiState = AIState.ROTATE;
+      } else { // More steps
+        if (aiState != AIState.HUNTPATHING) { // In speed mode we skip the rotate phase (snap to new angle)
+          aiState = AIState.ROTATE;
+        }
       }
     } else {
       setMoveDirection(getTargetAngle(), true);
+      setMoving(true);
     }
   }
 
