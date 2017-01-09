@@ -17,6 +17,7 @@ import timboe.hunted.world.Room;
  * Created by Tim on 30/12/2016.
  */
 public class EntityBase extends Actor {
+  protected TextureRegion webTexture = null;
   protected TextureRegion[] textureRegion = new TextureRegion[Param.MAX_FRAMES];
   public int currentFrame;
   protected int nFrames;
@@ -34,6 +35,11 @@ public class EntityBase extends Actor {
   }
 
   public Body getBody() { return body; }
+
+  public void setWebTexture(String name) {
+    webTexture = Textures.getInstance().getTexture(name);
+  }
+
 
   public void setTexture(String name) {
     setTexture(name, 1, false);
@@ -165,10 +171,13 @@ public class EntityBase extends Actor {
   public void draw(Batch batch, float alpha) {
 //    if (currentFrame > 0) Gdx.app.log("DBG","iam "+textureRegion[0]+" "+currentFrame + " mod " + nFrames + " is " + currentFrame%nFrames);
     batch.draw(textureRegion[currentFrame % nFrames] ,this.getX(),this.getY());
+    if (webTexture != null) batch.draw(webTexture ,this.getX(),this.getY());
   }
 
 //  // TODO check for danger here
 //  public int hashCode() {
 //    return Utility.xyToID((int)getX(), (int)getY());
 //  }
+
+
 }

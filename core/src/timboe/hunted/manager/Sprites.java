@@ -31,6 +31,7 @@ public class Sprites {
   private BigBad bigBad;
   public ExitDoor exitDoor;
   public Tile[] keySwitch = new Tile[Param.KEY_ROOMS + 1];
+  public Vector<Tile> toUpdateWeb = new Vector<Tile>();
 
   private Sprites() {
   }
@@ -67,6 +68,10 @@ public class Sprites {
   public void updatePhysics() {
     player.updatePhysics();
     bigBad.updatePhysics();
+    for (int i = 0; i < toUpdateWeb.size(); ++i) { // Note can only use basic iteration as we modify these mid-loop
+      toUpdateWeb.get(i).updateNeighbours(false);
+    }
+    toUpdateWeb.clear();
   }
 
   public void updatePosition() {
@@ -233,21 +238,23 @@ public class Sprites {
     Gdx.app.log("Sprites", "Invisible="+incInvisible+" required " + count + " rigid bodies");
   }
 
-  public Set<Tile> getNeighbourWeb(final int x, final int y, Set<Tile> returnSet) {
+  public HashSet<Tile> getNeighbourWeb(final int x, final int y, HashSet<Tile> returnSet, boolean recurse) {
 //    Gdx.app.log("getN", "x "+x+" y " + y );
     for (int cX = x - 1; cX < x + 2; ++cX) {
       Tile t = getTile(cX, y);
-      if (t.getIsWeb()) returnSet.add(t);
+      if (t.getIsWeb()) {
+        returnSet.add(t);
+        if (recurse) toUpdateWeb.add(t);
+      }
     }
     for (int cY = y - 1; cY < y + 2; ++cY) {
       Tile t = getTile(x, cY);
-      if (t.getIsWeb()) returnSet.add(t);
+      if (t.getIsWeb()) {
+        returnSet.add(t);
+        if (recurse) toUpdateWeb.add(t);
+      }
     }
     return returnSet;
-  }
-
-  public LinkedList<Tile> findPath(int xStart, int yStart, int xGoal, int yGoal) {
-    return PathFinding.doAStar(getTile(xStart, yStart), getTile(xGoal, yGoal));
   }
 
   public LinkedList<Tile> findPath(Tile start, Tile end) {

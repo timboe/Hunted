@@ -120,7 +120,8 @@ public class GameScreen implements Screen, InputProcessor {
     final float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
 
     shakePos.set(currentPos);
-    if (canSeePlayer && distance < Param.PLAYER_TORCH_STRENGTH) {
+    //TODO re-enable judder
+    if (false && canSeePlayer && distance < Param.PLAYER_TORCH_STRENGTH) {
       int shakeAmount = (int)Math.ceil((Param.PLAYER_TORCH_STRENGTH - distance)/2f);
       shakePos.x = shakePos.x - shakeAmount + Utility.r.nextInt(2*shakeAmount);
       shakePos.y = shakePos.y - shakeAmount + Utility.r.nextInt(2*shakeAmount);

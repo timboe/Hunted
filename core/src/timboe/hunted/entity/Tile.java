@@ -1,5 +1,6 @@
 package timboe.hunted.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
@@ -8,9 +9,9 @@ import timboe.hunted.manager.Physics;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.pathfinding.Node;
 import timboe.hunted.world.Room;
-
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Tim on 28/12/2016.
@@ -40,13 +41,8 @@ public class Tile extends EntityBase implements Node<Tile> {
 
   public void setIsWeb() {
     // TODO don't do this on every frame.... waste
-    updateNeighbours(); // Update my neighbours
-    HashSet<Tile> cpy = (HashSet<Tile>) webNeighbours.clone();
-    for (Tile t : cpy) {
-      t.updateNeighbours(); // And theirs (they need to add me)
-    }
+    updateNeighbours(true); // Update my neighbours
     if (isWeb) return;
-    setTexture("webA");
     addWebSensor();
     isWeb = true;
   }
@@ -126,9 +122,32 @@ public class Tile extends EntityBase implements Node<Tile> {
     return 1f; // Web tiles are always one apart and always accessible
   }
 
-  private void updateNeighbours() {
+  public void updateNeighbours(boolean recurse) {
     webNeighbours.clear();
-    Sprites.getInstance().getNeighbourWeb((int)getX()/Param.TILE_SIZE, (int)getY()/Param.TILE_SIZE, webNeighbours);
+    webNeighbours = Sprites.getInstance().getNeighbourWeb((int)getX()/Param.TILE_SIZE, (int)getY()/Param.TILE_SIZE, webNeighbours, recurse);
+    boolean N = false, E = false, S = false, W = false;
+    for (Tile n : webNeighbours) {
+      if (n.getX() == getX() + Param.TILE_SIZE) E = true;
+      else if (n.getX() == getX() - Param.TILE_SIZE) W = true;
+      else if (n.getY() == getY() + Param.TILE_SIZE) N = true;
+      else if (n.getY() == getY() - Param.TILE_SIZE) S = true;
+    }
+    if (N && S && E && W) setWebTexture("webNSEW");
+    else if (N && S && E) setWebTexture("webNSE");
+    else if (N && S && W) setWebTexture("webNSW");
+    else if (E && W && N) setWebTexture("webEWN");
+    else if (E && W && S) setWebTexture("webEWS");
+    else if (E && W) setWebTexture("webEW");
+    else if (N && S) setWebTexture("webNS");
+    else if (N && E) setWebTexture("webNE");
+    else if (N && W) setWebTexture("webNW");
+    else if (S && E) setWebTexture("webSE");
+    else if (S && W) setWebTexture("webSW");
+    else if (N) setWebTexture("webN");
+    else if (E) setWebTexture("webE");
+    else if (S) setWebTexture("webS");
+    else if (W) setWebTexture("webW");
+    else setWebTexture("webA");
   }
 
   public Set<Tile> getNeighbours() {

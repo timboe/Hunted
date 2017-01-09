@@ -25,6 +25,7 @@ public class BigBad extends ParticleEffectActor {
   private HashSet<Room> roomsVisited;
   private Vector2 pathingVector; //TODO this is debug
   private Vector2 atDestinationVector = new Vector2();
+  private Tile tileUnderMe = null;
 
   private RayCastCallback raycastCallback = null;
   private float raycastMin = 1f;
@@ -59,6 +60,7 @@ public class BigBad extends ParticleEffectActor {
 
 //  @Override
   public void updatePhysics() {
+    // Set speed
     speed = Param.BIGBAD_SPEED;
     for (int i = 1; i <= Param.KEY_ROOMS; ++i) {
       if (GameState.getInstance().progress[i] == Param.SWITCH_TIME) speed += Param.BIGBAD_SPEED_BOOST;
@@ -66,14 +68,22 @@ public class BigBad extends ParticleEffectActor {
     if (aiState == AIState.HUNTPATHING) {
       speed = Param.BIGBAD_RUSH;
     }
-    distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
-    runAI();
+    // Update the things which relate to the movement of the AI over different tiles
     Tile t = getTileUnderEntity();
-    t.setIsWeb();
-    roomsVisited.add(t.getTilesRoom());
+    if (tileUnderMe != t) {
+      tileUnderMe = t;
+      t.setIsWeb();
+      roomsVisited.add(t.getTilesRoom());
+    }
+    // Get straight line distance from player
+    distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
+    // See if the AI can see the player
     raycastMin = 9999f;     // Bounce a ray to the player - does it intersect anything else first?
     Physics.getInstance().worldBox2D.rayCast(raycastCallback, body.getPosition(), Sprites.getInstance().getPlayer().getBody().getPosition());
+    // Lighting call
     flicker();
+    // Do all the AI stuff
+    runAI();
   }
 
   public void runAI() {
@@ -99,7 +109,7 @@ public class BigBad extends ParticleEffectActor {
   private boolean atDestination() {
     atDestinationVector.set( (movementTargets.get(0).getX() / Param.TILE_SIZE) + .5f,
       (movementTargets.get(0).getY() / Param.TILE_SIZE) + .5f);
-    return atDestinationVector.epsilonEquals( body.getPosition(),.25f);
+    return atDestinationVector.epsilonEquals( body.getPosition(),.1f);
   }
 
   private void rotate() {
