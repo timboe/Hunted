@@ -46,7 +46,7 @@ public class GameScreen implements Screen, InputProcessor {
   private Rectangle cullBox;
 
   Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
-  Matrix4 debugMatrix;
+  Matrix4 scaledLightingMatrix;
   BitmapFont debugFont = new BitmapFont();
   SpriteBatch debugSpriteBatch = new SpriteBatch();
 
@@ -165,35 +165,12 @@ public class GameScreen implements Screen, InputProcessor {
   @Override
   public void render(float delta) {
     deltaTot += delta;
-//    if (deltaTot < 1./60.) return;
-//    deltaTot = 0;
-//    if (textureBuffer == true) {
-//      if(frameBuffer == null) {
-//        // m_fboScaler increase or decrease the antialiasing quality
-//        frameBuffer = new FrameBuffer(Format.RGB888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-//        frameTexRegion = new TextureRegion(frameBuffer.getColorBufferTexture());
-//        frameTexRegion.flip(false, true);
-//      }
-//      frameBuffer.begin();
-//    }
-
 
     renderClear();
     renderMain();
     Physics.getInstance().updatePhysics();
     updatePhysics();
 
-//    renderFX(delta);
-//    renderForeground(delta);
-//    renderFade(delta);
-//    if (textureBuffer == true) {
-//      if(frameBuffer != null) {
-//        frameBuffer.end();
-//        spriteBatch.begin();
-//        spriteBatch.draw(frameTexRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//        spriteBatch.end();
-//      }
-//    }
     ++(GameState.getInstance().frame);
   }
 
@@ -209,12 +186,12 @@ public class GameScreen implements Screen, InputProcessor {
     }
     debugSpriteBatch.end();
 
-    debugMatrix = camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
+    scaledLightingMatrix = camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
 
-    Physics.getInstance().rayHandler.setCombinedMatrix(debugMatrix);
+    Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
     //Physics.getInstance().rayHandler.render();
 
-    debugRenderer.render(Physics.getInstance().worldBox2D, debugMatrix);
+    debugRenderer.render(Physics.getInstance().worldBox2D, scaledLightingMatrix);
 
     renderShapesAndUI();
   }
