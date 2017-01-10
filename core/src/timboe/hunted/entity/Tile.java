@@ -123,8 +123,10 @@ public class Tile extends EntityBase implements Node<Tile> {
   }
 
   public void updateNeighbours(boolean recurse) {
+    final int wnSize = webNeighbours.size();
     webNeighbours.clear();
     webNeighbours = Sprites.getInstance().getNeighbourWeb((int)getX()/Param.TILE_SIZE, (int)getY()/Param.TILE_SIZE, webNeighbours, recurse);
+    if (wnSize == webNeighbours.size()) return; // Nothing changed
     boolean N = false, E = false, S = false, W = false;
     for (Tile n : webNeighbours) {
       if (n.getX() == getX() + Param.TILE_SIZE) E = true;

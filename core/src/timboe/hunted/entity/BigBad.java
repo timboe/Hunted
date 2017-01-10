@@ -66,7 +66,9 @@ public class BigBad extends ParticleEffectActor {
       if (GameState.getInstance().progress[i] == Param.SWITCH_TIME) speed += Param.BIGBAD_SPEED_BOOST;
     }
     if (aiState == AIState.HUNTPATHING) {
-      speed = Param.BIGBAD_RUSH;
+      // If close to the destination then try slowing down a little so as not to overshoot
+      final float mod = (float)Math.min(1f, Math.log10(distanceToDestination() * 10));
+      speed = Param.BIGBAD_RUSH * mod;
     }
     // Update the things which relate to the movement of the AI over different tiles
     Tile t = getTileUnderEntity();
@@ -88,17 +90,6 @@ public class BigBad extends ParticleEffectActor {
 
   public void runAI() {
 
-//    if (pathingVector.epsilonEquals(worldBox.x,worldBox.y,1e-2f) == false) {
-//      pathingVector.set(worldBox.x,worldBox.y);
-//      float length = 0;
-//      if (movementTargets.size() > 0) {
-//        Vector2 newV = movementTargets.get(0).cpy();
-//        newV.sub(pathingVector);
-//        length = newV.len();
-//      }
-//      Gdx.app.log("AI","BigBad moved to " + pathingVector + " distance from target " + length);
-//    }
-
     switch (aiState) {
       case IDLE: chooseDestination(); break;
       case ROTATE: rotate(); break;
@@ -106,10 +97,14 @@ public class BigBad extends ParticleEffectActor {
       case DOASTAR: doAStar(); break;
     }
   }
-  private boolean atDestination() {
+  private float distanceToDestination() {
     atDestinationVector.set( (movementTargets.get(0).getX() / Param.TILE_SIZE) + .5f,
       (movementTargets.get(0).getY() / Param.TILE_SIZE) + .5f);
-    return atDestinationVector.epsilonEquals( body.getPosition(),.1f);
+    return atDestinationVector.dst( body.getPosition());
+  }
+
+  private boolean atDestination() {
+    return Math.abs(distanceToDestination()) < 0.1f;
   }
 
   private void rotate() {

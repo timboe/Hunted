@@ -107,44 +107,47 @@ public class GameScreen implements Screen, InputProcessor {
 
     stage.act(Gdx.graphics.getDeltaTime());
 
-    desiredPos.set( Sprites.getInstance().getPlayer().getX(), Sprites.getInstance().getPlayer().getY() );
+    final boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
+    final float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
+    final boolean endZoom = canSeePlayer && distance < Param.BIGBAD_POUNCE_DISTANCE;
+
+    desiredPos.set( Sprites.getInstance().getPlayer().getX() + .5f, Sprites.getInstance().getPlayer().getY() + .5f);
     float angle =  Sprites.getInstance().getPlayer().getBody().getAngle();
 
-    desiredPos.x += Math.cos(angle) * Param.CAMERA_LEAD;
-    desiredPos.y += Math.sin(angle) * Param.CAMERA_LEAD;
+    if (!endZoom) {
+      desiredPos.x += Math.cos(angle) * Param.CAMERA_LEAD;
+      desiredPos.y += Math.sin(angle) * Param.CAMERA_LEAD;
+    }
 
     currentPos.x = currentPos.x + (0.07f * (desiredPos.x - currentPos.x));
     currentPos.y = currentPos.y + (0.07f * (desiredPos.y - currentPos.y));
 
-    final boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
-    final float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
-
     shakePos.set(currentPos);
     //TODO re-enable judder
-    if (false && canSeePlayer && distance < Param.PLAYER_TORCH_STRENGTH) {
+    if (canSeePlayer && distance < Param.PLAYER_TORCH_STRENGTH) {
       int shakeAmount = (int)Math.ceil((Param.PLAYER_TORCH_STRENGTH - distance)/2f);
       shakePos.x = shakePos.x - shakeAmount + Utility.r.nextInt(2*shakeAmount);
       shakePos.y = shakePos.y - shakeAmount + Utility.r.nextInt(2*shakeAmount);
     }
 
-
-      if (keyN || keyE || keyS || keyW) desiredZoom = .6f;
+    if (keyN || keyE || keyS || keyW) desiredZoom = .6f;
     else desiredZoom = .4f;
 
-//    if (desiredZoom > currentZoom)
-      currentZoom = currentZoom + (0.05f * (desiredZoom - currentZoom));
-//    else currentZoom = currentZoom - (0.07f * (currentZoom - desiredZoom));
+    float aMod = 0;
+    if (endZoom) {
+      final float mod = (distance - 1f) / Param.BIGBAD_POUNCE_DISTANCE; // Modification due to object size
+      aMod = (float)Math.PI * mod * 10f;
+      desiredZoom *= mod;
+    }
+
+    currentZoom = currentZoom + (0.05f * (desiredZoom - currentZoom));
 
     camera.position.set(shakePos, 0);
     camera.zoom = currentZoom;
-//    cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, 100/cam.viewportWidth);
-//    stage.getCamera().
-//    float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
-//    float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
-//
-//    cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, 100 - effectiveViewportWidth / 2f);
-//    cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, 100 - effectiveViewportHeight / 2f);
-//    stage.getCamera().
+//    camera.up.set(0, 1, 0);
+//    camera.direction.set(0, 0, -1);
+//    if (endZoom) camera.rotate(aMod);
+
     camera.update();
     cullBox.setCenter(currentPos);
   }
