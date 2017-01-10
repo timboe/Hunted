@@ -32,6 +32,7 @@ public class Sprites {
   public ExitDoor exitDoor;
   public Tile[] keySwitch = new Tile[Param.KEY_ROOMS + 1];
   public Vector<Tile> toUpdateWeb = new Vector<Tile>();
+  public HashSet<Tile> webTiles;
 
   private Sprites() {
   }
@@ -41,6 +42,7 @@ public class Sprites {
 
     bigBad = new BigBad();
     tileSet = new Group();
+    webTiles = new HashSet<Tile>();
 
     particles = new HashSet<ParticleEffectActor>();
     tileMap = new HashMap<Integer, Tile>();
@@ -49,6 +51,20 @@ public class Sprites {
         tileMap.put(Utility.xyToID(x, y), new Tile(x, y));
       }
     }
+  }
+
+  public void resetWeb() {
+    for (Tile t : webTiles) t.webEffect = 0;
+  }
+
+  public boolean tintWeb() {
+    boolean active = false;
+    for (Tile t : webTiles) active |= t.tintWeb();
+    return active;
+  }
+
+  public void moveWeb() {
+    for (Tile t : webTiles) t.moveWeb();
   }
 
   public void addToStage(Actor a) {
@@ -72,6 +88,11 @@ public class Sprites {
       toUpdateWeb.get(i).updateNeighbours(false);
     }
     toUpdateWeb.clear();
+
+    if (GameState.getInstance().webEffect) {
+      if (GameState.getInstance().frame % Param.ANIM_SPEED/4 == 0) moveWeb();
+      if (!tintWeb()) GameState.getInstance().webEffect = false; // Stop
+    }
   }
 
   public void updatePosition() {

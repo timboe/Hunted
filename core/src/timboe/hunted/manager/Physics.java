@@ -58,6 +58,7 @@ public class Physics {
     Sprites.getInstance().updatePosition();
     WorldGen.getInstance().updatePhysics();
     torchPhysics();
+
   }
 
   public void torchPhysics() {

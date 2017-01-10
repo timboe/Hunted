@@ -25,6 +25,7 @@ public class Tile extends EntityBase implements Node<Tile> {
   public int switchID = -1; // -1 is invalid, 0=exitDoor. 1-N are rooms
   public int activationID = -1; // Which switch causes me to animate when true? -1 is invalid
   private HashSet<Tile> webNeighbours = new HashSet<Tile>();
+  public int webEffect = 0;
 
   public Tile(int x, int y) {
     super(x, y);
@@ -44,7 +45,29 @@ public class Tile extends EntityBase implements Node<Tile> {
     updateNeighbours(true); // Update my neighbours
     if (isWeb) return;
     addWebSensor();
+    Sprites.getInstance().webTiles.add(this);
     isWeb = true;
+  }
+
+  public void startWebEffect() {
+    if (webEffect == -1) return;
+    webEffect = 1;
+    webTint = 1f;
+  }
+
+  public boolean tintWeb() {
+    if (webTint > 0) {
+      webTint = Math.max(webTint - 0.01f, 0f);
+      return true;
+    }
+    return false;
+  }
+
+  public void moveWeb() { // Only needed during WebEffect
+    if (webEffect == 1) {
+      webEffect = -1; // Prevents recursion
+      for (Tile t : webNeighbours) t.startWebEffect();
+    }
   }
 
   public void addSwitchSensor(int ID) {

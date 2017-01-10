@@ -76,7 +76,7 @@
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
-        <uint>1</uint>
+        <uint>0</uint>
         <key>webpQualityLevel</key>
         <uint>101</uint>
         <key>textureSubPath</key>
@@ -104,7 +104,7 @@
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
-            <enum type="AlgorithmSettings::AlgorithmId">MaxRects</enum>
+            <enum type="AlgorithmSettings::AlgorithmId">Basic</enum>
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
@@ -150,7 +150,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename></filename>
+                <filename>sprites.txt</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -179,7 +179,7 @@
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>extrude</key>
-            <uint>1</uint>
+            <uint>0</uint>
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMargin</key>
@@ -197,19 +197,15 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">32/100.png</key>
-            <key type="filename">32/27.png</key>
-            <key type="filename">32/28.png</key>
-            <key type="filename">32/51.png</key>
-            <key type="filename">32/52.png</key>
-            <key type="filename">32/56.png</key>
-            <key type="filename">32/57.png</key>
-            <key type="filename">32/99.png</key>
             <key type="filename">32/blobA.png</key>
             <key type="filename">32/blobB.png</key>
+            <key type="filename">32/blobBlue0.png</key>
+            <key type="filename">32/blobBlue1.png</key>
             <key type="filename">32/blobC.png</key>
-            <key type="filename">32/blobD.png</key>
-            <key type="filename">32/blobE.png</key>
+            <key type="filename">32/blobGreen0.png</key>
+            <key type="filename">32/blobGreen1.png</key>
+            <key type="filename">32/blobRed0.png</key>
+            <key type="filename">32/blobRed1.png</key>
             <key type="filename">32/box.png</key>
             <key type="filename">32/chest0.png</key>
             <key type="filename">32/chest1.png</key>
@@ -221,26 +217,55 @@
             <key type="filename">32/door1.png</key>
             <key type="filename">32/door2.png</key>
             <key type="filename">32/door3.png</key>
-            <key type="filename">32/floorA.png</key>
+            <key type="filename">32/floor.png</key>
+            <key type="filename">32/floor0.png</key>
+            <key type="filename">32/floor1.png</key>
+            <key type="filename">32/floor10.png</key>
+            <key type="filename">32/floor11.png</key>
+            <key type="filename">32/floor12.png</key>
+            <key type="filename">32/floor13.png</key>
+            <key type="filename">32/floor14.png</key>
+            <key type="filename">32/floor15.png</key>
+            <key type="filename">32/floor16.png</key>
+            <key type="filename">32/floor17.png</key>
+            <key type="filename">32/floor18.png</key>
+            <key type="filename">32/floor19.png</key>
+            <key type="filename">32/floor2.png</key>
+            <key type="filename">32/floor20.png</key>
+            <key type="filename">32/floor21.png</key>
+            <key type="filename">32/floor22.png</key>
+            <key type="filename">32/floor3.png</key>
+            <key type="filename">32/floor4.png</key>
+            <key type="filename">32/floor5.png</key>
+            <key type="filename">32/floor6.png</key>
+            <key type="filename">32/floor7.png</key>
+            <key type="filename">32/floor8.png</key>
+            <key type="filename">32/floor9.png</key>
+            <key type="filename">32/floorZ.png</key>
             <key type="filename">32/gate0.png</key>
             <key type="filename">32/gate1.png</key>
             <key type="filename">32/gate2.png</key>
             <key type="filename">32/gate3.png</key>
             <key type="filename">32/gate4.png</key>
-            <key type="filename">32/lamp0.png</key>
+            <key type="filename">32/lampBlue0.png</key>
             <key type="filename">32/lampBlue1.png</key>
             <key type="filename">32/lampBlue2.png</key>
+            <key type="filename">32/lampGreen0.png</key>
             <key type="filename">32/lampGreen1.png</key>
             <key type="filename">32/lampGreen2.png</key>
-            <key type="filename">32/lampS0.png</key>
+            <key type="filename">32/lampRed0.png</key>
+            <key type="filename">32/lampRed1.png</key>
+            <key type="filename">32/lampRed2.png</key>
+            <key type="filename">32/lampSBlue0.png</key>
             <key type="filename">32/lampSBlue1.png</key>
             <key type="filename">32/lampSBlue2.png</key>
+            <key type="filename">32/lampSGreen0.png</key>
             <key type="filename">32/lampSGreen1.png</key>
             <key type="filename">32/lampSGreen2.png</key>
+            <key type="filename">32/lampSRed0.png</key>
             <key type="filename">32/lampSRed1.png</key>
             <key type="filename">32/lampSRed2.png</key>
-            <key type="filename">32/lightRed1.png</key>
-            <key type="filename">32/lightRed2.png</key>
+            <key type="filename">32/particle.png</key>
             <key type="filename">32/pitB.png</key>
             <key type="filename">32/pitBL.png</key>
             <key type="filename">32/pitBR.png</key>
@@ -259,10 +284,6 @@
             <key type="filename">32/playerC.png</key>
             <key type="filename">32/playerD.png</key>
             <key type="filename">32/playerE.png</key>
-            <key type="filename">32/rocksA.png</key>
-            <key type="filename">32/rocksB.png</key>
-            <key type="filename">32/rocksC.png</key>
-            <key type="filename">32/rocksD.png</key>
             <key type="filename">32/switch0.png</key>
             <key type="filename">32/switch1.png</key>
             <key type="filename">32/switch2.png</key>
@@ -270,22 +291,38 @@
             <key type="filename">32/switch4.png</key>
             <key type="filename">32/switch5.png</key>
             <key type="filename">32/switch6.png</key>
-            <key type="filename">32/wallB.png</key>
-            <key type="filename">32/wallBL.png</key>
-            <key type="filename">32/wallBLConnect.png</key>
-            <key type="filename">32/wallBR.png</key>
-            <key type="filename">32/wallBRConnect.png</key>
-            <key type="filename">32/wallBTorch.png</key>
-            <key type="filename">32/wallLA.png</key>
-            <key type="filename">32/wallLB.png</key>
-            <key type="filename">32/wallLC.png</key>
-            <key type="filename">32/wallRA.png</key>
-            <key type="filename">32/wallRB.png</key>
-            <key type="filename">32/wallRC.png</key>
+            <key type="filename">32/wallEA.png</key>
+            <key type="filename">32/wallEB.png</key>
+            <key type="filename">32/wallEC.png</key>
+            <key type="filename">32/wallS.png</key>
+            <key type="filename">32/wallSE.png</key>
+            <key type="filename">32/wallSEConnect.png</key>
+            <key type="filename">32/wallSTorch.png</key>
+            <key type="filename">32/wallSW.png</key>
+            <key type="filename">32/wallSWConnect.png</key>
             <key type="filename">32/wallSwitch0.png</key>
             <key type="filename">32/wallSwitch1.png</key>
             <key type="filename">32/wallSwitch2.png</key>
             <key type="filename">32/wallSwitch3.png</key>
+            <key type="filename">32/wallWA.png</key>
+            <key type="filename">32/wallWB.png</key>
+            <key type="filename">32/wallWC.png</key>
+            <key type="filename">32/webA.png</key>
+            <key type="filename">32/webE.png</key>
+            <key type="filename">32/webEW.png</key>
+            <key type="filename">32/webEWN.png</key>
+            <key type="filename">32/webEWS.png</key>
+            <key type="filename">32/webN.png</key>
+            <key type="filename">32/webNE.png</key>
+            <key type="filename">32/webNS.png</key>
+            <key type="filename">32/webNSE.png</key>
+            <key type="filename">32/webNSEW.png</key>
+            <key type="filename">32/webNSW.png</key>
+            <key type="filename">32/webNW.png</key>
+            <key type="filename">32/webS.png</key>
+            <key type="filename">32/webSE.png</key>
+            <key type="filename">32/webSW.png</key>
+            <key type="filename">32/webW.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -299,17 +336,21 @@
                 <false/>
             </struct>
             <key type="filename">32/pillar.png</key>
-            <key type="filename">32/wallInnerBL.png</key>
-            <key type="filename">32/wallInnerBR.png</key>
-            <key type="filename">32/wallInnerTL.png</key>
-            <key type="filename">32/wallInnerTR.png</key>
-            <key type="filename">32/wallLTorch.png</key>
-            <key type="filename">32/wallRTorch.png</key>
-            <key type="filename">32/wallTA.png</key>
-            <key type="filename">32/wallTB.png</key>
-            <key type="filename">32/wallTR.png</key>
-            <key type="filename">32/wallTTorchA.png</key>
-            <key type="filename">32/wallTTorchB.png</key>
+            <key type="filename">32/wallETorch.png</key>
+            <key type="filename">32/wallInnerNE.png</key>
+            <key type="filename">32/wallInnerNEConnectE.png</key>
+            <key type="filename">32/wallInnerNW.png</key>
+            <key type="filename">32/wallInnerNWConnectW.png</key>
+            <key type="filename">32/wallInnerSE.png</key>
+            <key type="filename">32/wallInnerSW.png</key>
+            <key type="filename">32/wallNA.png</key>
+            <key type="filename">32/wallNB.png</key>
+            <key type="filename">32/wallNE.png</key>
+            <key type="filename">32/wallNTorchA.png</key>
+            <key type="filename">32/wallNTorchB.png</key>
+            <key type="filename">32/wallNW.png</key>
+            <key type="filename">32/wallWTorch.png</key>
+            <key type="filename">large/torchTall.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -319,6 +360,20 @@
                 <rect>8,16,16,32</rect>
                 <key>scale9Paddings</key>
                 <rect>8,16,16,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">32/wallInnerSEConnectE.png</key>
+            <key type="filename">32/wallInnerSWConnectW.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,24,16,48</rect>
+                <key>scale9Paddings</key>
+                <rect>8,24,16,48</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -353,20 +408,24 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">large/totemA0.png</key>
+            <key type="filename">large/totemABlue0.png</key>
             <key type="filename">large/totemABlue1.png</key>
             <key type="filename">large/totemABlue2.png</key>
+            <key type="filename">large/totemAGreen0.png</key>
             <key type="filename">large/totemAGreen1.png</key>
             <key type="filename">large/totemAGreen2.png</key>
+            <key type="filename">large/totemARed0.png</key>
             <key type="filename">large/totemARed1.png</key>
             <key type="filename">large/totemARed2.png</key>
-            <key type="filename">large/totemB0.png</key>
+            <key type="filename">large/totemBBlue0.png</key>
             <key type="filename">large/totemBBlue1.png</key>
             <key type="filename">large/totemBBlue2.png</key>
+            <key type="filename">large/totemBGreen0.png</key>
             <key type="filename">large/totemBGreen1.png</key>
             <key type="filename">large/totemBGreen2.png</key>
+            <key type="filename">large/totemBRed0.png</key>
             <key type="filename">large/totemBRed1.png</key>
-            <key type="filename">large/totoemBRed2.png</key>
+            <key type="filename">large/totemBRed2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

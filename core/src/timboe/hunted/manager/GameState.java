@@ -13,6 +13,7 @@ public class GameState {
   public int[] progress = new int[Param.KEY_ROOMS + 1];
   public Tile aiDestination = null;
   public int aiCooldown = 0;
+  public boolean webEffect = false;
 
   private static GameState ourInstance = new GameState();
 

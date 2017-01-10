@@ -89,7 +89,6 @@ public class BigBad extends ParticleEffectActor {
   }
 
   public void runAI() {
-
     switch (aiState) {
       case IDLE: chooseDestination(); break;
       case ROTATE: rotate(); break;
@@ -97,6 +96,7 @@ public class BigBad extends ParticleEffectActor {
       case DOASTAR: doAStar(); break;
     }
   }
+
   private float distanceToDestination() {
     atDestinationVector.set( (movementTargets.get(0).getX() / Param.TILE_SIZE) + .5f,
       (movementTargets.get(0).getY() / Param.TILE_SIZE) + .5f);

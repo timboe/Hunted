@@ -28,6 +28,7 @@ public class EntityBase extends Actor {
   private float angle = 0;
   protected float speed = 0;
   private boolean moving = false;
+  protected float webTint = 0;
 
   public EntityBase(int x, int y) {
     worldBox = new Rectangle(x, y,1f,1f);
@@ -170,11 +171,9 @@ public class EntityBase extends Actor {
   @Override
   public void draw(Batch batch, float alpha) {
 //    if (currentFrame > 0) Gdx.app.log("DBG","iam "+textureRegion[0]+" "+currentFrame + " mod " + nFrames + " is " + currentFrame%nFrames);
-    batch.setColor(1f,1f,1f,1f);
-
     batch.draw(textureRegion[currentFrame % nFrames] ,this.getX(),this.getY());
     if (webTexture != null) {
-      batch.setColor(1f,0f,0f,1f);
+      batch.setColor(1f,1f - webTint,1f - webTint,1f);
       batch.draw(webTexture, this.getX(), this.getY());
       batch.setColor(1f,1f,1f,1f);
     }
