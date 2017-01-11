@@ -36,18 +36,14 @@ public class Physics {
   private Physics() {
   }
 
-  public Torch addTorch(float x, float y, float lX, float lY, float r, boolean partial, float angle) {
-    Torch t = new Torch(x,y,lX,lY,r,partial,angle);
+  public Torch addTorch(float x, float y, float lX, float lY, float sX, float sY, boolean partial, float angle, Color c) {
+    Torch t = new Torch(x,y,lX,lY,sX,sY,partial,angle,c);
     torches.add(t);
     return t;
   }
 
-  public Torch addTorch(float x, float y, float lX, float lY, float r) {
-    return addTorch(x,y,lX,lY,r,false,0f);
-  }
-
-  public Torch addTorch(float x, float y, float r) {
-    return addTorch(x,y,x,y,r,false,0f);
+  public Torch addTorch(float x, float y) {
+    return addTorch(x,y,x,y,x,y,false,0f,Param.WALL_FLAME_CAST_C);
   }
 
   public void updatePhysics() {

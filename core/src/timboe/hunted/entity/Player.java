@@ -15,7 +15,7 @@ public class Player extends ParticleEffectActor {
     setTexture("playerE");
     speed = Param.PLAYER_SPEED;
     setAsPlayerBody(0.5f, 0.25f);
-    addTorchToEntity(true, false, true, 0f, Param.PLAYER_FLAME, true, null);
+    addTorchToEntity(true, false, 180f, Param.PLAYER_FLAME, true, false, null);
     torchDistanceRef = Param.PLAYER_TORCH_STRENGTH;
     particleEffect = Utility.getNewFlameEffect();
   }

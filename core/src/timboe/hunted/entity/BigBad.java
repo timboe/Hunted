@@ -41,9 +41,9 @@ public class BigBad extends ParticleEffectActor {
     waypoints = new HashSet<Tile>();
     setTexture("playerC");
     setAsPlayerBody(0.5f, 0.25f);
-    addTorchToEntity(true, false, false, 45f, Param.EVIL_FLAME, true, null);
+    addTorchToEntity(true, false, 45f, Param.EVIL_FLAME, true, false, null);
     torchLight[0].setDistance(Param.PLAYER_TORCH_STRENGTH);
-    addTorchToEntity(true, false, true, 0f, Param.EVIL_FLAME, true, null);
+    addTorchToEntity(true, false, 180f, Param.EVIL_FLAME, true, false, null);
     torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
     movementTargets = new LinkedList<Tile>();
     raycastCallback = new RayCastCallback() {

@@ -189,7 +189,7 @@ public class GameScreen implements Screen, InputProcessor {
     scaledLightingMatrix = camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
 
     Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
-    //Physics.getInstance().rayHandler.render();
+    Physics.getInstance().rayHandler.render();
 
     debugRenderer.render(Physics.getInstance().worldBox2D, scaledLightingMatrix);
 

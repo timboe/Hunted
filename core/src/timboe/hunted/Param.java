@@ -20,7 +20,9 @@ public class Param {
   public static final int RAYS = 256;
   public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, 1f);
   public static final Color PLAYER_FLAME = new Color(.5f, .5f, .2f, .7f);
-  public static final Color WALL_FLAME_CAST = new Color(.5f, .5f, .2f, .7f);
+  public static final Color WALL_FLAME_CAST_N = new Color(.5f, .5f, .2f, .7f);
+  public static final Color WALL_FLAME_CAST_ESW = new Color(.5f, .5f, .2f, .4f);
+  public static final Color WALL_FLAME_CAST_C = new Color(.5f, .5f, .2f, .4f);
   public static final Color WALL_FLAME_SPOT = new Color(1f, 0f, 0f, .8f);
 
   public static final int PLAYER_TORCH_STRENGTH = 15;

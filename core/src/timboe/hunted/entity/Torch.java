@@ -19,71 +19,88 @@ public class Torch extends EntityBase {
 
   public boolean isOn = false;
   private boolean isPartial;
+  private Vector2 lightPos;
   private Vector2 lightEffectPos;
   private boolean needsSecondLight;
+  private float angle;
 
   public int nLight = 0;
   public PositionalLight[] torchLight = {null,null};
   public float torchDistanceRef;
   private float torchDistanceCurrent;
   private float torchDistanceTarget;
+  Color primaryTorchType;
 
 
   public Torch(int x, int y) {
     super (x,y);
   }
 
-  public Torch(float x, float y, float lX, float lY, float r, boolean partial, float angle) {
+  public Torch(float x, float y, float lX, float lY, float sX, float sY, boolean partial, float a, Color c) {
+    // x and y are main directional light
+    // lX and lY are particle effect and effect light
+    // sX and sY are the location of the sensor to turn the light on
     super((int)x, (int)y);
+    angle = a * (float)(180f/Math.PI); // Degrees needed below - WTF?
+    primaryTorchType = c;
     isPartial = partial;
-    setAsTorchBody(x,y,r);
+//    setAsTorchBody(x,y,r);
+    addTorchSensor(sX,sY);
     lightEffectPos = new Vector2(lX, lY);
+    lightPos = new Vector2(x,y);
     // If the actual light is not in the same position as its effect - or the actual light is partial, need another
-    needsSecondLight = (isPartial || body.getPosition().dst(lightEffectPos) < 1e-4);
-    setMoveDirection(angle, false);
+    needsSecondLight = (isPartial || (body != null && body.getPosition().dst(lightEffectPos) < 1e-4));
   }
 
-  public void setAsTorchBody(float x, float y, float r) {
+  public void addTorchSensor(float x, float y) {
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.StaticBody;
     bodyDef.position.set(x, y);
     body = Physics.getInstance().worldBox2D.createBody(bodyDef);
     body.setUserData(this);
+    bodyDef.type = BodyDef.BodyType.StaticBody;
     CircleShape circleShape = new CircleShape();
-    circleShape.setRadius(r);
+    circleShape.setRadius(1f);
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
-    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY | Param.TORCH_SENSOR_ENTITY; // I am a
+    fixtureDef.filter.categoryBits = Param.TORCH_ENTITY; // I am a
     fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
     fixtureDef.isSensor = true;
     body.createFixture(fixtureDef);
     circleShape.dispose();
   }
 
-  public void addTorchToEntity(boolean ignoreSelf, boolean staticL, boolean point, float range, Color c, boolean addToBody, Vector2 loc) {
+//  public void setAsTorchBody(float x, float y, float r) {
+//    BodyDef bodyDef = new BodyDef();
+//    bodyDef.type = BodyDef.BodyType.StaticBody;
+//    bodyDef.position.set(x, y);
+//    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+//    body.setUserData(this);
+//    CircleShape circleShape = new CircleShape();
+//    circleShape.setRadius(r);
+//    FixtureDef fixtureDef = new FixtureDef();
+//    fixtureDef.shape = circleShape;
+//    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY | Param.TORCH_SENSOR_ENTITY; // I am a
+//    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
+//    fixtureDef.isSensor = true;
+//    body.createFixture(fixtureDef);
+//    circleShape.dispose();
+//  }
+
+  public void addTorchToEntity(boolean ignoreSelf, boolean staticL, float range, Color c, boolean addToBody, boolean xRay, Vector2 loc) {
+    torchLight[nLight] = new ConeLight(Physics.getInstance().rayHandler,
+      Param.RAYS,
+      c,
+      torchDistanceRef,
+      loc != null ? loc.x : 0f, loc != null ? loc.y : 0f, angle, range); // Degrees? WTF?
     torchDistanceRef = Param.WALL_TORCH_STRENGTH;
-    if (point) {
-      torchLight[nLight] = new ConeLight(Physics.getInstance().rayHandler,
-        Param.RAYS,
-        c,
-        torchDistanceRef,
-        0f, 0f, body.getAngle(), 180f);
-    } else {
-      torchLight[nLight] = new ConeLight(Physics.getInstance().rayHandler,
-        Param.RAYS,
-        c,
-        torchDistanceRef,
-        0f, 0f, body.getAngle(), range);
-    }
     torchLight[nLight].setContactFilter(Param.TORCH_ENTITY,
       (short)0,
       (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
-    if (addToBody) {
-      torchLight[nLight].attachToBody(body);
-    } else {
-      torchLight[nLight].setPosition(loc.x, loc.y);
-      torchLight[nLight].setXray(true);
-    }
+    if (addToBody) torchLight[nLight].attachToBody(body);
+//    else torchLight[nLight].setPosition(loc.x, loc.y);
+//    torchLight[nLight].set
+    torchLight[nLight].setXray(xRay);
     torchLight[nLight].setStaticLight(staticL);
     torchLight[nLight].setIgnoreAttachedBody(ignoreSelf);
     ++nLight;
@@ -101,12 +118,12 @@ public class Torch extends EntityBase {
     if (isOn) return;
     isOn = true;
     float range = isPartial ? 90f : 180f;
-    Gdx.app.log("Torch", "Turning on " + this);
-    addTorchToEntity(true, false, false, range, Param.WALL_FLAME_CAST, true, null);
+    Gdx.app.log("Torch", "Turning on " + this + " at angle " + angle);
+    addTorchToEntity(true, false, range, primaryTorchType, false, true, lightPos);
     Physics.getInstance().litTorches.add(this);
     Sprites.getInstance().addFlameEffect(lightEffectPos);
     if (needsSecondLight) {
-      addTorchToEntity(true, false, true, 180f, Param.WALL_FLAME_SPOT, false, lightEffectPos);
+      addTorchToEntity(true, false, 180f, Param.WALL_FLAME_SPOT, false, true, lightEffectPos);
       torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
     }
   }
