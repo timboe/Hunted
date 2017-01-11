@@ -78,17 +78,15 @@ public class WorldGen {
     shrinkRooms();
     makeCorridors();
     removeUnconnected();
-    success &= getAllConnected();
-    if (!success) return success;
+    if (!getAllConnected()) return false;
+    convertCrossidorsToRooms();
     addRoomsToTileMap();
     Sprites.getInstance().disableInvisibleTiles();
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
-    success &= placeBigBad();
-    if (!success) return success;
-    success &= placeExit();
-    if (!success) return success;
-    success &= placeKeyRooms();
+    if (!placeBigBad()) return false;
+    if (!placeExit()) return false;
+    if (!placeKeyRooms()) return false;
     Sprites.getInstance().textureWalls();
     return success;
   }
@@ -266,6 +264,47 @@ public class WorldGen {
     }
     Gdx.app.log("WorldGen","Connections between " + connectedRooms.size() + " of " + rooms.size() + " rooms.");
     return (connectedRooms.size() == rooms.size());
+  }
+
+  private void mergeCorridors(Room C1, Room C2, Room newRoom) {
+    // Get the 4 rooms these two corridors link
+    Vector<Room> C1Rooms = C1.getConnectedRooms();
+    Vector<Room> C2Rooms = C2.getConnectedRooms();
+    // Unlink rooms
+    for (Room C1Room : C1Rooms) {
+      for (Room C2Room : C2Rooms) {
+        C1Room.removeRoomLink( C2Room );
+        C2Room.removeRoomLink( C1Room);
+      }
+    }
+    // Re-link via new room
+    // TODO form four new corridors and link them
+//    possibleCorridors.get(id).setCorridor(Room.CorridorDirection.HORIZONTAL, left, right);
+//    corridors.add(possibleCorridors.get(id));
+//    allRooms.add(possibleCorridors.get(id));
+  }
+
+  private void convertCrossidorsToRooms() {
+    return; // TODO
+    // It's possible for corridors to cross. When this happens we can convert the crossing points to mini-rooms
+//    boolean madeChange = false;
+//    do {
+//      madeChange = false;
+//      for (Room C1 : corridors) {
+//        for (Room C2 : corridors) {
+//          if (C1 == C2) continue;
+//          // Check for overlap
+//          Room overlapRoom = new Room(0, 0, 0, 0);
+//          boolean overlap = Intersector.intersectRectangles(C1, C2, overlapRoom);
+//          if (overlap) {
+//            mergeCorridors(C1, C2, overlapRoom);
+//            madeChange = true;
+//            break;
+//          }
+//        }
+//        if (madeChange) break;
+//      }
+//    } while (madeChange);
   }
 
   private void makeCorridors() {

@@ -37,8 +37,4 @@ public class ParticleEffectActor extends Torch {
     }
   }
 
-  public void allowCompletion() {
-    particleEffect.allowCompletion();
-  }
-
 }

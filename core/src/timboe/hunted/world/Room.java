@@ -54,6 +54,15 @@ public class Room extends Rectangle {
     ++connections;
   }
 
+  public void removeRoomLink(Room toRemove) {
+    for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
+      if (entry.getValue() == toRemove) {
+        linksTo.remove(entry.getKey());
+        return;
+      }
+    }
+  }
+
   public boolean getLinksTo(final Room toTest) {
     return linksTo.containsValue(toTest);
   }
@@ -67,7 +76,7 @@ public class Room extends Rectangle {
     return v;
   }
 
-  public Vector<Room> getConnectedRooms() {
+  public Vector<Room> getConnectedRooms() { // If a corridor - then still works (link Ra->Rb, Rb->Ra)
     Vector<Room> v = new Vector<Room>();
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
       v.add(entry.getValue());

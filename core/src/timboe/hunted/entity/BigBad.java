@@ -216,6 +216,13 @@ public class BigBad extends ParticleEffectActor {
   private void doAStar() {
     final Tile dest = GameState.getInstance().aiDestination;
     movementTargets = Sprites.getInstance().findPath(getTileUnderEntity(), dest);
+    // Cull the list of non-waypoint nodes
+    // Note we always leave the final point
+    HashSet<Tile> toRemove = new HashSet<Tile>();
+    for (int i = 0; i < movementTargets.size() - 1; ++i) {
+      if (!waypoints.contains( movementTargets.get(i) )) toRemove.add( movementTargets.get(i) );
+    }
+    movementTargets.removeAll( toRemove );
     Gdx.app.log("AI","Pathing from " + this + " to " + dest);
     aiState = AIState.HUNTPATHING;
   }
