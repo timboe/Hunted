@@ -10,7 +10,6 @@ import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.world.Room;
-import timboe.hunted.world.WorldGen;
 
 import java.util.*;
 
@@ -19,10 +18,11 @@ import java.util.*;
  */
 public class BigBad extends ParticleEffectActor {
 
-  public enum AIState {IDLE, ROTATE, PATHING, HUNTPATHING, DOASTAR}
+  public enum AIState {IDLE, ROTATE, PATHING, HUNTPATHING, DOASTAR, RETURN_TO_WAYPOINT}
   public AIState aiState = AIState.IDLE;
-  private LinkedList<Tile> movementTargets;
+  private LinkedList<Tile> movementTargets; // List of destinations for AI
   private HashSet<Room> roomsVisited;
+  private HashSet<Tile> waypoints; // Known good AI destinations
   private Vector2 pathingVector; //TODO this is debug
   private Vector2 atDestinationVector = new Vector2();
   private Tile tileUnderMe = null;
@@ -38,6 +38,7 @@ public class BigBad extends ParticleEffectActor {
     speed = Param.BIGBAD_SPEED;
     pathingVector = new Vector2();
     roomsVisited = new HashSet<Room>();
+    waypoints = new HashSet<Tile>();
     setTexture("playerC");
     setAsPlayerBody(0.5f, 0.25f);
     addTorchToEntity(true, false, false, 45f, Param.EVIL_FLAME, true, null);
@@ -91,6 +92,7 @@ public class BigBad extends ParticleEffectActor {
   public void runAI() {
     switch (aiState) {
       case IDLE: chooseDestination(); break;
+      case RETURN_TO_WAYPOINT: getNearestWaypoint(); break;
       case ROTATE: rotate(); break;
       case PATHING: case HUNTPATHING: path(); break;
       case DOASTAR: doAStar(); break;
@@ -130,7 +132,8 @@ public class BigBad extends ParticleEffectActor {
       Gdx.app.log("AI","Reached target - " + movementTargets.size() + " more targets");
       if (movementTargets.size() == 0) { // Reached destination
         setMoving(false);
-        aiState = AIState.IDLE;
+        if (aiState == AIState.HUNTPATHING) aiState = AIState.RETURN_TO_WAYPOINT;
+        else aiState = AIState.IDLE;
       } else { // More steps
         if (aiState != AIState.HUNTPATHING) { // In speed mode we skip the rotate phase (snap to new angle)
           aiState = AIState.ROTATE;
@@ -158,6 +161,26 @@ public class BigBad extends ParticleEffectActor {
     basicPathing(toGoTo.getKey(), toGoTo.getValue());
   }
 
+  private void getNearestWaypoint() {
+    Tile nearest = null;
+    float dist = 999f;
+    Vector2 tempVectorA = new Vector2();
+    Vector2 tempVectorB = new Vector2( getTileUnderEntity().getX(), getTileUnderEntity().getY() );
+    for (Tile t : waypoints) {
+      tempVectorA.set( t.getX(), t.getY() );
+      if (tempVectorA.dst( tempVectorB ) < dist ) {
+        dist = tempVectorA.dst( tempVectorB );
+        nearest = t;
+      }
+    }
+    if (nearest == null) {
+      Gdx.app.error("AI","Nearest waypoint fail");
+      Gdx.app.exit();
+    }
+    movementTargets.add(nearest);
+    aiState = AIState.PATHING;
+  }
+
   private void basicPathing(Room corridor, Room target) {
     Gdx.app.log("AI","Starting - " + body.getPosition());
     if (corridor.getCorridorDirection() == Room.CorridorDirection.VERTICAL) {
@@ -165,15 +188,23 @@ public class BigBad extends ParticleEffectActor {
       Gdx.app.log("AI","Go through V corridor at common X:" + commonX);
       int finalY = (int)(target.y + Param.CORRIDOR_SIZE/2f);
       if (target.y < corridor.y) finalY = (int)(target.y + target.height - Param.CORRIDOR_SIZE/2f);
-      movementTargets.add( Sprites.getInstance().getTile(commonX, (int)body.getPosition().y) );//   new Vector2(commonX, body.getPosition().y) );
-      movementTargets.add( Sprites.getInstance().getTile(commonX, finalY));//new Vector2(commonX, finalY));
+      Tile t1 = Sprites.getInstance().getTile(commonX, (int)body.getPosition().y);
+      Tile t2 = Sprites.getInstance().getTile(commonX, finalY);
+      movementTargets.add( t1 );//   new Vector2(commonX, body.getPosition().y) );
+      movementTargets.add( t2 );//new Vector2(commonX, finalY));
+      waypoints.add( t1 );
+      waypoints.add( t2 );
     } else {
       int commonY = (int)(corridor.y + Param.CORRIDOR_SIZE/2f);
       Gdx.app.log("AI","Go through H corridor at common Y:" + commonY);
       int finalX = (int)(target.x + Param.CORRIDOR_SIZE/2f);
       if (target.x < corridor.x) finalX = (int)(target.x + target.width - Param.CORRIDOR_SIZE/2f);
-      movementTargets.add( Sprites.getInstance().getTile((int)body.getPosition().x, commonY) );
-      movementTargets.add( Sprites.getInstance().getTile(finalX, commonY) );
+      Tile t1 = Sprites.getInstance().getTile((int)body.getPosition().x, commonY);
+      Tile t2 = Sprites.getInstance().getTile(finalX, commonY);
+      movementTargets.add( t1 );
+      movementTargets.add( t2 );
+      waypoints.add( t1 );
+      waypoints.add( t2 );
     }
     // Check we are not already at our first target
 //    for (Vector2 t : movementTargets) {
