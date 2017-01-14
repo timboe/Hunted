@@ -218,6 +218,10 @@ public class BigBad extends ParticleEffectActor {
   private void doAStar() {
     final Tile dest = GameState.getInstance().aiDestination;
     movementTargets = Sprites.getInstance().findPath(getTileUnderEntity(), dest);
+    if (movementTargets == null) { // Could not path for some reason
+      aiState = AIState.IDLE;
+      return;
+    }
     // Cull the list of non-waypoint nodes
     // Note we always leave the final point
     HashSet<Tile> toRemove = new HashSet<Tile>();
@@ -240,7 +244,6 @@ public class BigBad extends ParticleEffectActor {
     if (aiState == AIState.CHASE && distanceFromPlayer < Param.BIGBAD_POUNCE_DISTANCE) { // see if it's game over
       aiState = AIState.END;
     } else if (aiState == AIState.CHASE && !sameRoomAsPlayer && !canSeePlayer) {  // see if we should stop chasing
-      //TODO the !canSeePlayer seems broken
       aiState = AIState.RETURN_TO_WAYPOINT;
       movementTargets.clear();
     }

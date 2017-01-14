@@ -336,26 +336,47 @@ public class Sprites {
       }
     }
     // remove some corridor blocks
-    // Terrible - does not work, needs a total re-think
+    final int hGap = 3;
+    final int vGap = 2;
     for (Room c : corridors) {
       int extent = MathUtils.clamp((int) Math.round(Math.abs(Utility.r.nextGaussian())), 1, Param.MAX_CRINKLE);
+      extent = Param.MAX_CRINKLE;
       int x = (int)c.getX();
       int y = (int)c.getY();
       int w = (int)c.getWidth() - 1;
       int h = (int)c.getHeight() - 1;
+      if (c.getX() < Param.MAX_CRINKLE + 1 || c.getY() < Param.MAX_CRINKLE + 1) continue;
       if (c.getCorridorDirection() == Room.CorridorDirection.VERTICAL) {
-        if (c.getHeight() < 6 || c.getX() < Param.MAX_CRINKLE + 1 || c.getY() < Param.MAX_CRINKLE + 1) continue;
+        if (c.getHeight() < Param.CORRIDOR_SIZE + vGap) continue;
         for (int corner = 0; corner < 4; ++ corner) {
           for (int e = 1; e <= extent; ++e) {
-            Gdx.app.log("dbg","Room="+c+" x=" + x + " y=" + y + " e=" + e);
-            if        (corner == 0 && getTile(x - e - 2, y).getIsDirt() && getTile(x - e - 2, y - 1).getIsFloorNC() ) {
+//            Gdx.app.log("dbg","Room="+c+" x=" + x + " y=" + y + " e=" + e);
+            if        (corner == 0 && getTile(x - e - vGap + 1, y).getIsDirt() && getTile(x - e - vGap, y).getIsDirt() && getTile(x - e - vGap, y - 1).getIsFloorNC() ) {
               getTile(x - e, y).setIsFloor(c); // Bot left, going left
-            } else if (corner == 1 && getTile( x + w + e + 2, y).getIsDirt() && getTile(x + w + e + 2, y - 1).getIsFloorNC()) {
+            } else if (corner == 1 && getTile( x + w + e + vGap - 1, y).getIsDirt() && getTile( x + w + e + vGap, y).getIsDirt() && getTile(x + w + e + vGap, y - 1).getIsFloorNC()) {
               getTile(x + w + e, y).setIsFloor(c); // Bot right, going right
-            } else if (corner == 2 && getTile(x + w + e + 2, y + h).getIsDirt() && getTile(x + w + e + 2, y + h + 1).getIsFloorNC()) {
+            } else if (corner == 2 && getTile(x + w + e + vGap - 1, y + h).getIsDirt() && getTile(x + w + e + vGap, y + h).getIsDirt() && getTile(x + w + e + vGap, y + h + 1).getIsFloorNC()) {
               getTile(x + w + e, y + h).setIsFloor(c); // Top right going right
-            } else if (corner == 3 && getTile(x - e - 2, y + h).getIsDirt() && getTile(x - e - 2, y + h + 1).getIsFloorNC()) {
+            } else if (corner == 3 && getTile(x - e - vGap + 1, y + h).getIsDirt() && getTile(x - e - vGap, y + h).getIsDirt() && getTile(x - e - vGap, y + h + 1).getIsFloorNC()) {
               getTile(x - e, y + h).setIsFloor(c); // Top left, going left
+            } else {
+              break;
+            }
+          }
+        }
+      } else if (c.getCorridorDirection() == Room.CorridorDirection.HORIZONTAL) {
+        if (c.getWidth() < Param.CORRIDOR_SIZE) continue;
+        for (int corner = 0; corner < 4; ++ corner) {
+          for (int e = 1; e <= extent; ++e) {
+//            Gdx.app.log("dbg","Room="+c+" x=" + x + " y=" + y + " e=" + e);
+            if        (corner == 0 && getTile(x, y - e - hGap + 1).getIsDirt() && getTile(x, y - e - hGap).getIsDirt() && getTile(x - 1, y - e - hGap).getIsFloorNC() ) {
+              getTile(x, y - e).setIsFloor(c); // Bot left, going down
+            } else if (corner == 1 && getTile( x + w, y - e - hGap + 1).getIsDirt() && getTile( x + w, y - e - hGap).getIsDirt() && getTile(x + w + 1, y - e - hGap).getIsFloorNC()) {
+              getTile(x + w, y - e).setIsFloor(c); // Bot right, going dowm
+            } else if (corner == 2 && getTile(x + w, y + h + e + hGap - 1).getIsDirt() && getTile(x + w, y + h + e + hGap).getIsDirt() && getTile(x + w + 1, y + h + e + hGap).getIsFloorNC()) {
+              getTile(x + w, y + h + e).setIsFloor(c); // Top right going up
+            } else if (corner == 3 && getTile(x, y + h + e + hGap - 1).getIsDirt() && getTile(x, y + h + e + hGap).getIsDirt() && getTile(x - 1, y + h + e + hGap).getIsFloorNC()) {
+              getTile(x, y + h + e).setIsFloor(c); // Top left, going up
             } else {
               break;
             }
