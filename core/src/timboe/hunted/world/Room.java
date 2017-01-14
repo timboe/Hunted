@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Rectangle;
 import org.w3c.dom.css.Rect;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.manager.GameState;
+import timboe.hunted.manager.Sprites;
 
 import java.util.*;
 
@@ -35,8 +37,12 @@ public class Room extends Rectangle {
     corridorDirection = d;
     if (d == CorridorDirection.VERTICAL) {
       corridorProjection = new Rectangle(x + Param.CORRIDOR_SIZE/2, 0, 1, Param.TILE_Y );
+      GameState.getInstance().waypoints.add(Sprites.getInstance().getTile((int)x + Param.CORRIDOR_SIZE/2, (int)(y + height + 2)));
+      GameState.getInstance().waypoints.add(Sprites.getInstance().getTile((int)x + Param.CORRIDOR_SIZE/2, (int)(y - 3)));
     } else {
       corridorProjection = new Rectangle(0, y + Param.CORRIDOR_SIZE/2, Param.TILE_X, 1 );
+      GameState.getInstance().waypoints.add(Sprites.getInstance().getTile((int)(x + width + 2) , (int)y + Param.CORRIDOR_SIZE/2));
+      GameState.getInstance().waypoints.add(Sprites.getInstance().getTile((int)(x - 3),          (int)y + Param.CORRIDOR_SIZE/2));
     }
 
   }

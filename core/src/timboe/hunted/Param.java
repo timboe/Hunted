@@ -40,7 +40,7 @@ public class Param {
   public static final float BIGBAD_SPEED_BOOST = .2f * PLAYER_SPEED;
   public static final float BIGBAD_ANGULAR_SPEED = (float)Math.PI/90f;
   public static final int BIGBAD_AI_COOLDOWN = 100;
-  public static final int BIGBAD_POUNCE_DISTANCE = 3;
+  public static final int BIGBAD_POUNCE_DISTANCE = 2;
 
   public static final float BIGBAD_SENSE_DISTANCE = 20f; // Within what line of sight can we see the player
 
@@ -62,5 +62,7 @@ public class Param {
 
   public static final int ANIM_SPEED = 10; // Frames per anim update
   public static final int MAX_FRAMES = 7;
+
+  public static final int MAX_CRINKLE = 3;
 
 }

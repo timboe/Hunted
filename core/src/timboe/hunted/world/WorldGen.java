@@ -41,10 +41,6 @@ public class WorldGen {
     r = new Random();
   }
 
-  public Vector<Room> getRooms() { return rooms; }
-
-  public Vector<Room> getCorridors() { return corridors; }
-
   public Vector<Room> getAllRooms() { return allRooms; }
 
   public void updatePhysics() {
@@ -97,6 +93,7 @@ public class WorldGen {
     nearestCentre = null;
     Physics.getInstance().reset();
     Sprites.getInstance().reset();
+    GameState.getInstance().waypoints.clear();
   }
 
   private void placeRooms() {

@@ -5,6 +5,8 @@ import timboe.hunted.entity.Tile;
 import timboe.hunted.screen.GameScreen;
 import timboe.hunted.world.WorldGen;
 
+import java.util.HashSet;
+
 /**
  * Created by Tim on 08/01/2017.
  */
@@ -17,6 +19,8 @@ public class GameState {
   public int aiCooldown = 0;
   public boolean webEffect = false;
   public GameScreen theGameScreen = null;
+  public HashSet<Tile> waypoints; // Known good AI destinations
+
 
   private static GameState ourInstance = new GameState();
 
@@ -32,7 +36,6 @@ public class GameState {
     theGameScreen.reset();
     WorldGen.getInstance().generateWorld();
     theGameScreen.addActors();
-
   }
 
   private void resetInternal() {
@@ -44,6 +47,7 @@ public class GameState {
     aiDestination = null;
     webEffect = false;
     frame = 0;
+    waypoints = new HashSet<Tile>();
   }
 
   public void updatePhysics() {

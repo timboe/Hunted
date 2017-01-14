@@ -23,7 +23,6 @@ public class BigBad extends ParticleEffectActor {
   public AIState aiState = AIState.IDLE;
   private LinkedList<Tile> movementTargets; // List of destinations for AI
   private HashSet<Room> roomsVisited;
-  private HashSet<Tile> waypoints; // Known good AI destinations
   private Vector2 atDestinationVector = new Vector2();
   private Tile tileUnderMe = null;
 
@@ -38,7 +37,6 @@ public class BigBad extends ParticleEffectActor {
     super(0,0);
     speed = Param.BIGBAD_SPEED;
     roomsVisited = new HashSet<Room>();
-    waypoints = new HashSet<Tile>();
     setTexture("playerC");
     setAsPlayerBody(0.5f, 0.25f);
     addTorchToEntity(true, false, 45f, Param.EVIL_FLAME, true, false, null);
@@ -50,6 +48,7 @@ public class BigBad extends ParticleEffectActor {
       @Override
       public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
         if ((fixture.getFilterData().categoryBits & Param.TORCH_SENSOR_ENTITY) > 0) return 1;
+        if ((fixture.getFilterData().categoryBits & Param.TORCH_ENTITY) > 0) return 1;
         if (fraction < Sprites.getInstance().getBigBad().raycastMin) {
           canSeePlayer = (fixture.getFilterData().categoryBits == Param.PLAYER_ENTITY);
           raycastMin = fraction;
@@ -157,7 +156,6 @@ public class BigBad extends ParticleEffectActor {
     // First try and follow scent trail
     Room playerRoom = Sprites.getInstance().getPlayer().getRoomUnderEntity();
     HashMap.Entry<Room, Room> toGoTo = getRoomUnderEntity().getConnectionTo(playerRoom);
-    // TODO what if same room as player
     if (canSeePlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE && toGoTo != null) {
       Gdx.app.log("AI","Got visual on player in neighbouring room/corridor");
     } else if (Utility.prob(getRoomUnderEntity().getScent()) ) { // Follow scent
@@ -174,7 +172,7 @@ public class BigBad extends ParticleEffectActor {
     float dist = 999f;
     Vector2 tempVectorA = new Vector2();
     Vector2 tempVectorB = new Vector2( getTileUnderEntity().getX(), getTileUnderEntity().getY() );
-    for (Tile t : waypoints) {
+    for (Tile t : GameState.getInstance().waypoints) {
       tempVectorA.set( t.getX(), t.getY() );
       if (tempVectorA.dst( tempVectorB ) < dist ) {
         dist = tempVectorA.dst( tempVectorB );
@@ -200,8 +198,6 @@ public class BigBad extends ParticleEffectActor {
       Tile t2 = Sprites.getInstance().getTile(commonX, finalY);
       movementTargets.add( t1 );//   new Vector2(commonX, body.getPosition().y) );
       movementTargets.add( t2 );//new Vector2(commonX, finalY));
-      waypoints.add( t1 );
-      waypoints.add( t2 );
     } else {
       int commonY = (int)(corridor.y + Param.CORRIDOR_SIZE/2f);
       Gdx.app.log("AI","Go through H corridor at common Y:" + commonY);
@@ -211,8 +207,6 @@ public class BigBad extends ParticleEffectActor {
       Tile t2 = Sprites.getInstance().getTile(finalX, commonY);
       movementTargets.add( t1 );
       movementTargets.add( t2 );
-      waypoints.add( t1 );
-      waypoints.add( t2 );
     }
     // Check we are not already at our first target
 //    for (Vector2 t : movementTargets) {
@@ -228,7 +222,7 @@ public class BigBad extends ParticleEffectActor {
     // Note we always leave the final point
     HashSet<Tile> toRemove = new HashSet<Tile>();
     for (int i = 0; i < movementTargets.size() - 1; ++i) {
-      if (!waypoints.contains( movementTargets.get(i) )) toRemove.add( movementTargets.get(i) );
+      if (!GameState.getInstance().waypoints.contains( movementTargets.get(i) )) toRemove.add( movementTargets.get(i) );
     }
     movementTargets.removeAll( toRemove );
     Gdx.app.log("AI","Pathing from " + this + " to " + dest);
@@ -256,7 +250,7 @@ public class BigBad extends ParticleEffectActor {
     speed = Param.PLAYER_SPEED * 1.1f;
     // TODO animation step
     doChase();
-    if (distanceFromPlayer < 0.2f) {
+    if (distanceFromPlayer < .5f) {
       WorldGen.getInstance().generateWorld(); // Restart
     }
   }
