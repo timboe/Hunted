@@ -34,6 +34,7 @@ public class Sprites {
   public Tile[] keySwitch = new Tile[Param.KEY_ROOMS + 1];
   public Vector<Tile> toUpdateWeb;
   public HashSet<Tile> webTiles;
+  private HashSet<EntityBase> clutter;
 
   private Sprites() {
   }
@@ -45,6 +46,7 @@ public class Sprites {
     tileSet = new Group();
     webTiles = new HashSet<Tile>();
     toUpdateWeb = new Vector<Tile>();
+    clutter = new HashSet<EntityBase>();
 
     exitDoor = null;
     for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) keySwitch[i] = null;
@@ -72,8 +74,9 @@ public class Sprites {
     for (Tile t : webTiles) t.moveWeb();
   }
 
-  public void addToStage(Actor a) {
+  public void addToStage(EntityBase a, boolean isClutter) {
     tileSet.addActor(a);
+    if (isClutter) clutter.add(a);
   }
 
   public void addTileActors() {
@@ -115,24 +118,28 @@ public class Sprites {
     ExitDoor t = new ExitDoor(xStart, (int)(entryRoom.y + entryRoom.height));
     t.setTexture("entry",5);
     exitDoor = t;
-    addToStage(t);
+    addToStage(t, false);
     getTile(xStart + 0, yStart - 1).setTexture("blobRed",2);
     getTile(xStart + 1, yStart - 1).setTexture("blobGreen",2);
     getTile(xStart + 2, yStart - 1).setTexture("blobBlue",2);
+    clutter.add(getTile(xStart + 0, yStart - 1));
+    clutter.add(getTile(xStart + 1, yStart - 1));
+    clutter.add(getTile(xStart + 2, yStart - 1));
     getTile(xStart + 0, yStart - 1).activationID = 1;
     getTile(xStart + 1, yStart - 1).activationID = 2;
     getTile(xStart + 2, yStart - 1).activationID = 3;
     keySwitch[0] = getTile(xStart + 1, yStart - 2);
     keySwitch[0].setTexture("switch",7);
     keySwitch[0].addSwitchSensor(0);
+    clutter.add(keySwitch[0]);
     Tile torchA = new Tile(xStart - 1, yStart - 2);
     Tile torchB = new Tile(xStart + 3, yStart - 2);
     torchA.setAsPhysicsBody(xStart - 1 + .35f, yStart - 2, .3f, 1.2f);
     torchB.setAsPhysicsBody(xStart + 3 + .35f, yStart - 2, .3f, 1.2f);;
     torchA.setTexture("torchTall");
     torchB.setTexture("torchTall");
-    addToStage(torchA);
-    addToStage(torchB);
+    addToStage(torchA, true);
+    addToStage(torchB, true);
     Physics.getInstance().addTorch(xStart + -.5f, yStart - .8f).doCollision();
     Physics.getInstance().addTorch(xStart + 3.5f, yStart - .8f).doCollision();
   }
@@ -157,45 +164,55 @@ public class Sprites {
     shrine.setTexture(Utility.prob(.5f) ? "totemA" + colour : "totemB" + colour, 3, true);
     getTile(x + 2, y).setTexture("blob" + colour, 2);
     getTile(x + 2, y).activationID = n+1;
+    clutter.add( getTile(x+2,y));
     shrine.activationID = n+1;
     lightA.activationID = n+1;
     lightB.activationID = n+1;
     keySwitch[n+1] = getTile(x + 1, y);
     keySwitch[n+1].setTexture("switch", 7);
     keySwitch[n+1].addSwitchSensor(n+1);
+    clutter.add(keySwitch[n+1]);
     torchA.setTexture("torchTall");
     torchB.setTexture("torchTall");
     torchA.setAsPhysicsBody(x + .35f, y + 2, .3f, 1.2f);
     torchB.setAsPhysicsBody(x + 3 + .35f, y + 2, .3f, 1.2f);
     lightA.setTexture("lamp" + colour,3, true);
     lightB.setTexture("lamp" + colour,3, true);
-    addToStage(torchA);
-    addToStage(torchB);
-    addToStage(lightA);
-    addToStage(lightB);
-    addToStage(shrine);
+    addToStage(torchA, true);
+    addToStage(torchB, true);
+    addToStage(lightA, true);
+    addToStage(lightB, true);
+    addToStage(shrine, true);
     Physics.getInstance().addTorch(x + 3.5f, y + 3.2f).doCollision();
     Physics.getInstance().addTorch(x + .5f, y + 3.2f).doCollision();
     for (int i = 0; i < Utility.r.nextInt(Param.MAX_MINI_LIGHT); ++i) {
       int rX = (int)r.getX() + Utility.r.nextInt((int)r.getWidth()-1);
       int rY = (int)r.getY() + Utility.r.nextInt((int)r.getHeight()-1);
-      if (getClear(rX,rY)) {
+      if (getClear(rX,rY,1,1)) {
         Tile miniTorch = new Tile(rX, rY);
         miniTorch.setTexture("lampS" + colour, 3, true);
         miniTorch.activationID = n+1;
-        addToStage(miniTorch);
+        addToStage(miniTorch, true);
       }
     }
   }
 
-  public boolean getClear(int x, int y) {
+  public boolean getClear(int x, int y, int w, int h) {
     Tile t = getTile(x,y);
     if (!t.getIsFloor()) return false;
     Room r = t.getTilesRoom();
     Vector<Room> connectedCorridors = r.getCorridors();
-    Rectangle rect = new Rectangle(x, y, 1, 1);
-    for (Room corridor : connectedCorridors ) {
+    Rectangle rect = new Rectangle(x, y, w, h);
+    for (Room corridor : connectedCorridors ) { // Check enemy pathing overlap
       if (rect.overlaps(corridor.corridorProjection)) return false;
+    }
+    Rectangle cluttertangle = new Rectangle();
+    for (EntityBase c : clutter) { // Check existing clutter overlap
+      cluttertangle.set(c.getX() / Param.TILE_SIZE,
+        c.getY() / Param.TILE_SIZE,
+        c.getWidth() / Param.TILE_SIZE,
+        c.getHeight() / Param.TILE_SIZE);
+      if (rect.overlaps(cluttertangle)) return false;
     }
     return true;
   }
@@ -336,6 +353,7 @@ public class Sprites {
       }
     }
     // remove some corridor blocks
+    //TODO de-ugly
     final int hGap = 3;
     final int vGap = 2;
     for (Room c : corridors) {
