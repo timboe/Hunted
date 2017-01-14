@@ -38,8 +38,8 @@ public class GameScreen implements Screen, InputProcessor {
 
   protected GestureDetector gestureDetector = null;
 
-  protected ShapeRenderer shapeRenderer;
-  protected OrthographicCamera camera;
+  protected ShapeRenderer shapeRenderer = new ShapeRenderer();
+  protected OrthographicCamera camera = new OrthographicCamera();
 
 
   private boolean keyN = false, keyE = false, keyS = false, keyW = false;
@@ -57,24 +57,27 @@ public class GameScreen implements Screen, InputProcessor {
   float desiredZoom = 1f;
 
   public GameScreen() {
-    camera = new OrthographicCamera();
-    stage = new Stage(new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, camera)); //TODO choose a better renderer here
-    shapeRenderer = new ShapeRenderer();
-
-    if (HuntedGame.debug) {
-      stage.setDebugAll(true);
-    }
+    GameState.getInstance().theGameScreen = this;
+    cullBox = new Rectangle(0, 0, Param.DISPLAY_X/2, Param.DISPLAY_Y/2); //TODO remove /2
   }
 
 
   public void init() {
-    cullBox = new Rectangle(0, 0, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2); //TODO remove /2
+    GameState.getInstance().reset();
+  }
 
-    WorldGen.getInstance().generateWorld();
+  public void reset() {
+    if (stage != null) {
+      stage.dispose();
+    }
+    stage = new Stage(new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, camera));
+    if (HuntedGame.debug) stage.setDebugAll(true);
+  }
+
+  public void addActors() {
     stage.addActor(Sprites.getInstance().getTileSet());
     stage.addActor(Sprites.getInstance().getPlayer());
     stage.addActor(Sprites.getInstance().getBigBad());
-
   }
 
   @Override
@@ -103,7 +106,7 @@ public class GameScreen implements Screen, InputProcessor {
   }
 
 
-  protected void updatePhysics() {
+  public void updatePhysics() {
 
     stage.act(Gdx.graphics.getDeltaTime());
 
@@ -169,7 +172,6 @@ public class GameScreen implements Screen, InputProcessor {
     renderClear();
     renderMain();
     Physics.getInstance().updatePhysics();
-    updatePhysics();
 
     ++(GameState.getInstance().frame);
   }
@@ -191,7 +193,7 @@ public class GameScreen implements Screen, InputProcessor {
     Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
     Physics.getInstance().rayHandler.render();
 
-    debugRenderer.render(Physics.getInstance().worldBox2D, scaledLightingMatrix);
+    debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
 
     renderShapesAndUI();
   }

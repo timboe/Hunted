@@ -56,7 +56,7 @@ public class Torch extends EntityBase {
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.StaticBody;
     bodyDef.position.set(x, y);
-    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+    body = Physics.getInstance().world.createBody(bodyDef);
     body.setUserData(this);
     bodyDef.type = BodyDef.BodyType.StaticBody;
     CircleShape circleShape = new CircleShape();
@@ -74,7 +74,7 @@ public class Torch extends EntityBase {
 //    BodyDef bodyDef = new BodyDef();
 //    bodyDef.type = BodyDef.BodyType.StaticBody;
 //    bodyDef.position.set(x, y);
-//    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+//    body = Physics.getInstance().world.createBody(bodyDef);
 //    body.setUserData(this);
 //    CircleShape circleShape = new CircleShape();
 //    circleShape.setRadius(r);

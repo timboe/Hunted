@@ -2,6 +2,8 @@ package timboe.hunted.manager;
 
 import timboe.hunted.Param;
 import timboe.hunted.entity.Tile;
+import timboe.hunted.screen.GameScreen;
+import timboe.hunted.world.WorldGen;
 
 /**
  * Created by Tim on 08/01/2017.
@@ -14,6 +16,7 @@ public class GameState {
   public Tile aiDestination = null;
   public int aiCooldown = 0;
   public boolean webEffect = false;
+  public GameScreen theGameScreen = null;
 
   private static GameState ourInstance = new GameState();
 
@@ -22,6 +25,25 @@ public class GameState {
   }
 
   private GameState() {
+  }
+
+  public void reset() {
+    resetInternal();
+    theGameScreen.reset();
+    WorldGen.getInstance().generateWorld();
+    theGameScreen.addActors();
+
+  }
+
+  private void resetInternal() {
+    for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) {
+      progress[i] = 0;
+      switchStatus[i] = false;
+    }
+    aiCooldown = 0;
+    aiDestination = null;
+    webEffect = false;
+    frame = 0;
   }
 
   public void updatePhysics() {

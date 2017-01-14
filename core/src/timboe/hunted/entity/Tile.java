@@ -1,6 +1,5 @@
 package timboe.hunted.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
@@ -11,7 +10,6 @@ import timboe.hunted.pathfinding.Node;
 import timboe.hunted.world.Room;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Created by Tim on 28/12/2016.
@@ -21,7 +19,7 @@ public class Tile extends EntityBase implements Node<Tile> {
   private boolean isFloor = false;
   private boolean hasPhysics = false;
   private boolean isWeb = false;
-  private Room myRoom = null;
+  public Room myRoom = null;
   public int switchID = -1; // -1 is invalid, 0=exitDoor. 1-N are rooms
   public int activationID = -1; // Which switch causes me to animate when true? -1 is invalid
   private HashSet<Tile> webNeighbours = new HashSet<Tile>();
@@ -81,7 +79,7 @@ public class Tile extends EntityBase implements Node<Tile> {
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.StaticBody;
     bodyDef.position.set(getX()/Param.TILE_SIZE + .5f, getY()/Param.TILE_SIZE + .5f);
-    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+    body = Physics.getInstance().world.createBody(bodyDef);
     body.setUserData(this);
     bodyDef.type = BodyDef.BodyType.StaticBody;
     CircleShape circleShape = new CircleShape();
@@ -99,7 +97,7 @@ public class Tile extends EntityBase implements Node<Tile> {
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.StaticBody;
     bodyDef.position.set(getX()/Param.TILE_SIZE + .5f, getY()/Param.TILE_SIZE + .5f);
-    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+    body = Physics.getInstance().world.createBody(bodyDef);
     body.setUserData(this);
     bodyDef.type = BodyDef.BodyType.StaticBody;
     CircleShape circleShape = new CircleShape();

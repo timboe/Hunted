@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import timboe.hunted.Param;
 import timboe.hunted.entity.Torch;
 import timboe.hunted.world.CollisionHandle;
-import timboe.hunted.world.Room;
 import timboe.hunted.world.WorldGen;
 
 import java.util.HashSet;
@@ -23,7 +22,7 @@ public class Physics {
     return ourInstance;
   }
 
-  public World worldBox2D = null;
+  public World world = null;
   public RayHandler rayHandler = null;
   public HashSet<Torch> torches = null;
   public HashSet<Torch> litTorches = null;
@@ -49,10 +48,11 @@ public class Physics {
   public void updatePhysics() {
     GameState.getInstance().updatePhysics();
     Sprites.getInstance().updatePhysics();
-    worldBox2D.step(Gdx.graphics.getDeltaTime(), 6, 2);
+    world.step(Gdx.graphics.getDeltaTime(), 6, 2);
     rayHandler.update();
     Sprites.getInstance().updatePosition();
     WorldGen.getInstance().updatePhysics();
+    GameState.getInstance().theGameScreen.updatePhysics();
     torchPhysics();
 
   }
@@ -91,9 +91,9 @@ public class Physics {
   public void reset() {
     dispose();
     collisionHandle = new CollisionHandle();
-    worldBox2D = new World(new Vector2(0f, 0f), true);
-    worldBox2D.setContactListener(collisionHandle);
-    rayHandler = new RayHandler(worldBox2D);
+    world = new World(new Vector2(0f, 0f), true);
+    world.setContactListener(collisionHandle);
+    rayHandler = new RayHandler(world);
     torches = new HashSet<Torch>();
     litTorches = new HashSet<Torch>();
 
@@ -108,6 +108,6 @@ public class Physics {
 
   public void dispose() {
     if (rayHandler != null) rayHandler.dispose();
-    if (worldBox2D != null) worldBox2D.dispose();
+    if (world != null) world.dispose();
   }
 }

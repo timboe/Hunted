@@ -2,7 +2,6 @@ package timboe.hunted.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
@@ -40,10 +39,6 @@ public class WorldGen {
 
   private WorldGen() {
     r = new Random();
-    rooms = new Vector<Room>();
-    corridors = new Vector<Room>();
-    allRooms = new Vector<Room>();
-    keyRooms = new Vector<Room>();
   }
 
   public Vector<Room> getRooms() { return rooms; }
@@ -94,13 +89,13 @@ public class WorldGen {
   }
 
   private void reset() {
-    rooms.clear();
-    corridors.clear();
-    allRooms.clear();
-    keyRooms.clear();
+    rooms = new Vector<Room>();
+    corridors = new Vector<Room>();
+    allRooms = new Vector<Room>();
+    keyRooms = new Vector<Room>();
     exitRoom = null;
     nearestCentre = null;
-    timboe.hunted.manager.Physics.getInstance().reset();
+    Physics.getInstance().reset();
     Sprites.getInstance().reset();
   }
 
@@ -156,7 +151,6 @@ public class WorldGen {
     }
     // Place baddy
     Sprites.getInstance().getBigBad().setPhysicsPosition(Math.round(nearestCentre.x + nearestCentre.width/2), Math.round(nearestCentre.y + nearestCentre.height/2));
-    Sprites.getInstance().getPlayer().setPhysicsPosition(nearestCentre.x + 1, nearestCentre.y + 1);
     return true;
   }
 
@@ -180,7 +174,9 @@ public class WorldGen {
       return false;
     }
     exitRoom = entryRoomOptions.elementAt( r.nextInt(entryRoomOptions.size()) );
-    Sprites.getInstance().addEntryRoom(exitRoom);
+    Sprites.getInstance().addExitRoom(exitRoom);
+    Sprites.getInstance().getPlayer().setPhysicsPosition(exitRoom.x + exitRoom.width/2f - .5f,
+      exitRoom.y + exitRoom.height - 3);
     return true;
   }
 

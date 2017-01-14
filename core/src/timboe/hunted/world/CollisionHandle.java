@@ -43,9 +43,9 @@ public class CollisionHandle implements ContactListener {
         } else if (t.getIsWeb() && GameState.getInstance().aiCooldown == 0) {
           GameState.getInstance().aiCooldown = Param.BIGBAD_AI_COOLDOWN;
           GameState.getInstance().aiDestination = t;
-          Sprites.getInstance().resetWeb();
           GameState.getInstance().webEffect = true;
-          Sprites.getInstance().getBigBad().aiState = BigBad.AIState.DOASTAR;
+          Sprites.getInstance().resetWeb();
+          Sprites.getInstance().getBigBad().webHit();
           t.startWebEffect();
           Sprites.getInstance().tintWeb();
         }

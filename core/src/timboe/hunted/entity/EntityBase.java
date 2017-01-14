@@ -1,13 +1,11 @@
 package timboe.hunted.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import timboe.hunted.Param;
-import timboe.hunted.Utility;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Textures;
 import timboe.hunted.manager.Physics;
@@ -93,7 +91,7 @@ public class EntityBase extends Actor {
     float newHeight2 = (height * worldBox.height) / 2f;
     bodyDef.type = BodyDef.BodyType.StaticBody;
     bodyDef.position.set(x + newWidth2, y + newHeight2);
-    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+    body = Physics.getInstance().world.createBody(bodyDef);
     body.setUserData(this);
 
     PolygonShape boxShape = new PolygonShape();
@@ -117,7 +115,7 @@ public class EntityBase extends Actor {
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     bodyDef.fixedRotation = true; // No spiny physics
     bodyDef.position.set(worldBox.x + newWidth2, worldBox.y + heightMod - offsetMod);
-    body = Physics.getInstance().worldBox2D.createBody(bodyDef);
+    body = Physics.getInstance().world.createBody(bodyDef);
     body.setUserData(this);
 
     CircleShape circleShape = new CircleShape();
@@ -127,7 +125,7 @@ public class EntityBase extends Actor {
     fixtureDef.shape = circleShape;
     fixtureDef.density = 1f;
     fixtureDef.filter.categoryBits = Param.PLAYER_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.WORLD_ENTITY | Param.BIGBAD_ENTITY | Param.PLAYER_ENTITY | Param.TORCH_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.WORLD_ENTITY | Param.TORCH_ENTITY; // I collide with
     if (this instanceof BigBad) {
       fixtureDef.filter.categoryBits = Param.BIGBAD_ENTITY; // I am a
 //      fixtureDef.filter.maskBits = Param.TORCH_ENTITY; // I collide with
@@ -173,7 +171,7 @@ public class EntityBase extends Actor {
 //    if (currentFrame > 0) Gdx.app.log("DBG","iam "+textureRegion[0]+" "+currentFrame + " mod " + nFrames + " is " + currentFrame%nFrames);
     batch.draw(textureRegion[currentFrame % nFrames] ,this.getX(),this.getY());
     if (webTexture != null) {
-      batch.setColor(1f,1f - webTint,1f - webTint,1f);
+      batch.setColor(1f,1f - webTint,1f - webTint,1f); //red
       batch.draw(webTexture, this.getX(), this.getY());
       batch.setColor(1f,1f,1f,1f);
     }

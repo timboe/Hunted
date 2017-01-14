@@ -32,7 +32,7 @@ public class Sprites {
   private BigBad bigBad;
   public ExitDoor exitDoor;
   public Tile[] keySwitch = new Tile[Param.KEY_ROOMS + 1];
-  public Vector<Tile> toUpdateWeb = new Vector<Tile>();
+  public Vector<Tile> toUpdateWeb;
   public HashSet<Tile> webTiles;
 
   private Sprites() {
@@ -44,6 +44,10 @@ public class Sprites {
     bigBad = new BigBad();
     tileSet = new Group();
     webTiles = new HashSet<Tile>();
+    toUpdateWeb = new Vector<Tile>();
+
+    exitDoor = null;
+    for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) keySwitch[i] = null;
 
     particles = new HashSet<ParticleEffectActor>();
     tileMap = new HashMap<Integer, Tile>();
@@ -102,13 +106,12 @@ public class Sprites {
   }
 
 
-  public void addEntryRoom(Room entryRoom) {
+  public void addExitRoom(Room entryRoom) {
     final int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
     final int yStart = (int)(entryRoom.y + entryRoom.height);
     for (int x = xStart; x < xStart + 3; ++x) {
       getTile(x, yStart).setVisible(false);
     }
-    player.setPhysicsPosition(entryRoom.x + entryRoom.width/2f, entryRoom.y + entryRoom.height/2f);
     ExitDoor t = new ExitDoor(xStart, (int)(entryRoom.y + entryRoom.height));
     t.setTexture("entry",5);
     exitDoor = t;
@@ -302,6 +305,7 @@ public class Sprites {
               break;
           }
           // Check good corner
+          Gdx.app.log("dbg","Room="+r+" x=" + x + " y=" + y + " e=" + extent);
           if      (corner == 0 && (getTile(x - 1, y).getIsFloor() || getTile(x, y - 1).getIsFloor())) break;
           else if (corner == 1 && (getTile(x + 1, y).getIsFloor() || getTile(x, y - 1).getIsFloor())) break;
           else if (corner == 2 && (getTile(x + 1, y).getIsFloor() || getTile(x, y + 1).getIsFloor())) break;
