@@ -402,7 +402,6 @@ public class WorldGen {
             continue;
           }
           Sprites.getInstance().getTile(x, y).setIsFloor(room);
-          if (room.getIsCorridor()) Sprites.getInstance().getTile(x, y).setTexture("floorZ"); //TODO debug
         }
       }
     }

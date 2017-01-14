@@ -308,7 +308,6 @@ public class Sprites {
           else if (corner == 3 && (getTile(x - 1, y).getIsFloor() || getTile(x, y + 1).getIsFloor())) break;
           // Try and extend
           for (int e = 0; e < extent; ++e) {
-            Gdx.app.log("dbg","Room="+r+" x=" + x + " y=" + y + " e=" + e);
             if        (corner == 0 && dirn == 0 && !getTile(x + e, y - 1).getIsFloor()) { // Bot left - Check below
               getTile(x + e, y).setIsDirt();
             } else if (corner == 0 && dirn == 1 && !getTile(x - 1, y + e).getIsFloor()) { // bot left - check left
@@ -332,6 +331,34 @@ public class Sprites {
         }
       }
     }
+    // remove some corridor blocks
+    // Terrible - does not work, needs a total re-think
+//    for (Room c : corridors) {
+//      int extent = MathUtils.clamp((int) Math.round(Math.abs(Utility.r.nextGaussian())), 1, 3);
+//      extent = 3;
+//      int x = (int)c.getX();
+//      int y = (int)c.getY();
+//      int w = (int)c.getWidth() - 1;
+//      int h = (int)c.getHeight() - 1;
+//      if (c.getCorridorDirection() == Room.CorridorDirection.VERTICAL) {
+//        for (int corner = 0; corner < 4; ++ corner) {
+//          for (int e = 1; e <= extent; ++e) {
+////            Gdx.app.log("dbg","Room="+c+" x=" + x + " y=" + y + " e=" + e);
+//            if        (corner == 0 && getTile(x - e, y).getIsDirt() && getTile(x - e, y - 1).getIsFloorNC() ) {
+//              getTile(x - e, y).setIsFloor(c); // Bot left, going left
+//            } else if (corner == 1 && getTile( x + w + e, y).getIsDirt() && getTile(x + w + e, y - 1).getIsFloorNC()) {
+//              getTile(x + w + e, y).setIsFloor(c); // Bot right, going right
+//            } else if (corner == 2 && getTile(x + w + e, y + h).getIsDirt() && getTile(x + w + e, y + h + 1).getIsFloorNC()) {
+//              getTile(x + w + e, y + h).setIsFloor(c); // Top right going right
+//            } else if (corner == 3 && getTile(x - e, y + h).getIsDirt() && getTile(x - e, y + h + 1).getIsFloorNC()) {
+//              getTile(x - e, y + h).setIsFloor(c); // Top left, going left
+//            } else {
+//              break;
+//            }
+//          }
+//        }
+//      }
+//    }
   }
 
 

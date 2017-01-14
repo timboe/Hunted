@@ -41,7 +41,8 @@ public class Tile extends EntityBase implements Node<Tile> {
     isFloor = true;
     myRoom = room;
     int floor = Utility.r.nextInt(100);
-    if (floor <= 22)  setTexture("floor" + Integer.toString(floor));
+    if (room.getIsCorridor()) setTexture("floorZ"); // TODO DEBUg
+    else if (floor <= 22)  setTexture("floor" + Integer.toString(floor));
     else setTexture("floor");
   }
 
@@ -129,6 +130,14 @@ public class Tile extends EntityBase implements Node<Tile> {
   public boolean getIsFloor() {
     return isFloor;
   }
+
+  public boolean getIsFloorNC() { // getIsFloorAndIsNotCorridor
+    if (myRoom != null && myRoom.getIsCorridor()) return false;
+    return isFloor;
+  }
+
+
+  public boolean getIsDirt() { return !isFloor; }
 
   public boolean getIsWeb() {
     return isWeb;
