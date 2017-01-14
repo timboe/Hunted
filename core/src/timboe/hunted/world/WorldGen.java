@@ -2,6 +2,7 @@ package timboe.hunted.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
@@ -81,6 +82,7 @@ public class WorldGen {
     if (!getAllConnected()) return false;
     convertCrossidorsToRooms();
     addRoomsToTileMap();
+    Sprites.getInstance().crinkleEdges(rooms, corridors);
     Sprites.getInstance().disableInvisibleTiles();
     Sprites.getInstance().addTileActors();
     Sprites.getInstance().addTileRigidBodies();
@@ -265,6 +267,7 @@ public class WorldGen {
     Gdx.app.log("WorldGen","Connections between " + connectedRooms.size() + " of " + rooms.size() + " rooms.");
     return (connectedRooms.size() == rooms.size());
   }
+
 
   private void mergeCorridors(Room C1, Room C2, Room newRoom) {
     // Get the 4 rooms these two corridors link

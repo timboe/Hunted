@@ -1,6 +1,7 @@
 package timboe.hunted.manager;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -277,6 +278,62 @@ public class Sprites {
     }
     return returnSet;
   }
+
+  public void crinkleEdges(Vector<Room> rooms, Vector<Room> corridors) {
+    // remove some corner blocks
+    for (Room r : rooms) {
+      for (int corner = 0; corner < 4; ++corner) {
+        for (int dirn = 0; dirn < 2; ++dirn) {
+          int x = (int) r.getX();
+          int y = (int) r.getY();
+          int extent = MathUtils.clamp((int) Math.round(Math.abs(Utility.r.nextGaussian())), 0, 3);
+          switch (corner) {
+            case 0: // bot left
+              break;
+            case 1: //bot right
+              x += r.getWidth() - 1;
+              break;
+            case 2: // top right
+              x += r.getWidth() - 1;
+              y += r.getHeight() - 1;
+              break;
+            case 3: // bot right
+              y += r.getHeight() - 1;
+              break;
+          }
+          // Check good corner
+          if      (corner == 0 && (getTile(x - 1, y).getIsFloor() || getTile(x, y - 1).getIsFloor())) break;
+          else if (corner == 1 && (getTile(x + 1, y).getIsFloor() || getTile(x, y - 1).getIsFloor())) break;
+          else if (corner == 2 && (getTile(x + 1, y).getIsFloor() || getTile(x, y + 1).getIsFloor())) break;
+          else if (corner == 3 && (getTile(x - 1, y).getIsFloor() || getTile(x, y + 1).getIsFloor())) break;
+          // Try and extend
+          for (int e = 0; e < extent; ++e) {
+            Gdx.app.log("dbg","Room="+r+" x=" + x + " y=" + y + " e=" + e);
+            if        (corner == 0 && dirn == 0 && !getTile(x + e, y - 1).getIsFloor()) { // Bot left - Check below
+              getTile(x + e, y).setIsDirt();
+            } else if (corner == 0 && dirn == 1 && !getTile(x - 1, y + e).getIsFloor()) { // bot left - check left
+              getTile(x, y + e).setIsDirt();
+            } else if (corner == 1 && dirn == 0 && !getTile(x - e, y - 1).getIsFloor()) { // bot right, check below
+              getTile(x - e, y).setIsDirt();
+            } else if (corner == 1 && dirn == 1 && !getTile(x + 1, y + e).getIsFloor()) { // bot right, check right
+              getTile(x, y + e).setIsDirt();
+            } else if (corner == 2 && dirn == 0 && !getTile(x - e, y + 1).getIsFloor()) { // top right, check up
+              getTile(x-e, y).setIsDirt();
+            } else if (corner == 2 && dirn == 1 && !getTile(x + 1, y - e).getIsFloor()) { // top right, check right
+              getTile(x, y - e).setIsDirt();
+            } else if (corner == 3 && dirn == 0 && !getTile(x + e, y + 1).getIsFloor()) { // top left, check up
+              getTile(x + e, y).setIsDirt();
+            } else if (corner == 3 && dirn == 1 && !getTile(x - 1, y - e).getIsFloor()) { // top left, check left
+              getTile(x, y - e).setIsDirt();
+            } else {
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
 
   public LinkedList<Tile> findPath(Tile start, Tile end) {
     return PathFinding.doAStar(start, end);

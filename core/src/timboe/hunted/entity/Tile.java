@@ -29,6 +29,11 @@ public class Tile extends EntityBase implements Node<Tile> {
 
   public Tile(int x, int y) {
     super(x, y);
+    setIsDirt();
+  }
+
+  public void setIsDirt() {
+    isFloor = false;
     setTexture("pitC");
   }
 
