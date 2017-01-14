@@ -96,9 +96,8 @@ public class Torch extends EntityBase {
     torchDistanceRef = Param.WALL_TORCH_STRENGTH;
     torchLight[nLight].setContactFilter(Param.TORCH_ENTITY,
       (short)0,
-      (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
+      (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY|Param.TORCH_ENTITY)); // I am a, 0, I collide with
     if (addToBody) torchLight[nLight].attachToBody(body);
-//    else torchLight[nLight].setPosition(loc.x, loc.y);
 //    torchLight[nLight].set
     torchLight[nLight].setXray(xRay);
     torchLight[nLight].setStaticLight(staticL);
@@ -119,7 +118,7 @@ public class Torch extends EntityBase {
     isOn = true;
     float range = isPartial ? 90f : 180f;
     Gdx.app.log("Torch", "Turning on " + this + " at angle " + angle);
-    addTorchToEntity(true, false, range, primaryTorchType, false, true, lightPos);
+    addTorchToEntity(true, false, range, primaryTorchType, false, false, lightPos);
     Physics.getInstance().litTorches.add(this);
     Sprites.getInstance().addFlameEffect(lightEffectPos);
     if (needsSecondLight) {
