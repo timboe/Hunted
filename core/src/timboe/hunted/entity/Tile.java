@@ -115,7 +115,7 @@ public class Tile extends EntityBase implements Node<Tile> {
   public void act (float delta) {
     // TODO do we need to call on the super here? We don't animate any of these so prob not
     if (switchID >= 0) {
-      currentFrame = (int) ((GameState.getInstance().progress[switchID] / (float) Param.SWITCH_TIME) * nFrames);
+      currentFrame = (int) ((Math.min(GameState.getInstance().progress[switchID], Param.SWITCH_TIME-1) / (float) Param.SWITCH_TIME) * nFrames);
     } else if (activationID >= 0 && GameState.getInstance().progress[activationID] == Param.SWITCH_TIME) {
       if (GameState.getInstance().frame % Param.ANIM_SPEED == 0) ++currentFrame;
     }

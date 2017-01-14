@@ -31,13 +31,14 @@ public class BigBad extends ParticleEffectActor {
   public boolean canSeePlayer;
   public boolean sameRoomAsPlayer;
   public float distanceFromPlayer;
+  private final float yOff = 32;
 
 
   public BigBad() {
     super(0,0);
     speed = Param.BIGBAD_SPEED;
     roomsVisited = new HashSet<Room>();
-    setTexture("bb", 4);
+    setTexture("bb", 8);
     setAsPlayerBody(0.5f, 0.25f);
     addTorchToEntity(true, false, 45f, Param.EVIL_FLAME, true, false, null);
     torchLight[0].setDistance(Param.PLAYER_TORCH_STRENGTH);
@@ -95,6 +96,7 @@ public class BigBad extends ParticleEffectActor {
   @Override
   public void updatePosition() {
     super.updatePosition();
+    setPosition(getX(), getY() + yOff);
     // Set angle
     float ang = body.getAngle();
     if (ang < Math.PI/4f) currentFrame = 0;
@@ -102,7 +104,7 @@ public class BigBad extends ParticleEffectActor {
     else if (ang < 5*Math.PI/4f) currentFrame = 2;
     else if (ang < 7*Math.PI/4f) currentFrame = 3;
     else currentFrame = 0;
-    if (aiState == AIState.CHASE || aiState == AIState.END) currentFrame += nFrames;
+    if (aiState == AIState.CHASE || aiState == AIState.END) currentFrame += 4;
   }
 
     public void runAI() {

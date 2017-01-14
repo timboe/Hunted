@@ -17,7 +17,7 @@ import timboe.hunted.world.Room;
 public class EntityBase extends Actor {
   protected TextureRegion webTexture = null;
   protected TextureRegion[] textureRegion = new TextureRegion[Param.MAX_FRAMES];
-  public int currentFrame;
+  public int currentFrame = 0;
   protected int nFrames;
 
   protected Body body = null;
