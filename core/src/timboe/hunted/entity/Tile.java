@@ -24,6 +24,8 @@ public class Tile extends EntityBase implements Node<Tile> {
   public int activationID = -1; // Which switch causes me to animate when true? -1 is invalid
   private HashSet<Tile> webNeighbours = new HashSet<Tile>();
   public int webEffect = 0;
+  public boolean isChest = false;
+  public boolean chestOpened = false;
 
   public Tile(int x, int y) {
     super(x, y);
@@ -118,6 +120,11 @@ public class Tile extends EntityBase implements Node<Tile> {
       currentFrame = (int) ((Math.min(GameState.getInstance().progress[switchID], Param.SWITCH_TIME-1) / (float) Param.SWITCH_TIME) * nFrames);
     } else if (activationID >= 0 && GameState.getInstance().progress[activationID] == Param.SWITCH_TIME) {
       if (GameState.getInstance().frame % Param.ANIM_SPEED == 0) ++currentFrame;
+    } else if (isChest) {
+      updatePosition();
+      if (chestOpened && currentFrame < nFrames-1 && GameState.getInstance().frame % Param.ANIM_SPEED/2 == 0) {
+        ++currentFrame;
+      }
     }
   }
 

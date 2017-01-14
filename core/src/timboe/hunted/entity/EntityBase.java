@@ -101,9 +101,29 @@ public class EntityBase extends Actor {
     fixtureDef.shape = boxShape;
     fixtureDef.density = 1f;
     fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.TORCH_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.TORCH_ENTITY | Param.WORLD_ENTITY; // I collide with
     body.createFixture(fixtureDef);
 
+    boxShape.dispose();
+  }
+
+  public void setAsChest() {
+    BodyDef bodyDef = new BodyDef();
+    bodyDef.type = BodyDef.BodyType.DynamicBody;
+    bodyDef.position.set((getX() / Param.TILE_SIZE) + .5f, (getY() / Param.TILE_SIZE) + .5f);
+    bodyDef.fixedRotation = true; // No spiny physics
+    body = Physics.getInstance().world.createBody(bodyDef);
+    body.setUserData(this);
+    PolygonShape boxShape = new PolygonShape();
+    boxShape.setAsBox(.5f, .5f);
+    FixtureDef fixtureDef = new FixtureDef();
+    fixtureDef.shape = boxShape;
+    fixtureDef.density = 0.5f;
+    fixtureDef.friction = 0.8f;
+    fixtureDef.restitution = 0.1f;
+    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
+    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.WORLD_ENTITY; // I collide with
+    body.createFixture(fixtureDef);
     boxShape.dispose();
   }
 

@@ -2,10 +2,12 @@ package timboe.hunted.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.entity.Tile;
 import timboe.hunted.manager.*;
 
 import java.util.*;
@@ -80,6 +82,7 @@ public class WorldGen {
     if (!placeBigBad()) return false;
     if (!placeExit()) return false;
     if (!placeKeyRooms()) return false;
+    placeChests();
     Sprites.getInstance().textureWalls();
     return success;
   }
@@ -149,6 +152,26 @@ public class WorldGen {
     // Place baddy
     Sprites.getInstance().getBigBad().setPhysicsPosition(Math.round(nearestCentre.x + nearestCentre.width/2), Math.round(nearestCentre.y + nearestCentre.height/2));
     return true;
+  }
+
+  private void placeChests() {
+    for (Room room : rooms) {
+      if (room == exitRoom) continue;
+      int chests = MathUtils.clamp((int) Math.round(Math.abs(r.nextGaussian())), 0, 2);
+      if (room.getConnectedRooms().size() == 1) ++chests;
+      if (chests == 0) continue;
+      for (int t = 0; t < ROOM_PLACE_TRIES; ++t) {
+        int rX = (int)room.getX() + r.nextInt((int)room.getWidth());
+        int rY = (int)room.getY() + r.nextInt((int)room.getHeight());
+        if (!Sprites.getInstance().getClear(rX,rY,1,1)) continue;
+        Tile newChest = new Tile(rX, rY);
+        newChest.setTexture("chest",6, false);
+        Sprites.getInstance().addToStage(newChest, true);
+        newChest.setAsChest();
+        newChest.isChest = true;
+        if (--chests == 0) break;
+      }
+    }
   }
 
   private boolean placeExit() {
@@ -303,7 +326,7 @@ public class WorldGen {
 //    } while (madeChange);
   }
 
-  private void makeCorridors() {
+  private void makeCorridors() { //TODO make one loop rather than two
     // Connect large rooms
     Room intersectionY = new Room(0, 0, 0, 0);
     Room intersectionX = new Room(0, 0, 0, 0);

@@ -48,6 +48,8 @@ public class CollisionHandle implements ContactListener {
           Sprites.getInstance().getBigBad().webHit();
           t.startWebEffect();
           Sprites.getInstance().tintWeb();
+        } else if (t.isChest) {
+          t.chestOpened = true;
         }
       }
     }
