@@ -56,6 +56,7 @@ public class Param {
   public static final short BIGBAD_ENTITY = 0x1 << 1; // 0010
   public static final short WORLD_ENTITY = 0x1 << 2; // 0100
   public static final short SENSOR_ENTITY = 0x1 << 3; // 1000
+  public static final short TORCH_ENTITY = 0x1 << 4; // 10000
 
   public static final int SWITCH_TIME = 250;
 

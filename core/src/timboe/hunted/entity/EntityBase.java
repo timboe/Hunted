@@ -122,7 +122,7 @@ public class EntityBase extends Actor {
     fixtureDef.friction = 0.8f;
     fixtureDef.restitution = 0.1f;
     fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.WORLD_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.WORLD_ENTITY | Param.TORCH_ENTITY; // I collide with
     body.createFixture(fixtureDef);
     boxShape.dispose();
   }
@@ -145,10 +145,10 @@ public class EntityBase extends Actor {
     fixtureDef.shape = circleShape;
     fixtureDef.density = 1f;
     fixtureDef.filter.categoryBits = Param.PLAYER_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.WORLD_ENTITY | Param.TORCH_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.WORLD_ENTITY | Param.TORCH_ENTITY | Param.SENSOR_ENTITY; // I collide with
     if (this instanceof BigBad) {
       fixtureDef.filter.categoryBits = Param.BIGBAD_ENTITY; // I am a
-//      fixtureDef.filter.maskBits = Param.TORCH_ENTITY; // I collide with
+      fixtureDef.filter.maskBits = Param.TORCH_ENTITY; // I collide with
     }
     body.createFixture(fixtureDef);
     circleShape.dispose();

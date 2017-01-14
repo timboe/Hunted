@@ -48,8 +48,8 @@ public class BigBad extends ParticleEffectActor {
     raycastCallback = new RayCastCallback() {
       @Override
       public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-        if ((fixture.getFilterData().categoryBits & Param.TORCH_SENSOR_ENTITY) > 0) return 1;
         if ((fixture.getFilterData().categoryBits & Param.TORCH_ENTITY) > 0) return 1;
+        if ((fixture.getFilterData().categoryBits & Param.SENSOR_ENTITY) > 0) return 1;
         if (fraction < Sprites.getInstance().getBigBad().raycastMin) {
           canSeePlayer = (fixture.getFilterData().categoryBits == Param.PLAYER_ENTITY);
           raycastMin = fraction;
