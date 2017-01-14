@@ -193,7 +193,7 @@ public class GameScreen implements Screen, InputProcessor {
     Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
     Physics.getInstance().rayHandler.render();
 
-    debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
+    if (HuntedGame.debug) debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
 
     renderShapesAndUI();
   }

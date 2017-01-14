@@ -28,13 +28,13 @@ public class Param {
   public static final int PLAYER_TORCH_STRENGTH = 15;
   public static final int WALL_TORCH_STRENGTH = PLAYER_TORCH_STRENGTH/2;
   public static final float SMALL_TORCH_STRENGTH = 1.5f;
-  public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, 1f);
+  public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, .03f);
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
   public static final int TORCH_SPACING = 5;
   public static final float TORCH_FLICKER = 2f;
   public static final int MAX_MINI_LIGHT = 20; // Mini lights per key room
 
-  public static final float PLAYER_SPEED = 10f;
+  public static final float PLAYER_SPEED = 5f*2;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED = .4f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED_BOOST = .2f * PLAYER_SPEED;

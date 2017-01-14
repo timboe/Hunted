@@ -37,7 +37,7 @@ public class BigBad extends ParticleEffectActor {
     super(0,0);
     speed = Param.BIGBAD_SPEED;
     roomsVisited = new HashSet<Room>();
-    setTexture("playerC");
+    setTexture("bb", 4);
     setAsPlayerBody(0.5f, 0.25f);
     addTorchToEntity(true, false, 45f, Param.EVIL_FLAME, true, false, null);
     torchLight[0].setDistance(Param.PLAYER_TORCH_STRENGTH);
@@ -74,7 +74,7 @@ public class BigBad extends ParticleEffectActor {
     Tile t = getTileUnderEntity();
     if (tileUnderMe != t) {
       tileUnderMe = t;
-      t.setIsWeb();
+      if (aiState != AIState.CHASE && aiState != AIState.END) t.setIsWeb();
       roomsVisited.add(t.getTilesRoom());
     }
     // Get straight line distance from player
@@ -92,7 +92,20 @@ public class BigBad extends ParticleEffectActor {
     runAI();
   }
 
-  public void runAI() {
+  @Override
+  public void updatePosition() {
+    super.updatePosition();
+    // Set angle
+    float ang = body.getAngle();
+    if (ang < Math.PI/4f) currentFrame = 0;
+    else if (ang < 3*Math.PI/4f) currentFrame = 1;
+    else if (ang < 5*Math.PI/4f) currentFrame = 2;
+    else if (ang < 7*Math.PI/4f) currentFrame = 3;
+    else currentFrame = 0;
+    if (aiState == AIState.CHASE || aiState == AIState.END) currentFrame += nFrames;
+  }
+
+    public void runAI() {
     switch (aiState) {
       case IDLE: chooseDestination(); break;
       case RETURN_TO_WAYPOINT: getNearestWaypoint(); break;
@@ -132,7 +145,9 @@ public class BigBad extends ParticleEffectActor {
   }
 
   public void webHit() {
-    if (aiState != AIState.CHASE && aiState != AIState.END) aiState = BigBad.AIState.DOASTAR;
+    if (tileUnderMe.getIsWeb() && aiState != AIState.CHASE && aiState != AIState.END) {
+      aiState = BigBad.AIState.DOASTAR;
+    }
   }
 
   private void path() {
