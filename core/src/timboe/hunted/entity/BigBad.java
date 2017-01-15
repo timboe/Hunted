@@ -70,7 +70,7 @@ public class BigBad extends ParticleEffectActor {
 
     addTorchToEntity(45f, Param.EVIL_FLAME, false, null);
     torchLight[0].setDistance(Param.PLAYER_TORCH_STRENGTH);
-    addTorchToEntity( 180f, Param.EVIL_FLAME, false, null);
+    addTorchToEntity( 180f, Param.EVIL_FLAME, true, null);
     torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
 
     torchDistanceRef = Param.PLAYER_TORCH_STRENGTH;
@@ -87,6 +87,9 @@ public class BigBad extends ParticleEffectActor {
     fixtureDef.filter.maskBits = Param.PLAYER_ENTITY|Param.WORLD_ENTITY|Param.TORCH_ENTITY; // I collide with
     lightAttachment.createFixture(fixtureDef);
     circleShape.dispose();
+    torchLight[0].setContactFilter(Param.TORCH_ENTITY,
+      (short)0,
+      (short)(Param.PLAYER_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
 
     torchLight[0].attachToBody(lightAttachment);
     torchLight[0].setIgnoreAttachedBody(true);

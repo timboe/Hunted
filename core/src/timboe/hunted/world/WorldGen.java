@@ -87,6 +87,7 @@ public class WorldGen {
     placeChests();
     placeClutter();
     Sprites.getInstance().textureWalls();
+    Sprites.getInstance().addPlayers();
     return success;
   }
 

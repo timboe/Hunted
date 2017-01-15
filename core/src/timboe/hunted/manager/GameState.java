@@ -47,7 +47,6 @@ public class GameState {
     resetInternal();
     theGameScreen.reset();
     WorldGen.getInstance().generateWorld();
-    theGameScreen.addActors();
     Sounds.getInstance().startAmbiance();
   }
 

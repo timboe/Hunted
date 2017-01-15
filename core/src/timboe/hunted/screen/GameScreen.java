@@ -71,14 +71,11 @@ public class GameScreen implements Screen, InputProcessor {
       stage.dispose();
     }
     stage = new Stage(new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, camera));
+    Sprites.getInstance().stage = stage;
     if (HuntedGame.debug) stage.setDebugAll(true);
   }
 
-  public void addActors() {
-    stage.addActor(Sprites.getInstance().getTileSet());
-    stage.addActor(Sprites.getInstance().getPlayer());
-    stage.addActor(Sprites.getInstance().getBigBad());
-  }
+
 
   @Override
   public void show() {
@@ -178,7 +175,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 
   protected void renderMain() {
-    //stage.getRoot().setCullingArea( cullBox );
+    stage.getRoot().setCullingArea( cullBox );
     stage.draw();
 
     debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);

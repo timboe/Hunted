@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.entity.*;
@@ -25,7 +26,6 @@ public class Sprites {
     return ourInstance;
   }
 
-  private Group tileSet;
   private HashMap<Integer, Tile> tileMap;
   private HashSet<ParticleEffectActor> particles;
   private Player player;
@@ -35,6 +35,7 @@ public class Sprites {
   public Vector<Tile> toUpdateWeb;
   public HashSet<Tile> webTiles;
   private HashSet<EntityBase> clutter;
+  public Stage stage;
 
   private Sprites() {
   }
@@ -43,7 +44,6 @@ public class Sprites {
     player = new Player();
 
     bigBad = new BigBad();
-    tileSet = new Group();
     webTiles = new HashSet<Tile>();
     toUpdateWeb = new Vector<Tile>();
     clutter = new HashSet<EntityBase>();
@@ -70,21 +70,26 @@ public class Sprites {
     return active;
   }
 
+  public void addPlayers() {
+    stage.addActor(player);
+    stage.addActor(bigBad);
+  }
+
   public void moveWeb() {
     for (Tile t : webTiles) t.moveWeb();
   }
 
   public void addToStage(EntityBase a, boolean isClutter) {
-    tileSet.addActor(a);
+    stage.addActor(a);
     if (isClutter) clutter.add(a);
   }
 
   public void addTileActors() {
-    tileSet.clearChildren();
+    stage.clear();
     for (int x = 0; x < Param.TILE_X; ++x) {
       for (int y = 0; y < Param.TILE_Y; ++y) {
         Tile t = tileMap.get(Utility.xyToID(x, y));
-        if (t.isVisible() == true) tileSet.addActor(t);
+        if (t.isVisible() == true) stage.addActor(t);
       }
     }
   }
@@ -221,7 +226,7 @@ public class Sprites {
   public void addFlameEffect(Vector2 position) {
     ParticleEffectActor PEA = new ParticleEffectActor(Utility.getNewFlameEffect());
     PEA.setPosition((position.x - .5f) * Param.TILE_SIZE, (position.y - .5f) * Param.TILE_SIZE);
-    tileSet.addActor(PEA);
+    stage.addActor(PEA);
     particles.add(PEA);
   }
 
@@ -578,16 +583,11 @@ public class Sprites {
 
   public BigBad getBigBad() { return  bigBad; }
 
-  public Group getTileSet() {
-    return tileSet;
-  }
-
   public Tile getTile(int x, int y) {
     return tileMap.get(Utility.xyToID(x,y));
   }
 
   public void dispose() {
-    tileSet.clearChildren();
     tileMap.clear();
   }
 }
