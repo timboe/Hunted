@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.entity.BigBad;
+import timboe.hunted.entity.Chest;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.entity.Torch;
 import timboe.hunted.manager.GameState;
@@ -48,9 +49,12 @@ public class CollisionHandle implements ContactListener {
           Sprites.getInstance().getBigBad().webHit();
           t.startWebEffect();
           Sprites.getInstance().tintWeb();
-        } else if (t.isChest) {
-          t.chestOpened = true;
         }
+      }
+
+      if (myEntity instanceof Chest) {
+        Chest c = (Chest) myEntity;
+        c.chestOpened = true;
       }
     }
 

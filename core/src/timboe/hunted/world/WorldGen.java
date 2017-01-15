@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.entity.Chest;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.manager.*;
 
@@ -164,11 +165,8 @@ public class WorldGen {
         int rX = (int)room.getX() + r.nextInt((int)room.getWidth());
         int rY = (int)room.getY() + r.nextInt((int)room.getHeight());
         if (!Sprites.getInstance().getClear(rX,rY,1,1)) continue;
-        Tile newChest = new Tile(rX, rY);
-        newChest.setTexture("chest",6, false);
+        Chest newChest = new Chest(rX, rY);
         Sprites.getInstance().addToStage(newChest, true);
-        newChest.setAsChest();
-        newChest.isChest = true;
         if (--chests == 0) break;
       }
     }
