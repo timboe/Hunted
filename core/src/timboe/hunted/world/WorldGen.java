@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.entity.Chest;
+import timboe.hunted.entity.Clutter;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.manager.*;
 
@@ -84,6 +85,7 @@ public class WorldGen {
     if (!placeExit()) return false;
     if (!placeKeyRooms()) return false;
     placeChests();
+    placeClutter();
     Sprites.getInstance().textureWalls();
     return success;
   }
@@ -162,12 +164,28 @@ public class WorldGen {
       if (room.getConnectedRooms().size() == 1) ++chests;
       if (chests == 0) continue;
       for (int t = 0; t < ROOM_PLACE_TRIES; ++t) {
-        int rX = (int)room.getX() + r.nextInt((int)room.getWidth());
-        int rY = (int)room.getY() + r.nextInt((int)room.getHeight());
+        int rX = (int)room.getX() + r.nextInt((int)room.getWidth() - 1);
+        int rY = (int)room.getY() + r.nextInt((int)room.getHeight() - 1);
         if (!Sprites.getInstance().getClear(rX,rY,1,1)) continue;
         Chest newChest = new Chest(rX, rY);
         Sprites.getInstance().addToStage(newChest, true);
         if (--chests == 0) break;
+      }
+    }
+  }
+
+  private void placeClutter() {
+    for (Room room : allRooms) {
+      int clutter = MathUtils.clamp((int) Math.round(Math.abs(r.nextGaussian())), 0, 5);
+      if (clutter == 0) continue;
+      for (int t = 0; t < ROOM_PLACE_TRIES; ++t) {
+        int rX = (int)room.getX() + r.nextInt((int)room.getWidth() - 1);
+        int rY = (int)room.getY() + r.nextInt((int)room.getHeight() - 1);
+        Clutter c = new Clutter(rX,rY);
+        if (!Sprites.getInstance().getClear(rX,rY,(int)c.getWidth()/Param.TILE_SIZE, (int)c.getHeight()/Param.TILE_SIZE)) continue;
+        Sprites.getInstance().addToStage(c, true);
+        c.setAsClutter();
+        if (--clutter == 0) break;
       }
     }
   }

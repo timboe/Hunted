@@ -75,7 +75,10 @@ public class Room extends Rectangle {
 
   public Vector<Room> getCorridors() {
     Vector<Room> v = new Vector<Room>();
-    if (getIsCorridor()) return v; // Corridor has no corridor links
+    if (getIsCorridor()) {
+      v.add(this);
+      return v; // Corridor has no corridor links
+    }
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
       v.add(entry.getKey());
     }

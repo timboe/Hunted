@@ -179,7 +179,7 @@
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>extrude</key>
-            <uint>0</uint>
+            <uint>1</uint>
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMargin</key>
@@ -213,6 +213,20 @@
             <key type="filename">32/chest3.png</key>
             <key type="filename">32/chest4.png</key>
             <key type="filename">32/chest5.png</key>
+            <key type="filename">32/chestMask.png</key>
+            <key type="filename">32/clutter0.png</key>
+            <key type="filename">32/clutter1.png</key>
+            <key type="filename">32/clutter10.png</key>
+            <key type="filename">32/clutter11.png</key>
+            <key type="filename">32/clutter13.png</key>
+            <key type="filename">32/clutter14.png</key>
+            <key type="filename">32/clutter2.png</key>
+            <key type="filename">32/clutter3.png</key>
+            <key type="filename">32/clutter4.png</key>
+            <key type="filename">32/clutter5.png</key>
+            <key type="filename">32/clutter6.png</key>
+            <key type="filename">32/clutter7.png</key>
+            <key type="filename">32/clutter8.png</key>
             <key type="filename">32/door0.png</key>
             <key type="filename">32/door1.png</key>
             <key type="filename">32/door2.png</key>
@@ -291,6 +305,11 @@
             <key type="filename">32/switch4.png</key>
             <key type="filename">32/switch5.png</key>
             <key type="filename">32/switch6.png</key>
+            <key type="filename">32/treasure0.png</key>
+            <key type="filename">32/treasure1.png</key>
+            <key type="filename">32/treasure2.png</key>
+            <key type="filename">32/treasure3.png</key>
+            <key type="filename">32/treasure4.png</key>
             <key type="filename">32/wallEA.png</key>
             <key type="filename">32/wallEB.png</key>
             <key type="filename">32/wallEC.png</key>
@@ -335,6 +354,8 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">32/clutter12.png</key>
+            <key type="filename">32/clutter9.png</key>
             <key type="filename">32/pillar.png</key>
             <key type="filename">32/wallETorch.png</key>
             <key type="filename">32/wallInnerNE.png</key>
@@ -363,37 +384,8 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">32/wallInnerSEConnectE.png</key>
-            <key type="filename">32/wallInnerSWConnectW.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>8,24,16,48</rect>
-                <key>scale9Paddings</key>
-                <rect>8,24,16,48</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">large/entry0.png</key>
-            <key type="filename">large/entry1.png</key>
-            <key type="filename">large/entry2.png</key>
-            <key type="filename">large/entry3.png</key>
-            <key type="filename">large/entry4.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>24,16,48,32</rect>
-                <key>scale9Paddings</key>
-                <rect>24,16,48,32</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
+            <key type="filename">32/clutter15.png</key>
+            <key type="filename">32/clutter16.png</key>
             <key type="filename">large/ladder.png</key>
             <key type="filename">large/pit.png</key>
             <struct type="IndividualSpriteSettings">
@@ -408,6 +400,28 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">32/wallInnerSEConnectE.png</key>
+            <key type="filename">32/wallInnerSWConnectW.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,24,16,48</rect>
+                <key>scale9Paddings</key>
+                <rect>8,24,16,48</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">large/bb0.png</key>
+            <key type="filename">large/bb1.png</key>
+            <key type="filename">large/bb2.png</key>
+            <key type="filename">large/bb3.png</key>
+            <key type="filename">large/bb4.png</key>
+            <key type="filename">large/bb5.png</key>
+            <key type="filename">large/bb6.png</key>
+            <key type="filename">large/bb7.png</key>
             <key type="filename">large/totemABlue0.png</key>
             <key type="filename">large/totemABlue1.png</key>
             <key type="filename">large/totemABlue2.png</key>
@@ -435,6 +449,23 @@
                 <rect>16,24,32,48</rect>
                 <key>scale9Paddings</key>
                 <rect>16,24,32,48</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">large/entry0.png</key>
+            <key type="filename">large/entry1.png</key>
+            <key type="filename">large/entry2.png</key>
+            <key type="filename">large/entry3.png</key>
+            <key type="filename">large/entry4.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>24,16,48,32</rect>
+                <key>scale9Paddings</key>
+                <rect>24,16,48,32</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
