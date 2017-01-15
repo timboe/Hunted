@@ -37,17 +37,26 @@ public class Sounds {
   }
 
   public void startChase() {
-    chaseMusic.setPosition(chaseStarts[Utility.r.nextInt(nChaseStarts) ]);
-    chaseMusic.setVolume(1f);
     chaseMusic.play();
+    chaseMusic.setPosition( chaseStarts[Utility.r.nextInt(nChaseStarts) ]);
+    chaseMusic.setVolume(1f);
+    ambiance.setVolume(0f);
   }
 
   public void chaseVolume(float v) {
     chaseMusic.setVolume(v);
+    ambiance.setVolume(1f - v);
   }
 
   public void endChase() {
     chaseMusic.stop();
+  }
+
+  public void dispose() {
+    chaseMusic.stop();
+    ambiance.stop();
+    chaseMusic.dispose();
+    ambiance.dispose();
   }
 
 }

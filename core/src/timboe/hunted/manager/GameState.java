@@ -1,6 +1,8 @@
 package timboe.hunted.manager;
 
+import com.badlogic.gdx.audio.Music;
 import timboe.hunted.Param;
+import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.screen.GameScreen;
 import timboe.hunted.world.WorldGen;
@@ -21,6 +23,8 @@ public class GameState {
   public GameScreen theGameScreen = null;
   public HashSet<Tile> waypoints; // Known good AI destinations
 
+  private boolean chaseOn = false;
+  private int chaseVolume = 100;
 
   private static GameState ourInstance = new GameState();
 
@@ -31,11 +35,20 @@ public class GameState {
   private GameState() {
   }
 
+  public void startChase() {
+    if (!chaseOn) {
+      chaseOn = true;
+      chaseVolume = 100;
+      Sounds.getInstance().startChase();
+    }
+  }
+
   public void reset() {
     resetInternal();
     theGameScreen.reset();
     WorldGen.getInstance().generateWorld();
     theGameScreen.addActors();
+    Sounds.getInstance().startAmbiance();
   }
 
   private void resetInternal() {
@@ -70,6 +83,24 @@ public class GameState {
       if (progress[0] < Param.SWITCH_TIME) {
         if (switchStatus[0]) ++progress[0];
         else if (progress[0] > 0) --progress[0];
+      }
+    }
+
+    musicLogic();
+  }
+
+  private void musicLogic() {
+    if (!chaseOn && Sprites.getInstance().getBigBad().musicSting) {
+      chaseOn = true;
+      Sounds.getInstance().startChase();
+    }
+    if (chaseOn) {
+      if (!Sprites.getInstance().getBigBad().musicSting) --chaseVolume;
+      else chaseVolume = 100;
+      Sounds.getInstance().chaseVolume(chaseVolume/100f);
+      if (chaseVolume == 0) {
+        Sounds.getInstance().endChase();
+        chaseOn = false;
       }
     }
   }

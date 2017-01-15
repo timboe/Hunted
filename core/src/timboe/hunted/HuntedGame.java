@@ -1,6 +1,8 @@
 package timboe.hunted;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.audio.Music;
+import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Textures;
 import timboe.hunted.screen.GameScreen;
@@ -23,5 +25,6 @@ public class HuntedGame extends Game {
     Textures.getInstance().dispose();
     Sprites.getInstance().dispose();
     Physics.getInstance().dispose();
+    Sounds.getInstance().dispose();
   }
 }

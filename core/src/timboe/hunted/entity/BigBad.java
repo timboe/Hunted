@@ -28,8 +28,9 @@ public class BigBad extends ParticleEffectActor {
 
   private RayCastCallback raycastCallback = null;
   private float raycastMin = 1f;
-  public boolean canSeePlayer;
-  public boolean sameRoomAsPlayer;
+  public boolean canSeePlayer = false;
+  public boolean sameRoomAsPlayer = false;
+  public boolean musicSting = false;
   public float distanceFromPlayer;
   private final float yOff = 32;
 
@@ -59,6 +60,10 @@ public class BigBad extends ParticleEffectActor {
     };
   }
 
+  private void startChase() {
+    aiState = AIState.CHASE;
+  }
+
 //  @Override
   public void updatePhysics() {
     // Set speed
@@ -82,11 +87,12 @@ public class BigBad extends ParticleEffectActor {
     distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
     // See if the AI can see the player
     sameRoomAsPlayer = (t.myRoom != null && t.myRoom == Sprites.getInstance().getPlayer().getRoomUnderEntity());
-    // See if we should change AI state to get player
-    if (sameRoomAsPlayer && aiState != AIState.END) aiState = AIState.CHASE;
     raycastMin = 9999f;  // Bounce a ray to the player - does it intersect anything else first?
     Physics.getInstance().world.rayCast(raycastCallback, body.getPosition(), Sprites.getInstance().getPlayer().getBody().getPosition());
-    if (canSeePlayer) Gdx.app.log("AI","CAN SEE");
+    // See if we should change AI state to get player
+    if (sameRoomAsPlayer && aiState != AIState.END) startChase();
+    musicSting = (aiState == AIState.CHASE || aiState == AIState.END
+      || (canSeePlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE));
     // Lighting call
     flicker();
     // Do all the AI stuff
@@ -271,7 +277,7 @@ public class BigBad extends ParticleEffectActor {
     // TODO animation step
     doChase();
     if (distanceFromPlayer < .5f) {
-      WorldGen.getInstance().generateWorld(); // Restart
+      //WorldGen.getInstance().generateWorld(); // Restart //TODO this is crashing
     }
   }
 
