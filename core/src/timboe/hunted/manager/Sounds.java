@@ -3,13 +3,15 @@ package timboe.hunted.manager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import timboe.hunted.Param;
 import timboe.hunted.Utility;
 
 /**
  * Created by Tim on 15/01/2017.
  */
 public class Sounds {
+
+  boolean musicOn = false;
+  boolean sfxOn = false;
 
   Music chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("stormfront.ogg"));
   Music ambiance = Gdx.audio.newMusic(Gdx.files.internal("EoT.mp3"));
@@ -27,6 +29,7 @@ public class Sounds {
   }
 
   public void startAmbiance() {
+    if (!musicOn) return;
     ambiance.setPosition(0f);
     ambiance.setLooping(true);
     ambiance.play();
@@ -37,6 +40,7 @@ public class Sounds {
   }
 
   public void startChase() {
+    if (!musicOn) return;
     chaseMusic.play();
     chaseMusic.setPosition( chaseStarts[Utility.r.nextInt(nChaseStarts) ]);
     chaseMusic.setVolume(1f);

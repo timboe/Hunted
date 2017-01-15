@@ -2,8 +2,7 @@ package timboe.hunted.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.RayCastCallback;
+import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.manager.GameState;
@@ -14,12 +13,26 @@ import timboe.hunted.world.WorldGen;
 
 import java.util.*;
 
+import static timboe.hunted.entity.BigBad.AIState.RETURN_TO_WAYPOINT;
+
+
 /**
  * Created by Tim on 31/12/2016.
  */
 public class BigBad extends ParticleEffectActor {
 
-  public enum AIState {IDLE, ROTATE, PATHING, HUNTPATHING, DOASTAR, RETURN_TO_WAYPOINT, CHASE, END}
+  private Body lightAttachment;
+  private float torchOff = 1f;
+
+  public enum AIState {IDLE,
+    ROTATE,
+    PATHING,
+    PATHING_TO_WAYPOINT,
+    HUNTPATHING,
+    DOASTAR,
+    RETURN_TO_WAYPOINT,
+    CHASE,
+    END}
   public AIState aiState = AIState.IDLE;
   private LinkedList<Tile> movementTargets; // List of destinations for AI
   private HashSet<Room> roomsVisited;
@@ -41,10 +54,6 @@ public class BigBad extends ParticleEffectActor {
     roomsVisited = new HashSet<Room>();
     setTexture("bb", 8);
     setAsPlayerBody(0.5f, 0.25f);
-    addTorchToEntity(true, false, 45f, Param.EVIL_FLAME, true, false, null);
-    torchLight[0].setDistance(Param.PLAYER_TORCH_STRENGTH);
-    addTorchToEntity(true, false, 180f, Param.EVIL_FLAME, true, false, null);
-    torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
     movementTargets = new LinkedList<Tile>();
     raycastCallback = new RayCastCallback() {
       @Override
@@ -58,13 +67,37 @@ public class BigBad extends ParticleEffectActor {
         return 1;
       }
     };
+
+    addTorchToEntity(45f, Param.EVIL_FLAME, false, null);
+    torchLight[0].setDistance(Param.PLAYER_TORCH_STRENGTH);
+    addTorchToEntity( 180f, Param.EVIL_FLAME, false, null);
+    torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
+
+    torchDistanceRef = Param.PLAYER_TORCH_STRENGTH;
+    particleEffect = Utility.getNewFlameEffect();
+    BodyDef bodyDef = new BodyDef();
+    bodyDef.type = BodyDef.BodyType.DynamicBody;
+    lightAttachment = Physics.getInstance().world.createBody(bodyDef);
+    lightAttachment.setUserData(this);
+    CircleShape circleShape = new CircleShape();
+    circleShape.setRadius(.2f);
+    FixtureDef fixtureDef = new FixtureDef();
+    fixtureDef.shape = circleShape;
+    fixtureDef.filter.categoryBits = Param.TORCH_ENTITY; // I am a
+    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY|Param.WORLD_ENTITY|Param.TORCH_ENTITY; // I collide with
+    lightAttachment.createFixture(fixtureDef);
+    circleShape.dispose();
+
+    torchLight[0].attachToBody(lightAttachment);
+    torchLight[0].setIgnoreAttachedBody(true);
+    torchLight[1].attachToBody(lightAttachment);
+    torchLight[1].setIgnoreAttachedBody(true);
   }
 
   private void startChase() {
     aiState = AIState.CHASE;
   }
 
-//  @Override
   public void updatePhysics() {
     // Set speed
     speed = Param.BIGBAD_SPEED;
@@ -80,7 +113,7 @@ public class BigBad extends ParticleEffectActor {
     Tile t = getTileUnderEntity();
     if (tileUnderMe != t) {
       tileUnderMe = t;
-      if (aiState != AIState.CHASE && aiState != AIState.END) t.setIsWeb();
+      if (aiState != AIState.CHASE && aiState != AIState.END && aiState != RETURN_TO_WAYPOINT) t.setIsWeb();
       roomsVisited.add(t.getTilesRoom());
     }
     // Get straight line distance from player
@@ -102,6 +135,12 @@ public class BigBad extends ParticleEffectActor {
   @Override
   public void updatePosition() {
     super.updatePosition();
+
+    // Update my light
+    lightAttachment.setTransform(body.getPosition().x,
+      body.getPosition().y + torchOff, body.getAngle());
+      super.updatePosition();
+
     setPosition(getX(), getY() + yOff);
     // Set angle
     float ang = body.getAngle();
@@ -118,7 +157,7 @@ public class BigBad extends ParticleEffectActor {
       case IDLE: chooseDestination(); break;
       case RETURN_TO_WAYPOINT: getNearestWaypoint(); break;
       case ROTATE: rotate(); break;
-      case PATHING: case HUNTPATHING: path(); break;
+      case PATHING: case HUNTPATHING: case PATHING_TO_WAYPOINT: path(); break;
       case DOASTAR: doAStar(); break;
       case CHASE: doChase(); break;
       case END: doEnd(); break;
@@ -267,7 +306,7 @@ public class BigBad extends ParticleEffectActor {
     if (aiState == AIState.CHASE && distanceFromPlayer < Param.BIGBAD_POUNCE_DISTANCE) { // see if it's game over
       aiState = AIState.END;
     } else if (aiState == AIState.CHASE && !sameRoomAsPlayer && !canSeePlayer) {  // see if we should stop chasing
-      aiState = AIState.RETURN_TO_WAYPOINT;
+      aiState = RETURN_TO_WAYPOINT;
       movementTargets.clear();
     }
   }

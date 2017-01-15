@@ -358,7 +358,6 @@ public class Sprites {
     final int vGap = 2;
     for (Room c : corridors) {
       int extent = MathUtils.clamp((int) Math.round(Math.abs(Utility.r.nextGaussian())), 1, Param.MAX_CRINKLE);
-      extent = Param.MAX_CRINKLE;
       int x = (int)c.getX();
       int y = (int)c.getY();
       int w = (int)c.getWidth() - 1;
@@ -369,13 +368,21 @@ public class Sprites {
         for (int corner = 0; corner < 4; ++ corner) {
           for (int e = 1; e <= extent; ++e) {
 //            Gdx.app.log("dbg","Room="+c+" x=" + x + " y=" + y + " e=" + e);
-            if        (corner == 0 && getTile(x - e - vGap + 1, y).getIsDirt() && getTile(x - e - vGap, y).getIsDirt() && getTile(x - e - vGap, y - 1).getIsFloorNC() ) {
+            if        (corner == 0 && getTile(x - e - vGap + 1, y).getIsDirt()
+              && getTile(x - e - vGap, y).getIsDirt()
+              && getTile(x - e - vGap, y - 1).getIsFloorNC() ) {
               getTile(x - e, y).setIsFloor(c); // Bot left, going left
-            } else if (corner == 1 && getTile( x + w + e + vGap - 1, y).getIsDirt() && getTile( x + w + e + vGap, y).getIsDirt() && getTile(x + w + e + vGap, y - 1).getIsFloorNC()) {
+            } else if (corner == 1 && getTile( x + w + e + vGap - 1, y).getIsDirt()
+              && getTile( x + w + e + vGap, y).getIsDirt()
+              && getTile(x + w + e + vGap, y - 1).getIsFloorNC()) {
               getTile(x + w + e, y).setIsFloor(c); // Bot right, going right
-            } else if (corner == 2 && getTile(x + w + e + vGap - 1, y + h).getIsDirt() && getTile(x + w + e + vGap, y + h).getIsDirt() && getTile(x + w + e + vGap, y + h + 1).getIsFloorNC()) {
+            } else if (corner == 2 && getTile(x + w + e + vGap - 1, y + h).getIsDirt()
+              && getTile(x + w + e + vGap, y + h).getIsDirt()
+              && getTile(x + w + e + vGap, y + h + 1).getIsFloorNC()) {
               getTile(x + w + e, y + h).setIsFloor(c); // Top right going right
-            } else if (corner == 3 && getTile(x - e - vGap + 1, y + h).getIsDirt() && getTile(x - e - vGap, y + h).getIsDirt() && getTile(x - e - vGap, y + h + 1).getIsFloorNC()) {
+            } else if (corner == 3 && getTile(x - e - vGap + 1, y + h).getIsDirt()
+              && getTile(x - e - vGap, y + h).getIsDirt()
+              && getTile(x - e - vGap, y + h + 1).getIsFloorNC()) {
               getTile(x - e, y + h).setIsFloor(c); // Top left, going left
             } else {
               break;

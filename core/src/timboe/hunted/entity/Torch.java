@@ -87,7 +87,7 @@ public class Torch extends EntityBase {
 //    circleShape.dispose();
 //  }
 
-  public void addTorchToEntity(boolean ignoreSelf, boolean staticL, float range, Color c, boolean addToBody, boolean xRay, Vector2 loc) {
+  public void addTorchToEntity(float range, Color c, boolean xRay, Vector2 loc) {
     torchLight[nLight] = new ConeLight(Physics.getInstance().rayHandler,
       Param.RAYS,
       c,
@@ -96,12 +96,8 @@ public class Torch extends EntityBase {
     torchDistanceRef = Param.WALL_TORCH_STRENGTH;
     torchLight[nLight].setContactFilter(Param.TORCH_ENTITY,
       (short)0,
-      (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY|Param.TORCH_ENTITY)); // I am a, 0, I collide with
-    if (addToBody) torchLight[nLight].attachToBody(body);
-//    torchLight[nLight].set
+      (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
     torchLight[nLight].setXray(xRay);
-    torchLight[nLight].setStaticLight(staticL);
-    torchLight[nLight].setIgnoreAttachedBody(ignoreSelf);
     ++nLight;
   }
 
@@ -118,11 +114,11 @@ public class Torch extends EntityBase {
     isOn = true;
     float range = isPartial ? 90f : 180f;
     Gdx.app.log("Torch", "Turning on " + this + " at angle " + angle);
-    addTorchToEntity(true, false, range, primaryTorchType, false, false, lightPos);
+    addTorchToEntity(range, primaryTorchType, false, lightPos);
     Physics.getInstance().litTorches.add(this);
     Sprites.getInstance().addFlameEffect(lightEffectPos);
     if (needsSecondLight) {
-      addTorchToEntity(true, false, 180f, Param.WALL_FLAME_SPOT, false, true, lightEffectPos);
+      addTorchToEntity(180f, Param.WALL_FLAME_SPOT,  true, lightEffectPos);
       torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
     }
   }

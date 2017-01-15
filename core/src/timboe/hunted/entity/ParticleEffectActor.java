@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 public class ParticleEffectActor extends Torch {
   public ParticleEffect particleEffect = null;
   Vector2 acc = new Vector2();
+  protected float PAOffsetX = 0;
+  protected float PAOffsetY = 0;
 
   public ParticleEffectActor(int x, int y) {
     super(x,y);
@@ -22,8 +24,8 @@ public class ParticleEffectActor extends Torch {
 
   @Override
   public void draw(Batch batch, float parentAlpha) {
-    if (particleEffect != null) particleEffect.draw(batch);
     if (textureRegion[currentFrame] != null) super.draw(batch, parentAlpha);
+    if (particleEffect != null) particleEffect.draw(batch);
   }
 
   @Override
@@ -32,7 +34,7 @@ public class ParticleEffectActor extends Torch {
     if (particleEffect != null) {
       acc.set(getWidth() / 2, getHeight() / 2);
       localToStageCoordinates(acc);
-      particleEffect.setPosition(acc.x, acc.y);
+      particleEffect.setPosition(acc.x + PAOffsetX, acc.y + PAOffsetY);
       particleEffect.update(delta);
     }
   }
