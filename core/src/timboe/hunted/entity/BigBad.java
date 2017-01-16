@@ -58,8 +58,7 @@ public class BigBad extends ParticleEffectActor {
     raycastCallback = new RayCastCallback() {
       @Override
       public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-        if ((fixture.getFilterData().categoryBits & Param.TORCH_ENTITY) > 0) return 1;
-        if ((fixture.getFilterData().categoryBits & Param.SENSOR_ENTITY) > 0) return 1;
+        if ((fixture.getFilterData().categoryBits & Param.BIGBAD_CAN_SEE_THROUGH) > 0) return 1;
         if (fraction < Sprites.getInstance().getBigBad().raycastMin) {
           canSeePlayer = (fixture.getFilterData().categoryBits == Param.PLAYER_ENTITY);
           raycastMin = fraction;
@@ -68,13 +67,8 @@ public class BigBad extends ParticleEffectActor {
       }
     };
 
-    addTorchToEntity(45f, Param.EVIL_FLAME, false, null);
-    torchLight[0].setDistance(Param.PLAYER_TORCH_STRENGTH);
-    addTorchToEntity( 180f, Param.EVIL_FLAME, true, null);
-    torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
-
-    torchDistanceRef = Param.PLAYER_TORCH_STRENGTH;
     particleEffect = Utility.getNewFlameEffect();
+
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     lightAttachment = Physics.getInstance().world.createBody(bodyDef);
@@ -87,14 +81,17 @@ public class BigBad extends ParticleEffectActor {
     fixtureDef.filter.maskBits = Param.PLAYER_ENTITY|Param.WORLD_ENTITY|Param.TORCH_ENTITY; // I collide with
     lightAttachment.createFixture(fixtureDef);
     circleShape.dispose();
+
+
+    addTorchToEntity(45f, Param.PLAYER_TORCH_STRENGTH, Param.EVIL_FLAME, false, null);
+    addTorchToEntity(180f, Param.SMALL_TORCH_STRENGTH, Param.EVIL_FLAME, true, null);
+    torchLight[0].attachToBody(lightAttachment);
+    torchLight[0].setIgnoreAttachedBody(true);
     torchLight[0].setContactFilter(Param.TORCH_ENTITY,
       (short)0,
       (short)(Param.PLAYER_ENTITY|Param.WORLD_ENTITY|Param.CLUTTER_ENTITY)); // I am a, 0, I collide with
-
-    torchLight[0].attachToBody(lightAttachment);
-    torchLight[0].setIgnoreAttachedBody(true);
     torchLight[1].attachToBody(lightAttachment);
-    torchLight[1].setIgnoreAttachedBody(true);
+
   }
 
   private void startChase() {

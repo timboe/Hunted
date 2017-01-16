@@ -53,7 +53,7 @@ public class Physics {
     Sprites.getInstance().updatePosition();
     WorldGen.getInstance().updatePhysics();
     GameState.getInstance().theGameScreen.updatePhysics();
-    torchPhysics();
+//    torchPhysics();
 
   }
 
@@ -74,12 +74,12 @@ public class Physics {
       if (Math.abs(currentReductionPercent - 1f) < 1e-4) resetLights = false;
     }
     if (update) {
-      Sprites.getInstance().getPlayer().torchDistanceRef = Param.PLAYER_TORCH_STRENGTH * currentReductionPercent;
-      Sprites.getInstance().getBigBad().torchDistanceRef = Math.min(Param.PLAYER_TORCH_STRENGTH * currentReductionPercent + 5f, Param.PLAYER_TORCH_STRENGTH);
+      Sprites.getInstance().getPlayer().modTorch( currentReductionPercent );
+      Sprites.getInstance().getBigBad().modTorch( Math.min(currentReductionPercent + 0.5f, 1f) );
       ambientLightMod.a = Param.AMBIENT_LIGHT.a * (distance / (float)Param.PLAYER_TORCH_STRENGTH);
       rayHandler.setAmbientLight(ambientLightMod);
       for (Torch t : litTorches) {
-        t.torchDistanceRef = Param.WALL_TORCH_STRENGTH * currentReductionPercent;
+        t.modTorch( currentReductionPercent );
       }
     }
 

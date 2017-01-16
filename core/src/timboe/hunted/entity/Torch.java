@@ -26,9 +26,9 @@ public class Torch extends EntityBase {
 
   public int nLight = 0;
   public PositionalLight[] torchLight = {null,null};
-  public float torchDistanceRef;
+  public float[] torchDistanceRef = {0,0};
   private float torchDistanceCurrent;
-  private float torchDistanceTarget;
+//  private float torchDistanceTarget;
   Color primaryTorchType;
 
 
@@ -87,23 +87,27 @@ public class Torch extends EntityBase {
 //    circleShape.dispose();
 //  }
 
-  public void addTorchToEntity(float range, Color c, boolean xRay, Vector2 loc) {
+  public void addTorchToEntity(float range, float distance, Color c, boolean xRay, Vector2 loc) {
     torchLight[nLight] = new ConeLight(Physics.getInstance().rayHandler,
       Param.RAYS,
       c,
-      torchDistanceRef,
+      distance,
       loc != null ? loc.x : 0f, loc != null ? loc.y : 0f, angle, range); // Degrees? WTF?
-    torchDistanceRef = Param.WALL_TORCH_STRENGTH;
+    torchDistanceRef[nLight] = distance; // Should we need to reset
     torchLight[nLight].setContactFilter(Param.TORCH_ENTITY, (short)0, Param.TORCH_COLLIDES); // I am a, 0, I collide with
     torchLight[nLight].setXray(xRay);
     ++nLight;
+  }
+
+  public void modTorch(float percent) {
+    torchLight[0].setDistance( torchDistanceRef[0] * percent );
   }
 
   public void flicker() {
     //if (Math.abs(torchDistanceCurrent - torchDistanceTarget) < 1e-3) {
     //  torchDistanceTarget = torchDistanceRef + ((float)Utility.r.nextGaussian() * Param.TORCH_FLICKER);
     //}
-    torchDistanceCurrent = torchDistanceRef;// rchDistanceCurrent + (0.1f * (torchDistanceTarget - torchDistanceCurrent));
+    torchDistanceCurrent = torchDistanceRef[0];// rchDistanceCurrent + (0.1f * (torchDistanceTarget - torchDistanceCurrent));
     torchLight[0].setDistance(torchDistanceCurrent);
   }
 
@@ -112,12 +116,11 @@ public class Torch extends EntityBase {
     isOn = true;
     float range = isPartial ? 90f : 180f;
     Gdx.app.log("Torch", "Turning on " + this + " at angle " + angle);
-    addTorchToEntity(range, primaryTorchType, false, lightPos);
+    addTorchToEntity(range, Param.WALL_TORCH_STRENGTH,  primaryTorchType, false, lightPos);
     Physics.getInstance().litTorches.add(this);
     Sprites.getInstance().addFlameEffect(lightEffectPos);
     if (needsSecondLight) {
-      addTorchToEntity(180f, Param.WALL_FLAME_SPOT,  true, lightEffectPos);
-      torchLight[1].setDistance(Param.SMALL_TORCH_STRENGTH);
+      addTorchToEntity(180f, Param.SMALL_TORCH_STRENGTH, Param.WALL_FLAME_SPOT,  true, lightEffectPos);
     }
   }
 

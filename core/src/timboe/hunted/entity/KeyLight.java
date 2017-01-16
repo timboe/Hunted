@@ -31,8 +31,7 @@ public class KeyLight extends Torch {
     Vector2 pos = new Vector2(x,y);
     pos.x += getWidth()/(2*Param.TILE_SIZE);
     pos.y += getHeight()/(2*Param.TILE_SIZE);
-    addTorchToEntity(180f, lightColour, true, pos);
-    torchLight[0].setDistance(1);
+    addTorchToEntity(180f, Param.SMALL_TORCH_STRENGTH, lightColour, true, pos);
   }
 
   @Override

@@ -23,9 +23,6 @@ public class Player extends ParticleEffectActor {
     speed = Param.PLAYER_SPEED;
     setAsPlayerBody(0.5f, 0.25f);
 
-    addTorchToEntity(180f, Param.PLAYER_FLAME,  false, null);
-    torchDistanceRef = Param.PLAYER_TORCH_STRENGTH;
-
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     lightAttachment = Physics.getInstance().world.createBody(bodyDef);
@@ -35,6 +32,8 @@ public class Player extends ParticleEffectActor {
     fixtureDef.shape = circleShape;
     lightAttachment.createFixture(fixtureDef);
     circleShape.dispose();
+
+    addTorchToEntity(180f, Param.PLAYER_TORCH_STRENGTH, Param.PLAYER_FLAME,  false, null);
     torchLight[0].setContactFilter(Param.TORCH_ENTITY,
       (short)0,
       (short)(Param.BIGBAD_ENTITY|Param.WORLD_ENTITY|Param.CLUTTER_ENTITY)); // I am a, 0, I collide with
