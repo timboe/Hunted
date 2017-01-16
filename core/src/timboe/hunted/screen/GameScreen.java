@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.entity.Switch;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
@@ -212,7 +213,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
     // World space Xs
     if (GameState.getInstance().switchStatus[0] && GameState.getInstance().frame % (8*Param.ANIM_SPEED) < 4*Param.ANIM_SPEED) {
-      Tile s = Sprites.getInstance().keySwitch[0];
+      Switch s = Sprites.getInstance().keySwitch[0];
       for (int i = 0; i < Param.KEY_ROOMS; ++i) {
         if (GameState.getInstance().progress[i + 1] < Param.SWITCH_TIME) {
           drawX(s.getX() - Param.TILE_SIZE + (i * Param.TILE_SIZE), s.getY() + Param.TILE_SIZE);

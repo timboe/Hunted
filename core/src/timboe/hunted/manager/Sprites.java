@@ -31,7 +31,7 @@ public class Sprites {
   private Player player;
   private BigBad bigBad;
   public ExitDoor exitDoor;
-  public Tile[] keySwitch = new Tile[Param.KEY_ROOMS + 1];
+  public Switch[] keySwitch = new Switch[Param.KEY_ROOMS + 1];
   public Vector<Tile> toUpdateWeb;
   public HashSet<Tile> webTiles;
   private HashSet<EntityBase> clutter;
@@ -130,10 +130,8 @@ public class Sprites {
     addToStage(blobLightR, true);
     addToStage(blobLightG, true);
     addToStage(blobLightB, true);
-    keySwitch[0] = getTile(xStart + 1, yStart - 2);
-    keySwitch[0].setTexture("switch",7);
-    keySwitch[0].addSwitchSensor(0);
-    clutter.add(keySwitch[0]);
+    keySwitch[0] = new Switch(xStart + 1, yStart - 2, 0);
+    addToStage(keySwitch[0], true);
     Tile torchA = new Tile(xStart - 1, yStart - 2);
     Tile torchB = new Tile(xStart + 3, yStart - 2);
     torchA.setAsPhysicsBody(xStart - 1 + .35f, yStart - 2, .3f, 1.2f);
@@ -157,10 +155,8 @@ public class Sprites {
     shrine.setAsPhysicsBody(x + 1.5f, y + 1.25f, 1f, 2.5f);
     lightA.setAsPhysicsBody(x + 0.2f, y + 1.1f, .6f, .8f);
     lightB.setAsPhysicsBody(x + 3.2f, y + 1.1f, .6f, .8f);;
-    keySwitch[n+1] = getTile(x + 1, y);
-    keySwitch[n+1].setTexture("switch", 7);
-    keySwitch[n+1].addSwitchSensor(n+1);
-    clutter.add(keySwitch[n+1]);
+    keySwitch[n+1] = new Switch(x + 1, y, n+1);
+    addToStage(keySwitch[n+1], true);
     torchA.setTexture("torchTall");
     torchB.setTexture("torchTall");
     torchA.setAsPhysicsBody(x + .35f, y + 2, .3f, 1.2f);

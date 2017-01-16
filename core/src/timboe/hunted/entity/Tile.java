@@ -20,7 +20,6 @@ public class Tile extends EntityBase implements Node<Tile> {
   private boolean hasPhysics = false;
   private boolean isWeb = false;
   public Room myRoom = null;
-  public int switchID = -1; // -1 is invalid, 0=exitDoor. 1-N are rooms
   private HashSet<Tile> webNeighbours = new HashSet<Tile>();
   public int webEffect = 0;
 
@@ -73,24 +72,7 @@ public class Tile extends EntityBase implements Node<Tile> {
     }
   }
 
-  public void addSwitchSensor(int ID) {
-    switchID = ID;
-    BodyDef bodyDef = new BodyDef();
-    bodyDef.type = BodyDef.BodyType.StaticBody;
-    bodyDef.position.set(getX()/Param.TILE_SIZE + .5f, getY()/Param.TILE_SIZE + .5f);
-    body = Physics.getInstance().world.createBody(bodyDef);
-    body.setUserData(this);
-    bodyDef.type = BodyDef.BodyType.StaticBody;
-    CircleShape circleShape = new CircleShape();
-    circleShape.setRadius(1f);
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = circleShape;
-    fixtureDef.filter.categoryBits = Param.SENSOR_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
-    fixtureDef.isSensor = true;
-    body.createFixture(fixtureDef);
-    circleShape.dispose();
-  }
+
 
   public void addWebSensor() {
     BodyDef bodyDef = new BodyDef();
@@ -108,14 +90,6 @@ public class Tile extends EntityBase implements Node<Tile> {
     fixtureDef.isSensor = true;
     body.createFixture(fixtureDef);
     circleShape.dispose();
-  }
-
-  @Override
-  public void act (float delta) {
-    // TODO do we need to call on the super here? We don't animate any of these so prob not
-    if (switchID >= 0) {
-      currentFrame = (int) ((Math.min(GameState.getInstance().progress[switchID], Param.SWITCH_TIME-1) / (float) Param.SWITCH_TIME) * nFrames);
-    }
   }
 
   public Room getTilesRoom() {

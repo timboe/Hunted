@@ -38,9 +38,7 @@ public class CollisionHandle implements ContactListener {
 
       if (myEntity instanceof Tile) {
         Tile t = (Tile) myEntity;
-        if (t.switchID >= 0) {
-          GameState.getInstance().switchStatus[t.switchID] = true;
-        } else if (t.getIsWeb() && GameState.getInstance().aiCooldown == 0) {
+        if (t.getIsWeb() && GameState.getInstance().aiCooldown == 0) {
           GameState.getInstance().aiCooldown = Param.BIGBAD_AI_COOLDOWN;
           GameState.getInstance().aiDestination = t;
           GameState.getInstance().webEffect = true;
@@ -48,6 +46,13 @@ public class CollisionHandle implements ContactListener {
           Sprites.getInstance().getBigBad().webHit();
           t.startWebEffect();
           Sprites.getInstance().tintWeb();
+        }
+      }
+
+      if (myEntity instanceof Switch) {
+        Switch s = (Switch) myEntity;
+        if (s.switchID >= 0) {
+          GameState.getInstance().switchStatus[s.switchID] = true;
         }
       }
 
@@ -64,10 +69,10 @@ public class CollisionHandle implements ContactListener {
     if (playerHit != null) {
       Object myEntity = playerHit.getUserData();
 
-      if (myEntity instanceof Tile) {
-        Tile t = (Tile) myEntity;
-        if (t.switchID >= 0) {
-          GameState.getInstance().switchStatus[t.switchID] = false;
+      if (myEntity instanceof Switch) {
+        Switch s = (Switch) myEntity;
+        if (s.switchID >= 0) {
+          GameState.getInstance().switchStatus[s.switchID] = false;
         }
       }
     }
