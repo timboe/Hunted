@@ -34,7 +34,7 @@ public class Param {
   public static final float TORCH_FLICKER = 2f;
   public static final int MAX_MINI_LIGHT = 20; // Mini lights per key room
 
-  public static final float PLAYER_SPEED = 5f;
+  public static final float PLAYER_SPEED = 5f*2;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED = .8f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED_BOOST = .05f * PLAYER_SPEED;
@@ -61,8 +61,12 @@ public class Param {
   public static final int SWITCH_TIME = 250;
 
   public static final int ANIM_SPEED = 10; // Frames per anim update
-  public static final int MAX_FRAMES = 8;
+  public static final int MAX_FRAMES = 9;
 
   public static final int MAX_CRINKLE = 3;
+
+  public static final Color LIGHT_RED = new Color(1f,0f,0f,1f);
+  public static final Color LIGHT_GREEN = new Color(0f,1f,0f,1f);
+  public static final Color LIGHT_BLUE = new Color(0f,0f,1f,1f);
 
 }

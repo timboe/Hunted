@@ -43,7 +43,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 
   private boolean keyN = false, keyE = false, keyS = false, keyW = false;
-  private Rectangle cullBox;
+  private Rectangle cullBox = new Rectangle(0, 0, Param.DISPLAY_X, Param.DISPLAY_Y);
 
   Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   Matrix4 scaledLightingMatrix;
@@ -58,7 +58,6 @@ public class GameScreen implements Screen, InputProcessor {
 
   public GameScreen() {
     GameState.getInstance().theGameScreen = this;
-    cullBox = new Rectangle(0, 0, Param.DISPLAY_X/2, Param.DISPLAY_Y/2); //TODO remove /2
   }
 
 

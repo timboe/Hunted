@@ -3,12 +3,11 @@ package timboe.hunted.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
-import timboe.hunted.entity.BigBad;
-import timboe.hunted.entity.Chest;
-import timboe.hunted.entity.Tile;
-import timboe.hunted.entity.Torch;
+import timboe.hunted.entity.*;
 import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
+
+import java.security.Key;
 
 /**
  * Created by Tim on 02/01/2017.
@@ -32,7 +31,7 @@ public class CollisionHandle implements ContactListener {
       Object myEntity = playerHit.getUserData();
 
       // Colision between player and off-torch
-      if (myEntity instanceof Torch && !(myEntity instanceof BigBad)) {
+      if (myEntity instanceof Torch && !(myEntity instanceof BigBad) && !(myEntity instanceof KeyLight)) {
         Torch t = (Torch) myEntity;
         t.doCollision();
       }

@@ -21,7 +21,6 @@ public class Tile extends EntityBase implements Node<Tile> {
   private boolean isWeb = false;
   public Room myRoom = null;
   public int switchID = -1; // -1 is invalid, 0=exitDoor. 1-N are rooms
-  public int activationID = -1; // Which switch causes me to animate when true? -1 is invalid
   private HashSet<Tile> webNeighbours = new HashSet<Tile>();
   public int webEffect = 0;
 
@@ -116,8 +115,6 @@ public class Tile extends EntityBase implements Node<Tile> {
     // TODO do we need to call on the super here? We don't animate any of these so prob not
     if (switchID >= 0) {
       currentFrame = (int) ((Math.min(GameState.getInstance().progress[switchID], Param.SWITCH_TIME-1) / (float) Param.SWITCH_TIME) * nFrames);
-    } else if (activationID >= 0 && GameState.getInstance().progress[activationID] == Param.SWITCH_TIME) {
-      if (GameState.getInstance().frame % Param.ANIM_SPEED == 0) ++currentFrame;
     }
   }
 

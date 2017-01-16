@@ -1,5 +1,6 @@
 package timboe.hunted.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -49,7 +50,10 @@ public class EntityBase extends Actor {
   }
 
   public void setTexture(String name, int frames, boolean dupeMiddleFrame) {
-    assert(frames <= Param.MAX_FRAMES);
+    if (frames > Param.MAX_FRAMES) {
+      Gdx.app.error("setTexture", "Too many frames " + frames + " on " + name);
+      Gdx.app.exit();
+    }
     nFrames = frames;
     currentFrame = 0;
     if (frames == 1) {
@@ -61,8 +65,7 @@ public class EntityBase extends Actor {
     }
     setWidth(textureRegion[0].getRegionWidth());
     setHeight(textureRegion[0].getRegionHeight());
-    if (dupeMiddleFrame) {
-      assert(frames == 3); // TODO make this work for arb. length
+    if (dupeMiddleFrame && frames == 3) {
       textureRegion[frames] = textureRegion[1];
       ++nFrames;
     }

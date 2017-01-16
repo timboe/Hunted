@@ -124,15 +124,12 @@ public class Sprites {
     t.setTexture("entry",5);
     exitDoor = t;
     addToStage(t, false);
-    getTile(xStart + 0, yStart - 1).setTexture("blobRed",2);
-    getTile(xStart + 1, yStart - 1).setTexture("blobGreen",2);
-    getTile(xStart + 2, yStart - 1).setTexture("blobBlue",2);
-    clutter.add(getTile(xStart + 0, yStart - 1));
-    clutter.add(getTile(xStart + 1, yStart - 1));
-    clutter.add(getTile(xStart + 2, yStart - 1));
-    getTile(xStart + 0, yStart - 1).activationID = 1;
-    getTile(xStart + 1, yStart - 1).activationID = 2;
-    getTile(xStart + 2, yStart - 1).activationID = 3;
+    KeyLight blobLightR = new KeyLight(xStart + 0, yStart - 1, 1, "blob", 2);
+    KeyLight blobLightG = new KeyLight(xStart + 1, yStart - 1, 2, "blob", 2);
+    KeyLight blobLightB = new KeyLight(xStart + 2, yStart - 1, 3, "blob", 2);
+    addToStage(blobLightR, true);
+    addToStage(blobLightG, true);
+    addToStage(blobLightB, true);
     keySwitch[0] = getTile(xStart + 1, yStart - 2);
     keySwitch[0].setTexture("switch",7);
     keySwitch[0].addSwitchSensor(0);
@@ -150,29 +147,16 @@ public class Sprites {
   }
 
 
-    public void addKeyShrine(int x, int y, int n, Room r) {
-    Tile shrine = new Tile(x + 1, y + 1);
-    Tile lightA = new Tile(x, y + 1);
-    Tile lightB = new Tile(x + 3, y + 1);
+  public void addKeyShrine(int x, int y, int n, Room r) {
+    KeyLight shrine = new KeyLight(x + 1, y + 1, n+1, Utility.prob(.5f) ? "totemA" : "totemB", 3);
+    KeyLight lightA = new KeyLight(x, y + 1, n+1, "lamp", 3);
+    KeyLight lightB = new KeyLight(x + 3, y + 1, n+1, "lamp", 3);
+    KeyLight blobLight = new KeyLight(x + 2, y, n+1, "blob", 2);
     Tile torchA = new Tile(x, y + 2);
     Tile torchB = new Tile(x + 3, y + 2);
     shrine.setAsPhysicsBody(x + 1.5f, y + 1.25f, 1f, 2.5f);
     lightA.setAsPhysicsBody(x + 0.2f, y + 1.1f, .6f, .8f);
     lightB.setAsPhysicsBody(x + 3.2f, y + 1.1f, .6f, .8f);;
-    String colour = new String();
-    switch (n) {
-      case 0: colour = "Red"; break;
-      case 1: colour = "Green"; break;
-      case 2: colour = "Blue"; break;
-      default:Gdx.app.error("Sprites::addKeyShrine","FATAL n = " + n); Gdx.app.exit();
-    }
-    shrine.setTexture(Utility.prob(.5f) ? "totemA" + colour : "totemB" + colour, 3, true);
-    getTile(x + 2, y).setTexture("blob" + colour, 2);
-    getTile(x + 2, y).activationID = n+1;
-    clutter.add( getTile(x+2,y));
-    shrine.activationID = n+1;
-    lightA.activationID = n+1;
-    lightB.activationID = n+1;
     keySwitch[n+1] = getTile(x + 1, y);
     keySwitch[n+1].setTexture("switch", 7);
     keySwitch[n+1].addSwitchSensor(n+1);
@@ -181,22 +165,19 @@ public class Sprites {
     torchB.setTexture("torchTall");
     torchA.setAsPhysicsBody(x + .35f, y + 2, .3f, 1.2f);
     torchB.setAsPhysicsBody(x + 3 + .35f, y + 2, .3f, 1.2f);
-    lightA.setTexture("lamp" + colour,3, true);
-    lightB.setTexture("lamp" + colour,3, true);
     addToStage(torchA, true);
     addToStage(torchB, true);
     addToStage(lightA, true);
     addToStage(lightB, true);
     addToStage(shrine, true);
+    addToStage(blobLight, true);
     Physics.getInstance().addTorch(x + 3.5f, y + 3.2f).doCollision();
     Physics.getInstance().addTorch(x + .5f, y + 3.2f).doCollision();
     for (int i = 0; i < Utility.r.nextInt(Param.MAX_MINI_LIGHT); ++i) {
       int rX = (int)r.getX() + Utility.r.nextInt((int)r.getWidth()-1);
       int rY = (int)r.getY() + Utility.r.nextInt((int)r.getHeight()-1);
       if (getClear(rX,rY,1,1)) {
-        Tile miniTorch = new Tile(rX, rY);
-        miniTorch.setTexture("lampS" + colour, 3, true);
-        miniTorch.activationID = n+1;
+        KeyLight miniTorch = new KeyLight(rX, rY, n+1, "lampS", 3);
         addToStage(miniTorch, true);
       }
     }
