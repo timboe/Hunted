@@ -86,7 +86,7 @@ public class Tile extends EntityBase implements Node<Tile> {
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
     fixtureDef.filter.categoryBits = Param.SENSOR_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.SENSOR_COLLIDES; // I collide with
     fixtureDef.isSensor = true;
     body.createFixture(fixtureDef);
     circleShape.dispose();

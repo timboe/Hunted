@@ -55,8 +55,8 @@ public class Clutter extends EntityBase {
     }
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
-    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.WORLD_ENTITY | Param.TORCH_ENTITY; // I collide with
+    fixtureDef.filter.categoryBits = Param.CLUTTER_ENTITY; // I am a
+    fixtureDef.filter.maskBits = Param.CLUTTER_COLLIDES; // I collide with
     body.createFixture(fixtureDef);
     shape.dispose();
   }

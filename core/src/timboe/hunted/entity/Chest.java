@@ -58,8 +58,8 @@ public class Chest extends EntityBase {
     fixtureDef.density = 0.5f;
     fixtureDef.friction = 0.8f;
     fixtureDef.restitution = 0.1f;
-    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY | Param.WORLD_ENTITY | Param.TORCH_ENTITY; // I collide with
+    fixtureDef.filter.categoryBits = Param.CLUTTER_ENTITY; // I am a
+    fixtureDef.filter.maskBits = Param.WORLD_COLLIDES; // I collide with
     body.createFixture(fixtureDef);
     boxShape.dispose();
   }

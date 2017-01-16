@@ -64,7 +64,7 @@ public class Torch extends EntityBase {
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
     fixtureDef.filter.categoryBits = Param.SENSOR_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.SENSOR_COLLIDES; // I collide with
     fixtureDef.isSensor = true;
     body.createFixture(fixtureDef);
     circleShape.dispose();
@@ -94,9 +94,7 @@ public class Torch extends EntityBase {
       torchDistanceRef,
       loc != null ? loc.x : 0f, loc != null ? loc.y : 0f, angle, range); // Degrees? WTF?
     torchDistanceRef = Param.WALL_TORCH_STRENGTH;
-    torchLight[nLight].setContactFilter(Param.TORCH_ENTITY,
-      (short)0,
-      (short)(Param.PLAYER_ENTITY|Param.BIGBAD_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
+    torchLight[nLight].setContactFilter(Param.TORCH_ENTITY, (short)0, Param.TORCH_COLLIDES); // I am a, 0, I collide with
     torchLight[nLight].setXray(xRay);
     ++nLight;
   }

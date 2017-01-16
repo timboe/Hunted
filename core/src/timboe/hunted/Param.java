@@ -57,6 +57,14 @@ public class Param {
   public static final short WORLD_ENTITY = 0x1 << 2; // 0100
   public static final short SENSOR_ENTITY = 0x1 << 3; // 1000
   public static final short TORCH_ENTITY = 0x1 << 4; // 10000
+  public static final short CLUTTER_ENTITY = 0x1 << 5;
+
+  public static final short PLAYER_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|SENSOR_ENTITY|CLUTTER_ENTITY;
+  public static final short TORCH_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|SENSOR_ENTITY|PLAYER_ENTITY|CLUTTER_ENTITY;
+  public static final short BIGBAD_COLLIDES = TORCH_ENTITY;
+  public static final short WORLD_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|PLAYER_ENTITY|CLUTTER_ENTITY;
+  public static final short CLUTTER_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|PLAYER_ENTITY|CLUTTER_ENTITY;
+  public static final short SENSOR_COLLIDES = PLAYER_ENTITY;
 
   public static final int SWITCH_TIME = 250;
 

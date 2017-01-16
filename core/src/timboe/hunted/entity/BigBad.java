@@ -89,7 +89,7 @@ public class BigBad extends ParticleEffectActor {
     circleShape.dispose();
     torchLight[0].setContactFilter(Param.TORCH_ENTITY,
       (short)0,
-      (short)(Param.PLAYER_ENTITY|Param.WORLD_ENTITY)); // I am a, 0, I collide with
+      (short)(Param.PLAYER_ENTITY|Param.WORLD_ENTITY|Param.CLUTTER_ENTITY)); // I am a, 0, I collide with
 
     torchLight[0].attachToBody(lightAttachment);
     torchLight[0].setIgnoreAttachedBody(true);
