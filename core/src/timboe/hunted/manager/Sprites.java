@@ -117,19 +117,14 @@ public class Sprites {
   public void addExitRoom(Room entryRoom) {
     final int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
     final int yStart = (int)(entryRoom.y + entryRoom.height);
-    for (int x = xStart; x < xStart + 3; ++x) {
-      getTile(x, yStart).setVisible(false);
-    }
-    ExitDoor t = new ExitDoor(xStart, (int)(entryRoom.y + entryRoom.height));
-    t.setTexture("entry",5);
-    exitDoor = t;
-    addToStage(t, false);
-    KeyLight blobLightR = new KeyLight(xStart + 0, yStart - 1, 1, "blob", 2);
-    KeyLight blobLightG = new KeyLight(xStart + 1, yStart - 1, 2, "blob", 2);
-    KeyLight blobLightB = new KeyLight(xStart + 2, yStart - 1, 3, "blob", 2);
-    addToStage(blobLightR, true);
-    addToStage(blobLightG, true);
-    addToStage(blobLightB, true);
+    getTile(xStart + 0, yStart).setVisible(false);
+    getTile(xStart + 1, yStart).setIsFloor(entryRoom);
+    getTile(xStart + 2, yStart).setVisible(false);
+    exitDoor = new ExitDoor(xStart, (int)(entryRoom.y + entryRoom.height));
+    addToStage(exitDoor, false);
+    addToStage(new KeyLight(xStart + 0, yStart - 1, 1, "blob", 2), true);
+    addToStage(new KeyLight(xStart + 1, yStart - 1, 2, "blob", 2), true);
+    addToStage(new KeyLight(xStart + 2, yStart - 1, 3, "blob", 2), true);
     keySwitch[0] = new Switch(xStart + 1, yStart - 2, 0);
     addToStage(keySwitch[0], true);
     Tile torchA = new Tile(xStart - 1, yStart - 2);

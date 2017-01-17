@@ -33,6 +33,7 @@ public class GameState {
   }
 
   private GameState() {
+
   }
 
   public void startChase() {

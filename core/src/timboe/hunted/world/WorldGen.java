@@ -80,14 +80,14 @@ public class WorldGen {
     Sprites.getInstance().crinkleEdges(rooms, corridors);
     Sprites.getInstance().disableInvisibleTiles();
     Sprites.getInstance().addTileActors();
+    if (!placeExit()) return false;
     Sprites.getInstance().addTileRigidBodies();
     if (!placeBigBad()) return false;
-    if (!placeExit()) return false;
     if (!placeKeyRooms()) return false;
-    placeChests();
     placeClutter();
     Sprites.getInstance().textureWalls();
     Sprites.getInstance().addPlayers();
+    placeChests();
     return success;
   }
 
