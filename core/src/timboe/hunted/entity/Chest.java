@@ -1,5 +1,6 @@
 package timboe.hunted.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -66,9 +67,9 @@ public class Chest extends EntityBase {
   }
 
   public void updatePhysics() {
-    // Apply retarding force
+    if (!body.isAwake()) return;
     Vector2 lv = body.getLinearVelocity();
-    if (Math.abs(lv.len()) < 1e-4) return;
+    // Apply retarding force
     float deltaVX = 0 - lv.x;
     float deltaVY = 0 - lv.y;
     float mass = Param.CHEST_INERTIA_MOD * body.getMass();
