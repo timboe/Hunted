@@ -74,14 +74,13 @@ public class BigBad extends ParticleEffectActor {
     lightAttachment = Physics.getInstance().world.createBody(bodyDef);
     lightAttachment.setUserData(this);
     CircleShape circleShape = new CircleShape();
-    circleShape.setRadius(.2f);
+    circleShape.setRadius(.05f);
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
     fixtureDef.filter.categoryBits = Param.TORCH_ENTITY; // I am a
     fixtureDef.filter.maskBits = Param.PLAYER_ENTITY|Param.WORLD_ENTITY|Param.TORCH_ENTITY; // I collide with
     lightAttachment.createFixture(fixtureDef);
     circleShape.dispose();
-
 
     addTorchToEntity(45f, Param.PLAYER_TORCH_STRENGTH, Param.EVIL_FLAME, false, null);
     addTorchToEntity(180f, Param.SMALL_TORCH_STRENGTH, Param.EVIL_FLAME, true, null);
@@ -181,7 +180,8 @@ public class BigBad extends ParticleEffectActor {
     } else {
       float diff = targetAngle - body.getAngle();
       int sign = (diff >= 0 && diff <= Math.PI) || (diff <= -Math.PI && diff >= -2*Math.PI) ? 1 : -1;
-      setMoveDirection(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED), false);
+      setMoveDirection(body.getAngle() + (sign * Param.BIGBAD_ANGULAR_SPEED));
+      setMoving(false);
     }
   }
 
@@ -209,7 +209,7 @@ public class BigBad extends ParticleEffectActor {
         aiState = AIState.ROTATE;
       }
     } else {
-      setMoveDirection(getTargetAngle(), true);
+      setMoveDirection(getTargetAngle());
       setMoving(true);
     }
   }
@@ -301,7 +301,7 @@ public class BigBad extends ParticleEffectActor {
     } else {
       movementTargets.set(0, Sprites.getInstance().getPlayer().getTileUnderEntity() );
     }
-    setMoveDirection(getTargetAngle(), true);
+    setMoveDirection(getTargetAngle());
     setMoving(true);
     if (aiState == AIState.CHASE && distanceFromPlayer < Param.BIGBAD_POUNCE_DISTANCE) { // see if it's game over
       aiState = AIState.END;

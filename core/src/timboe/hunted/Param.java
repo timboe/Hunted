@@ -34,7 +34,10 @@ public class Param {
   public static final float TORCH_FLICKER = 2f;
   public static final int MAX_MINI_LIGHT = 20; // Mini lights per key room
 
-  public static final float PLAYER_SPEED = 5f*2;
+  public static final float CHEST_INERTIA_MOD = 0.07f; // Have some travel
+  public static final float PLAYER_INERTIA_MOD = 0.1f; // Still quite responsive (smaller = more sluggish)
+
+  public static final float PLAYER_SPEED = 5f;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED = .8f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED_BOOST = .05f * PLAYER_SPEED;

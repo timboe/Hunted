@@ -10,7 +10,7 @@ import timboe.hunted.Utility;
  */
 public class Sounds {
 
-  boolean musicOn = false;
+  boolean musicOn = true;
   boolean sfxOn = false;
 
   Music chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("stormfront.ogg"));

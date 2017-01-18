@@ -2,6 +2,7 @@ package timboe.hunted.entity;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -63,6 +64,17 @@ public class Chest extends EntityBase {
     body.createFixture(fixtureDef);
     boxShape.dispose();
   }
+
+  public void updatePhysics() {
+    // Apply retarding force
+    Vector2 lv = body.getLinearVelocity();
+    if (Math.abs(lv.len()) < 1e-4) return;
+    float deltaVX = 0 - lv.x;
+    float deltaVY = 0 - lv.y;
+    float mass = Param.CHEST_INERTIA_MOD * body.getMass();
+    body.applyLinearImpulse(mass * deltaVX, mass * deltaVY, body.getPosition().x, body.getPosition().y, true);
+  }
+
 
   @Override
   public void draw(Batch batch, float alpha) {

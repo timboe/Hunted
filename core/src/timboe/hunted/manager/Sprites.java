@@ -34,6 +34,7 @@ public class Sprites {
   public Switch[] keySwitch = new Switch[Param.KEY_ROOMS + 1];
   public Vector<Tile> toUpdateWeb;
   public HashSet<Tile> webTiles;
+  public HashSet<Chest> chests;
   private HashSet<EntityBase> clutter;
   public Stage stage;
 
@@ -47,6 +48,7 @@ public class Sprites {
     webTiles = new HashSet<Tile>();
     toUpdateWeb = new Vector<Tile>();
     clutter = new HashSet<EntityBase>();
+    chests = new HashSet<Chest>();
 
     exitDoor = null;
     for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) keySwitch[i] = null;
@@ -97,6 +99,7 @@ public class Sprites {
   public void updatePhysics() {
     player.updatePhysics();
     bigBad.updatePhysics();
+    for (Chest c : chests) c.updatePhysics();
     for (int i = 0; i < toUpdateWeb.size(); ++i) { // Note can only use basic iteration as we modify these mid-loop
       toUpdateWeb.get(i).updateNeighbours(false);
     }

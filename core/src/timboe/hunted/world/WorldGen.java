@@ -170,6 +170,7 @@ public class WorldGen {
         if (!Sprites.getInstance().getClear(rX,rY,1,1)) continue;
         Chest newChest = new Chest(rX, rY);
         Sprites.getInstance().addToStage(newChest, true);
+        Sprites.getInstance().chests.add(newChest);
         if (--chests == 0) break;
       }
     }

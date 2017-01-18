@@ -22,7 +22,7 @@ public class Torch extends EntityBase {
   private Vector2 lightPos;
   private Vector2 lightEffectPos;
   private boolean needsSecondLight;
-  private float angle;
+  private float torchAngle;
 
   public int nLight = 0;
   public PositionalLight[] torchLight = {null,null};
@@ -41,7 +41,7 @@ public class Torch extends EntityBase {
     // lX and lY are particle effect and effect light
     // sX and sY are the location of the sensor to turn the light on
     super((int)x, (int)y);
-    angle = a * (float)(180f/Math.PI); // Degrees needed below - WTF?
+    torchAngle = a * (float)(180f/Math.PI); // Degrees needed below - WTF?
     primaryTorchType = c;
     isPartial = partial;
 //    setAsTorchBody(x,y,r);
@@ -92,7 +92,7 @@ public class Torch extends EntityBase {
       Param.RAYS,
       c,
       distance,
-      loc != null ? loc.x : 0f, loc != null ? loc.y : 0f, angle, range); // Degrees? WTF?
+      loc != null ? loc.x : 0f, loc != null ? loc.y : 0f, torchAngle, range); // Degrees? WTF?
     torchDistanceRef[nLight] = distance; // Should we need to reset
     torchLight[nLight].setContactFilter(Param.TORCH_ENTITY, (short)0, Param.TORCH_COLLIDES); // I am a, 0, I collide with
     torchLight[nLight].setXray(xRay);
@@ -115,7 +115,7 @@ public class Torch extends EntityBase {
     if (isOn) return;
     isOn = true;
     float range = isPartial ? 90f : 180f;
-    Gdx.app.log("Torch", "Turning on " + this + " at angle " + angle);
+    Gdx.app.log("Torch", "Turning on " + this + " at angle " + torchAngle);
     addTorchToEntity(range, Param.WALL_TORCH_STRENGTH,  primaryTorchType, false, lightPos);
     Physics.getInstance().litTorches.add(this);
     Sprites.getInstance().addFlameEffect(lightEffectPos);

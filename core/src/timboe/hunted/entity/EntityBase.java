@@ -22,11 +22,11 @@ public class EntityBase extends Actor {
   protected int nFrames;
 
   protected Body body = null;
-  protected Rectangle worldBox = null;
+  protected Rectangle worldBox = null; // TODO get rid of this
   protected float offsetMod = 0f;
-  private float angle = 0;
+  protected float angle = 0;
   protected float speed = 0;
-  private boolean moving = false;
+  protected boolean moving = false;
   protected float webTint = 0;
 
   public EntityBase(int x, int y) {
@@ -110,8 +110,6 @@ public class EntityBase extends Actor {
     boxShape.dispose();
   }
 
-
-
   public void setAsPlayerBody(float scale, float offset) {
     BodyDef bodyDef = new BodyDef();
     float newWidth2 = (scale * worldBox.width) / 2f;
@@ -163,12 +161,11 @@ public class EntityBase extends Actor {
     return getTileUnderEntity().getTilesRoom();
   }
 
-  public void setMoveDirection(double a, boolean move) {
+  public void setMoveDirection(double a) {
     while (a < 0) a += 2*Math.PI;
     while (a >= 2*Math.PI) a -= 2*Math.PI;
     angle = (float)a;
     body.setTransform(body.getPosition(), angle);
-    setMoving(move);
   }
 
   @Override
