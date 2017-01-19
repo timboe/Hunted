@@ -62,7 +62,6 @@ public class Sounds {
     currentChase = Utility.r.nextInt(nChaseStarts);
     chaseMusic[currentChase].play();
     chaseMusic[currentChase].setVolume(1f);
-    scream();
     ambiance.setVolume(0f);
   }
 

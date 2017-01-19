@@ -119,8 +119,8 @@ public class GameScreen implements Screen, InputProcessor {
       desiredPos.y += Math.sin(angle) * Param.CAMERA_LEAD;
     }
 
-    currentPos.x = currentPos.x + (0.07f * (desiredPos.x - currentPos.x));
-    currentPos.y = currentPos.y + (0.07f * (desiredPos.y - currentPos.y));
+    currentPos.x = currentPos.x + (0.035f * (desiredPos.x - currentPos.x));
+    currentPos.y = currentPos.y + (0.035f * (desiredPos.y - currentPos.y));
 
     shakePos.set(currentPos);
     //TODO re-enable judder
@@ -140,7 +140,7 @@ public class GameScreen implements Screen, InputProcessor {
       desiredZoom *= mod;
     }
 
-    currentZoom = currentZoom + (0.05f * (desiredZoom - currentZoom));
+    currentZoom = currentZoom + (0.025f * (desiredZoom - currentZoom));
 
     camera.position.set(shakePos, 0);
     camera.zoom = currentZoom;
@@ -261,6 +261,12 @@ public class GameScreen implements Screen, InputProcessor {
 
   @Override
   public boolean keyDown(int keycode) {
+    if (!GameState.getInstance().userControl) {
+      keyN = false;
+      keyE = false;
+      keyS = false;
+      keyW = false;
+    }
     if(keycode == Input.Keys.LEFT)
       keyW = true;
     if(keycode == Input.Keys.RIGHT)

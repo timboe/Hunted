@@ -31,6 +31,7 @@ public class Sprites {
   private Player player;
   private BigBad bigBad;
   public ExitDoor exitDoor;
+  public WinMask winMask;
   public Switch[] keySwitch = new Switch[Param.KEY_ROOMS + 1];
   public Vector<Tile> toUpdateWeb;
   public HashSet<Tile> webTiles;
@@ -51,6 +52,7 @@ public class Sprites {
     chests = new HashSet<Chest>();
 
     exitDoor = null;
+    winMask = null;
     for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) keySwitch[i] = null;
 
     particles = new HashSet<ParticleEffectActor>();
@@ -70,11 +72,6 @@ public class Sprites {
     boolean active = false;
     for (Tile t : webTiles) active |= t.tintWeb();
     return active;
-  }
-
-  public void addPlayers() {
-    stage.addActor(player);
-    stage.addActor(bigBad);
   }
 
   public void moveWeb() {
@@ -125,7 +122,7 @@ public class Sprites {
     getTile(xStart + 2, yStart).setVisible(false);
     exitDoor = new ExitDoor(xStart, (int)(entryRoom.y + entryRoom.height));
     addToStage(exitDoor, false);
-    addToStage(new WinMask(xStart, yStart + 1), false);
+    winMask = new WinMask(xStart, yStart + 1);
     addToStage(new KeyLight(xStart + 0, yStart - 1, 1, "blob", 2), true);
     addToStage(new KeyLight(xStart + 1, yStart - 1, 2, "blob", 2), true);
     addToStage(new KeyLight(xStart + 2, yStart - 1, 3, "blob", 2), true);
@@ -392,10 +389,6 @@ public class Sprites {
     }
   }
 
-
-  public LinkedList<Tile> findPath(Tile start, Tile end) {
-    return PathFinding.doAStar(start, end);
-  }
 
   private void getNeighbourFloor(final int x, final int y, HashMap<String, Boolean> map) {
     map.clear(); // Should not be needed

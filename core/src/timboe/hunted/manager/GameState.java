@@ -25,6 +25,7 @@ public class GameState {
   public boolean userControl;
 
   private boolean chaseOn = false;
+  private boolean chaseScream = false;
   private int chaseVolume = 100;
 
   private static GameState ourInstance = new GameState();
@@ -37,13 +38,6 @@ public class GameState {
 
   }
 
-  public void startChase() {
-    if (!chaseOn) {
-      chaseOn = true;
-      chaseVolume = 100;
-      Sounds.getInstance().startChase();
-    }
-  }
 
   public void reset() {
     resetInternal();
@@ -95,9 +89,14 @@ public class GameState {
   private void musicLogic() {
     if (!chaseOn && Sprites.getInstance().getBigBad().musicSting) {
       chaseOn = true;
+      chaseScream = false;
       Sounds.getInstance().startChase();
     }
     if (chaseOn) {
+      if (!chaseScream && Sprites.getInstance().getBigBad().isChasing()) {
+        chaseScream = true;
+        Sounds.getInstance().scream();
+      }
       if (!Sprites.getInstance().getBigBad().musicSting) --chaseVolume;
       else chaseVolume = 100;
       Sounds.getInstance().chaseVolume(chaseVolume/100f);

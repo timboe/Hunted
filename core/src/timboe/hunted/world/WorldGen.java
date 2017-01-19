@@ -68,7 +68,6 @@ public class WorldGen {
   }
 
   private boolean tryWorld() {
-    boolean success = true;
     reset();
     placeRooms();
     shrinkRooms();
@@ -86,9 +85,11 @@ public class WorldGen {
     if (!placeKeyRooms()) return false;
     placeClutter();
     Sprites.getInstance().textureWalls();
-    Sprites.getInstance().addPlayers();
+    Sprites.getInstance().addToStage( Sprites.getInstance().getPlayer(), false );
     placeChests();
-    return success;
+    Sprites.getInstance().addToStage( Sprites.getInstance().getBigBad(), false );
+    Sprites.getInstance().addToStage( Sprites.getInstance().winMask, false );
+    return true;
   }
 
   private void reset() {

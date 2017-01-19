@@ -37,14 +37,15 @@ public class Param {
   public static final float CHEST_INERTIA_MOD = 0.07f; // Have some travel
   public static final float PLAYER_INERTIA_MOD = 0.1f; // Still quite responsive (smaller = more sluggish)
 
-  public static final float PLAYER_SPEED = 5f;
+  public static final float PLAYER_SPEED = 5f*2;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED = .8f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED_BOOST = .05f * PLAYER_SPEED;
   public static final float BIGBAD_ANGULAR_SPEED = (float)Math.PI/90f;
   public static final int BIGBAD_AI_COOLDOWN = 100;
   public static final int BIGBAD_POUNCE_DISTANCE = 2;
-
+  public static final int BIGBAD_SIXTH_SENSE = 25; //% chance to guess correct direction
+  public static final int BIGBAD_SIXTH_SENSE_BOOST = 25; //% chance boost with every key shrine
   public static final float BIGBAD_SENSE_DISTANCE = 20f; // Within what line of sight can we see the player
 
   public static final float PLAYER_SMELL = 0.001f;
