@@ -7,7 +7,7 @@ import timboe.hunted.manager.Physics;
 /**
  * Created by Tim on 08/01/2017.
  */
-public class ExitDoor extends Tile{
+public class ExitDoor extends EntityBase {
 
   boolean blocked = true;
 

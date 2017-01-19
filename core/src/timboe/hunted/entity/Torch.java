@@ -115,7 +115,7 @@ public class Torch extends EntityBase {
     if (isOn) return;
     isOn = true;
     float range = isPartial ? 90f : 180f;
-    Gdx.app.log("Torch", "Turning on " + this + " at angle " + torchAngle);
+//    Gdx.app.log("Torch", "Turning on " + this + " at angle " + torchAngle);
     addTorchToEntity(range, Param.WALL_TORCH_STRENGTH,  primaryTorchType, false, lightPos);
     Physics.getInstance().litTorches.add(this);
     Sprites.getInstance().addFlameEffect(lightEffectPos);

@@ -36,6 +36,11 @@ public class CollisionHandle implements ContactListener {
         t.doCollision();
       }
 
+      if (myEntity instanceof WinMask) {
+        // This means we won
+        GameState.getInstance().userControl = false;
+      }
+
       if (myEntity instanceof Tile) {
         Tile t = (Tile) myEntity;
         if (t.getIsWeb() && GameState.getInstance().aiCooldown == 0) {

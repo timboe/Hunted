@@ -22,6 +22,7 @@ public class GameState {
   public boolean webEffect = false;
   public GameScreen theGameScreen = null;
   public HashSet<Tile> waypoints; // Known good AI destinations
+  public boolean userControl;
 
   private boolean chaseOn = false;
   private int chaseVolume = 100;
@@ -49,6 +50,7 @@ public class GameState {
     theGameScreen.reset();
     WorldGen.getInstance().generateWorld();
     Sounds.getInstance().startAmbiance();
+    userControl = true;
   }
 
   private void resetInternal() {
@@ -60,6 +62,7 @@ public class GameState {
     aiDestination = null;
     webEffect = false;
     frame = 0;
+    userControl = false;
     waypoints = new HashSet<Tile>();
   }
 

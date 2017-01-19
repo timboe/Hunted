@@ -9,10 +9,10 @@ import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.world.Room;
-import timboe.hunted.world.WorldGen;
 
 import java.util.*;
 
+import static timboe.hunted.entity.BigBad.AIState.PATHING;
 import static timboe.hunted.entity.BigBad.AIState.RETURN_TO_WAYPOINT;
 
 
@@ -22,18 +22,18 @@ import static timboe.hunted.entity.BigBad.AIState.RETURN_TO_WAYPOINT;
 public class BigBad extends ParticleEffectActor {
 
   private Body lightAttachment;
-  private float torchOff = 1f;
+  private float torchOffset = 1f;
 
-  public enum AIState {IDLE,
-    ROTATE,
-    PATHING,
-    PATHING_TO_WAYPOINT,
-    HUNTPATHING,
-    DOASTAR,
-    RETURN_TO_WAYPOINT,
-    CHASE,
-    END}
-  public AIState aiState = AIState.IDLE;
+  public enum AIState {IDLE, // need to choose a new destination
+    ROTATE, // Slowly change angle. Leads to PATHING
+    PATHING, // Regular exploration, leads to ROTATE or IDLE
+    PATHING_TO_WAYPOINT, // Similar to PATHING (no rotation). Only leads to IDLE
+    HUNTPATHING, // Fast version of PATHING. Leads to RETURN_TO_WAYPOINT
+    DOASTAR, // Triggers pathfinding to location. Leads to HUNTPATHING
+    RETURN_TO_WAYPOINT, // Clear destination list and add just the most recent waypoint. Leads to PATHING_TO_WAYPOINT
+    CHASE, // Home in on player. Leads to END or RETURN_TO_WAYPOINT.
+    END} // Home in faster than player's speed. No return.
+  private AIState aiState = AIState.IDLE;
   private LinkedList<Tile> movementTargets; // List of destinations for AI
   private HashSet<Room> roomsVisited;
   private Vector2 atDestinationVector = new Vector2();
@@ -42,6 +42,7 @@ public class BigBad extends ParticleEffectActor {
   private RayCastCallback raycastCallback = null;
   private float raycastMin = 1f;
   public boolean canSeePlayer = false;
+  public boolean lookingAtPlayer = false;
   public boolean sameRoomAsPlayer = false;
   public boolean musicSting = false;
   public float distanceFromPlayer;
@@ -67,7 +68,8 @@ public class BigBad extends ParticleEffectActor {
       }
     };
 
-    particleEffect = Utility.getNewFlameEffect();
+    //    particleEffect = Utility.getNewFlameEffect();
+    // BB should not have?
 
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -93,38 +95,50 @@ public class BigBad extends ParticleEffectActor {
 
   }
 
-  private void startChase() {
-    aiState = AIState.CHASE;
+  private void checkStartChase() {
+    if (sameRoomAsPlayer && aiState != AIState.END && aiState != AIState.CHASE) {
+      aiState = AIState.CHASE;
+      Gdx.app.log("AI","checkStartChase -> CHASE");
+    } // TODO also chase if nearby and within vision
   }
 
   public void updatePhysics() {
+    // Get straight line distance from player
+    distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
     // Set speed
     speed = Param.BIGBAD_SPEED;
-    for (int i = 1; i <= Param.KEY_ROOMS; ++i) {
-      if (GameState.getInstance().progress[i] == Param.SWITCH_TIME) speed += Param.BIGBAD_SPEED_BOOST;
-    }
     if (aiState == AIState.HUNTPATHING) {
       // If close to the destination then try slowing down a little so as not to overshoot
       final float mod = (float)Math.min(1f, Math.log10(distanceToDestination() * 10));
       speed = Param.BIGBAD_RUSH * mod;
+    } else {
+      for (int i = 1; i <= Param.KEY_ROOMS; ++i) {
+        if (GameState.getInstance().progress[i] == Param.SWITCH_TIME) speed += Param.BIGBAD_SPEED_BOOST;
+      }
+    }
+    // If far away then speed up
+    if (distanceFromPlayer > Param.BIGBAD_SENSE_DISTANCE * 2) {
+      speed *= 2;
     }
     // Update the things which relate to the movement of the AI over different tiles
     Tile t = getTileUnderEntity();
     if (tileUnderMe != t) {
       tileUnderMe = t;
-      if (aiState != AIState.CHASE && aiState != AIState.END && aiState != RETURN_TO_WAYPOINT) t.setIsWeb();
+      if (aiState == PATHING) t.setIsWeb();
       roomsVisited.add(t.getTilesRoom());
     }
-    // Get straight line distance from player
-    distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
+
     // See if the AI can see the player
     sameRoomAsPlayer = (t.myRoom != null && t.myRoom == Sprites.getInstance().getPlayer().getRoomUnderEntity());
     raycastMin = 9999f;  // Bounce a ray to the player - does it intersect anything else first?
     Physics.getInstance().world.rayCast(raycastCallback, body.getPosition(), Sprites.getInstance().getPlayer().getBody().getPosition());
     // See if we should change AI state to get player
-    if (sameRoomAsPlayer && aiState != AIState.END) startChase();
+    checkStartChase();
+
+    lookingAtPlayer = canSeePlayer; // TODO make this based on angle
+
     musicSting = (aiState == AIState.CHASE || aiState == AIState.END
-      || (canSeePlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE));
+      || (lookingAtPlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE));
     // Lighting call
     flicker();
     // Do all the AI stuff
@@ -137,7 +151,7 @@ public class BigBad extends ParticleEffectActor {
 
     // Update my light
     lightAttachment.setTransform(body.getPosition().x,
-      body.getPosition().y + torchOff, body.getAngle());
+      body.getPosition().y + torchOffset, body.getAngle());
       super.updatePosition();
 
     setPosition(getX(), getY() + yOff);
@@ -177,6 +191,7 @@ public class BigBad extends ParticleEffectActor {
     float targetAngle = getTargetAngle();
     if (Math.abs(body.getAngle() - targetAngle) < Math.toRadians(10)) {
       aiState = AIState.PATHING;
+      Gdx.app.log("AI","rotate -> PATHING");
     } else {
       float diff = targetAngle - body.getAngle();
       int sign = (diff >= 0 && diff <= Math.PI) || (diff <= -Math.PI && diff >= -2*Math.PI) ? 1 : -1;
@@ -194,19 +209,25 @@ public class BigBad extends ParticleEffectActor {
   public void webHit() {
     if (tileUnderMe.getIsWeb() && aiState != AIState.CHASE && aiState != AIState.END) {
       aiState = BigBad.AIState.DOASTAR;
+      Gdx.app.log("AI","-> DO A*");
     }
   }
 
   private void path() {
     if (atDestination()) {
       movementTargets.remove(0);
-      Gdx.app.log("AI","Reached target - " + movementTargets.size() + " more targets");
       if (movementTargets.size() == 0) { // Reached destination
         setMoving(false);
-        if (aiState == AIState.HUNTPATHING) aiState = AIState.RETURN_TO_WAYPOINT;
-        else aiState = AIState.IDLE;
+        if (aiState == AIState.HUNTPATHING) {
+          aiState = AIState.RETURN_TO_WAYPOINT;
+          Gdx.app.log("AI","path -> RETURN TO WAYPOINT");
+        } else {
+          Gdx.app.log("AI","path -> IDLE");
+          aiState = AIState.IDLE;
+        }
       } else if (aiState == AIState.PATHING) { // More steps // Only in regular path mode do we rotate
         aiState = AIState.ROTATE;
+        Gdx.app.log("AI","path -> ROTATE");
       }
     } else {
       setMoveDirection(getTargetAngle());
@@ -245,15 +266,17 @@ public class BigBad extends ParticleEffectActor {
       Gdx.app.error("AI","Nearest waypoint fail");
       Gdx.app.exit();
     }
+    movementTargets.clear();
     movementTargets.add(nearest);
     aiState = AIState.PATHING;
+    Gdx.app.log("AI","getNearestWaypoint -> PATHING");
   }
 
   private void basicPathing(Room corridor, Room target) {
     Gdx.app.log("AI","Starting - " + body.getPosition());
     if (corridor.getCorridorDirection() == Room.CorridorDirection.VERTICAL) {
       int commonX = (int)(corridor.x + Param.CORRIDOR_SIZE/2f);
-      Gdx.app.log("AI","Go through V corridor at common X:" + commonX);
+//      Gdx.app.log("AI","Go through V corridor at common X:" + commonX);
       int finalY = (int)(target.y + Param.CORRIDOR_SIZE/2f);
       if (target.y < corridor.y) finalY = (int)(target.y + target.height - Param.CORRIDOR_SIZE/2f);
       Tile t1 = Sprites.getInstance().getTile(commonX, (int)body.getPosition().y);
@@ -262,7 +285,7 @@ public class BigBad extends ParticleEffectActor {
       movementTargets.add( t2 );//new Vector2(commonX, finalY));
     } else {
       int commonY = (int)(corridor.y + Param.CORRIDOR_SIZE/2f);
-      Gdx.app.log("AI","Go through H corridor at common Y:" + commonY);
+//      Gdx.app.log("AI","Go through H corridor at common Y:" + commonY);
       int finalX = (int)(target.x + Param.CORRIDOR_SIZE/2f);
       if (target.x < corridor.x) finalX = (int)(target.x + target.width - Param.CORRIDOR_SIZE/2f);
       Tile t1 = Sprites.getInstance().getTile((int)body.getPosition().x, commonY);
@@ -275,13 +298,17 @@ public class BigBad extends ParticleEffectActor {
 //      Gdx.app.log("AI","Movement target - " + t);
 //    }
     aiState = AIState.ROTATE;
+    Gdx.app.log("AI","basicPathing (idle) -> ROTATE");
+
   }
 
   private void doAStar() {
     final Tile dest = GameState.getInstance().aiDestination;
-    movementTargets = Sprites.getInstance().findPath(getTileUnderEntity(), dest);
-    if (movementTargets == null) { // Could not path for some reason
-      aiState = AIState.IDLE;
+    movementTargets.clear();
+    movementTargets.addAll( Sprites.getInstance().findPath(getTileUnderEntity(), dest) );
+    if (movementTargets.size() == 0) { // Could not path for some reason
+      aiState = AIState.RETURN_TO_WAYPOINT;
+      Gdx.app.log("AI","doA* -> RETURN_TO_WAYPOINT");
       return;
     }
     // Cull the list of non-waypoint nodes
@@ -291,11 +318,13 @@ public class BigBad extends ParticleEffectActor {
       if (!GameState.getInstance().waypoints.contains( movementTargets.get(i) )) toRemove.add( movementTargets.get(i) );
     }
     movementTargets.removeAll( toRemove );
-    Gdx.app.log("AI","Pathing from " + this + " to " + dest);
+    Gdx.app.log("AI","Do A* -> HUNTPATHING  from " + this + " to " + dest);
     aiState = AIState.HUNTPATHING;
   }
 
   private void doChase() {
+    // Keep one entry in the list
+    if (movementTargets.size() > 1) movementTargets.clear();
     if (movementTargets.size() == 0) {
       movementTargets.add( Sprites.getInstance().getPlayer().getTileUnderEntity() );
     } else {
@@ -305,8 +334,10 @@ public class BigBad extends ParticleEffectActor {
     setMoving(true);
     if (aiState == AIState.CHASE && distanceFromPlayer < Param.BIGBAD_POUNCE_DISTANCE) { // see if it's game over
       aiState = AIState.END;
+      Gdx.app.log("AI","doChase -> END");
     } else if (aiState == AIState.CHASE && !sameRoomAsPlayer && !canSeePlayer) {  // see if we should stop chasing
       aiState = RETURN_TO_WAYPOINT;
+      Gdx.app.log("AI","doChase -> RETURN TO WAYPOINT");
       movementTargets.clear();
     }
   }

@@ -125,6 +125,7 @@ public class Sprites {
     getTile(xStart + 2, yStart).setVisible(false);
     exitDoor = new ExitDoor(xStart, (int)(entryRoom.y + entryRoom.height));
     addToStage(exitDoor, false);
+    addToStage(new WinMask(xStart, yStart + 1), false);
     addToStage(new KeyLight(xStart + 0, yStart - 1, 1, "blob", 2), true);
     addToStage(new KeyLight(xStart + 1, yStart - 1, 2, "blob", 2), true);
     addToStage(new KeyLight(xStart + 2, yStart - 1, 3, "blob", 2), true);

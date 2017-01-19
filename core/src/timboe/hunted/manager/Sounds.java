@@ -3,6 +3,7 @@ package timboe.hunted.manager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import timboe.hunted.Utility;
 
 /**
@@ -11,13 +12,16 @@ import timboe.hunted.Utility;
 public class Sounds {
 
   boolean musicOn = true;
-  boolean sfxOn = false;
+  boolean sfxOn = true;
 
-  Music chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("stormfront.ogg"));
   Music ambiance = Gdx.audio.newMusic(Gdx.files.internal("EoT.mp3"));
 
+  private final int nMonsterCall = 4;
+  Sound monsterCall[] = new Sound[nMonsterCall];
+
   private final int nChaseStarts = 4;
-  private final float chaseStarts[] = {0f, 44.7f, 141f, 238f};
+  private int currentChase = 0;
+  Music chaseMusic[] = new Music[nChaseStarts];
 
   private static Sounds ourInstance = new Sounds();
 
@@ -26,6 +30,20 @@ public class Sounds {
   }
 
   private Sounds() {
+    monsterCall[0] = Gdx.audio.newSound(Gdx.files.internal("276481__xdimebagx__monster-scream-1-wet.ogg"));
+    monsterCall[1] = Gdx.audio.newSound(Gdx.files.internal("276479__xdimebagx__monster-scream-2-wet.ogg"));
+    monsterCall[2] = Gdx.audio.newSound(Gdx.files.internal("276485__xdimebagx__monster-scream-3-wet.ogg"));
+    monsterCall[3] = Gdx.audio.newSound(Gdx.files.internal("276483__xdimebagx__monster-scream-4-wet.ogg"));
+
+    chaseMusic[0] = Gdx.audio.newMusic(Gdx.files.internal("chase0.ogg"));
+    chaseMusic[1] = Gdx.audio.newMusic(Gdx.files.internal("chase1.ogg"));
+    chaseMusic[2] = Gdx.audio.newMusic(Gdx.files.internal("chase2.ogg"));
+    chaseMusic[3] = Gdx.audio.newMusic(Gdx.files.internal("chase3.ogg"));
+  }
+
+  public void scream() {
+    if (!sfxOn) return;
+    monsterCall[ Utility.r.nextInt(nMonsterCall) ].play();
   }
 
   public void startAmbiance() {
@@ -41,26 +59,28 @@ public class Sounds {
 
   public void startChase() {
     if (!musicOn) return;
-    chaseMusic.play();
-    chaseMusic.setPosition( chaseStarts[Utility.r.nextInt(nChaseStarts) ]);
-    chaseMusic.setVolume(1f);
+    currentChase = Utility.r.nextInt(nChaseStarts);
+    chaseMusic[currentChase].play();
+    chaseMusic[currentChase].setVolume(1f);
+    scream();
     ambiance.setVolume(0f);
   }
 
   public void chaseVolume(float v) {
-    chaseMusic.setVolume(v);
+    chaseMusic[currentChase].setVolume(v);
     ambiance.setVolume(1f - v);
   }
 
   public void endChase() {
-    chaseMusic.stop();
+    chaseMusic[currentChase].stop();
   }
 
   public void dispose() {
-    chaseMusic.stop();
+    chaseMusic[currentChase].stop();
     ambiance.stop();
-    chaseMusic.dispose();
     ambiance.dispose();
+    for (Music m : chaseMusic) m.dispose();
+    for (Sound s : monsterCall) s.dispose();
   }
 
 }

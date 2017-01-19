@@ -140,7 +140,12 @@ public class Room extends Rectangle {
         choices.put(entry.getKey(), entry.getValue());
       }
     }
-    if (choices.size() == 0) choices.putAll(linksTo); // No un-visited so random choice between all
+    if (choices.size() == 0) {
+      choices.putAll(linksTo); // No un-visited so random choice between all
+      Gdx.app.log("AI","All rooms are visited so I pick at random");
+    } else {
+      Gdx.app.log("AI","Picking at random from " + choices.size() + " unvisited rooms.");
+    }
     List<Room> keys = new ArrayList<Room>(choices.keySet()); // Round-about way of choosing a random exitDoor
     Room chosen = keys.get(Utility.r.nextInt(keys.size()));
     for (HashMap.Entry<Room,Room> entry : choices.entrySet()) {

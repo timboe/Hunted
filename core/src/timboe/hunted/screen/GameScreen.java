@@ -178,12 +178,14 @@ public class GameScreen implements Screen, InputProcessor {
     stage.getRoot().setCullingArea( cullBox );
     stage.draw();
 
-    debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
-    debugSpriteBatch.begin();
-    for (Room room : WorldGen.getInstance().getAllRooms()) {
-      debugFont.draw(debugSpriteBatch, Float.toString(room.getScent()*100f), room.getX()*Param.TILE_SIZE, room.getY()*Param.TILE_SIZE);
+    if (HuntedGame.debug) {
+      debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
+      debugSpriteBatch.begin();
+      for (Room room : WorldGen.getInstance().getAllRooms()) {
+        debugFont.draw(debugSpriteBatch, Float.toString(room.getScent() * 100f), room.getX() * Param.TILE_SIZE, room.getY() * Param.TILE_SIZE);
+      }
+      debugSpriteBatch.end();
     }
-    debugSpriteBatch.end();
 
     scaledLightingMatrix = camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
 
