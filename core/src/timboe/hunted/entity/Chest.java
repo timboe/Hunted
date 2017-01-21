@@ -11,6 +11,7 @@ import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Physics;
+import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Textures;
 
 /**
@@ -24,6 +25,7 @@ public class Chest extends EntityBase {
   private  TextureRegion chestMask;
   private int treasureID;
   private int treasureHeight = -1;
+  private boolean sound = false;
 
   public Chest(int x, int y) {
     super(x, y);
@@ -39,10 +41,14 @@ public class Chest extends EntityBase {
   @Override
   public void act (float delta) {
     updatePosition();
-    if (chestOpened && currentFrame < nFrames-1 && GameState.getInstance().frame % Param.ANIM_SPEED/2 == 0) {
+    if (chestOpened && currentFrame < nFrames-1 && GameState.getInstance().frame % Param.ANIM_SPEED == 0) {
       ++currentFrame;
     } else if (currentFrame == nFrames-1 && treasureHeight < Param.TILE_SIZE) {
       ++treasureHeight;
+    }
+    if (chestOpened && !sound) {
+      sound = true;
+      Sounds.getInstance().treasure();
     }
   }
 

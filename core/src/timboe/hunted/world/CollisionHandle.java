@@ -33,7 +33,7 @@ public class CollisionHandle implements ContactListener {
       // Colision between player and off-torch
       if (myEntity instanceof Torch && !(myEntity instanceof BigBad) && !(myEntity instanceof KeyLight)) {
         Torch t = (Torch) myEntity;
-        t.doCollision();
+        t.doCollision(true);
       }
 
       if (myEntity instanceof WinMask) {

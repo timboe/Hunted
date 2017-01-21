@@ -7,15 +7,17 @@ import com.badlogic.gdx.math.Rectangle;
 import org.w3c.dom.css.Rect;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.entity.Tile;
 import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
+import timboe.hunted.pathfinding.Node;
 
 import java.util.*;
 
 /**
  * Created by Tim on 30/12/2016.
  */
-public class Room extends Rectangle {
+public class Room extends Rectangle implements Node<Room> {
 
   public enum CorridorDirection {VERTICAL, HORIZONTAL, NONE}
 
@@ -23,7 +25,7 @@ public class Room extends Rectangle {
   public Rectangle corridorProjection = null; // One box wide, down the centre of the corridor, projected out
   private HashMap<Room, Room> linksTo = new HashMap<Room, Room>();
   private float scent = 0f;
-  private float connections = 0f;
+  private HashSet<Room> neighbours = new HashSet<Room>(); // Rooms: contains all corridors. Corridors: contains both rooms.
 
   Room(float x, float y, float w, float h) {
     super(x,y,w,h);
@@ -56,13 +58,14 @@ public class Room extends Rectangle {
   public void setLinksTo(final Room from, final Room to) {
     // For rooms: corridors -> connecting rooms
     // For corridors: room -> connecting room (both directions)
+    neighbours.add( from );
     linksTo.put(from, to);
-    ++connections;
   }
 
   public void removeRoomLink(Room toRemove) {
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
       if (entry.getValue() == toRemove) {
+        neighbours.remove(entry.getKey());
         linksTo.remove(entry.getKey());
         return;
       }
@@ -127,7 +130,7 @@ public class Room extends Rectangle {
       if (entry.getKey() == toGetTo) return entry; // if toGetTo was a corridor
       else if (entry.getValue() == toGetTo) return entry; // if toGetTo was a room
     }
-    Gdx.app.log("getConnectionTo","No immediate connection to player room");
+    Gdx.app.log("getConnectionTo","No immediate connection to room: " + toGetTo);
     return null;
   }
 
@@ -156,4 +159,17 @@ public class Room extends Rectangle {
     Gdx.app.error("Room", "Was unable to choose new room for AI");
     return null;
   }
+
+  public double getHeuristic(Room goal) { // Straight line distance
+    return Math.sqrt( Math.pow( getX() - goal.getX(), 2) + Math.pow( getY() - goal.getY(), 2) );
+  }
+
+  public Set<Room> getNeighbours() {
+    return neighbours;
+  }
+
+  public double getTraversalCost(Room neighbour) {
+    return 1f; // No traversal cost
+  }
+
 }

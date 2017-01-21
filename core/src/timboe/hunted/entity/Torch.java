@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import timboe.hunted.Param;
+import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 
@@ -111,9 +112,10 @@ public class Torch extends EntityBase {
     torchLight[0].setDistance(torchDistanceCurrent);
   }
 
-  public void doCollision() {
+  public void doCollision(boolean doSound) {
     if (isOn) return;
     isOn = true;
+    if (doSound) Sounds.getInstance().ignite();
     float range = isPartial ? 90f : 180f;
 //    Gdx.app.log("Torch", "Turning on " + this + " at angle " + torchAngle);
     addTorchToEntity(range, Param.WALL_TORCH_STRENGTH,  primaryTorchType, false, lightPos);

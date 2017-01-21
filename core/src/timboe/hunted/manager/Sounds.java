@@ -14,14 +14,18 @@ public class Sounds {
   boolean musicOn = true;
   boolean sfxOn = true;
 
-  Music ambiance = Gdx.audio.newMusic(Gdx.files.internal("EoT.mp3"));
+  private Music ambiance = Gdx.audio.newMusic(Gdx.files.internal("Echoes_of_Time_v2.mp3"));
+  private Music machineNoise = Gdx.audio.newMusic(Gdx.files.internal("260815__iccleste__industrial-machine-cycle.ogg"));
 
   private final int nMonsterCall = 4;
-  Sound monsterCall[] = new Sound[nMonsterCall];
+  private Sound monsterCall[] = new Sound[nMonsterCall];
+  private Sound unlockSound = Gdx.audio.newSound(Gdx.files.internal("336562__anthousai__keys-rustling-02.ogg"));
+  private Sound treasureSound = Gdx.audio.newSound(Gdx.files.internal("202092__spookymodem__chest-opening.ogg"));
+  private Sound ignitionSound = Gdx.audio.newSound(Gdx.files.internal("331621__hykenfreak__flame-ignition.ogg"));
 
   private final int nChaseStarts = 4;
   private int currentChase = 0;
-  Music chaseMusic[] = new Music[nChaseStarts];
+  private Music chaseMusic[] = new Music[nChaseStarts];
 
   private static Sounds ourInstance = new Sounds();
 
@@ -46,11 +50,30 @@ public class Sounds {
     monsterCall[ Utility.r.nextInt(nMonsterCall) ].play();
   }
 
+  public void treasure() {
+    if (!sfxOn) return;
+    treasureSound.play();
+  }
+
+  public void ignite() {
+    if (!sfxOn) return;
+    ignitionSound.play();
+  }
+
+  public void unlock() {
+    if (!sfxOn) return;
+    unlockSound.play();
+  }
+
+  public void unlockStop() {
+    if (!sfxOn) return;
+    unlockSound.stop();
+  }
+
   public void startAmbiance() {
     if (!musicOn) return;
-    ambiance.setPosition(0f);
-    ambiance.setLooping(true);
     ambiance.play();
+    ambiance.setLooping(true);
   }
 
   public void stopAmbiance() {
@@ -66,8 +89,20 @@ public class Sounds {
   }
 
   public void chaseVolume(float v) {
-    chaseMusic[currentChase].setVolume(v);
-    ambiance.setVolume(1f - v);
+      chaseMusic[currentChase].setVolume(v);
+      ambiance.setVolume(1f - v);
+  }
+
+  public void machineNoise(float v) {
+    if (v == 0 && machineNoise.isPlaying()) {
+      machineNoise.stop();
+      return;
+    }
+    if (!machineNoise.isPlaying()) {
+      machineNoise.play();
+      machineNoise.setLooping(true);
+    }
+    machineNoise.setVolume(v);
   }
 
   public void endChase() {
@@ -78,6 +113,7 @@ public class Sounds {
     chaseMusic[currentChase].stop();
     ambiance.stop();
     ambiance.dispose();
+    unlockSound.dispose();
     for (Music m : chaseMusic) m.dispose();
     for (Sound s : monsterCall) s.dispose();
   }

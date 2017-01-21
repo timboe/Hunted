@@ -216,6 +216,7 @@ public class WorldGen {
     Sprites.getInstance().addExitRoom(exitRoom);
     Sprites.getInstance().getPlayer().setPhysicsPosition(exitRoom.x + exitRoom.width/2f - .5f,
       exitRoom.y + exitRoom.height - 3);
+    GameState.getInstance().theGameScreen.centreOnPlayer();
     return true;
   }
 

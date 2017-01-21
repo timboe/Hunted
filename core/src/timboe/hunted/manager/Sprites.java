@@ -136,8 +136,8 @@ public class Sprites {
     torchB.setTexture("torchTall");
     addToStage(torchA, true);
     addToStage(torchB, true);
-    Physics.getInstance().addTorch(xStart + -.5f, yStart - .8f).doCollision();
-    Physics.getInstance().addTorch(xStart + 3.5f, yStart - .8f).doCollision();
+    Physics.getInstance().addTorch(xStart + -.5f, yStart - .8f).doCollision(false);
+    Physics.getInstance().addTorch(xStart + 3.5f, yStart - .8f).doCollision(false);
   }
 
 
@@ -163,8 +163,8 @@ public class Sprites {
     addToStage(lightB, true);
     addToStage(shrine, true);
     addToStage(blobLight, true);
-    Physics.getInstance().addTorch(x + 3.5f, y + 3.2f).doCollision();
-    Physics.getInstance().addTorch(x + .5f, y + 3.2f).doCollision();
+    Physics.getInstance().addTorch(x + 3.5f, y + 3.2f).doCollision(false);
+    Physics.getInstance().addTorch(x + .5f, y + 3.2f).doCollision(false);
     for (int i = 0; i < Utility.r.nextInt(Param.MAX_MINI_LIGHT); ++i) {
       int rX = (int)r.getX() + Utility.r.nextInt((int)r.getWidth()-1);
       int rY = (int)r.getY() + Utility.r.nextInt((int)r.getHeight()-1);

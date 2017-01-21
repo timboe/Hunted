@@ -102,6 +102,9 @@ public class GameScreen implements Screen, InputProcessor {
 //		hookStage();
   }
 
+  public void centreOnPlayer() {
+    currentPos.set( Sprites.getInstance().getPlayer().getBody().getPosition() );
+  }
 
   public void updatePhysics() {
 
@@ -109,7 +112,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     final boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
     final float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
-    final boolean endZoom = canSeePlayer && distance < Param.BIGBAD_POUNCE_DISTANCE;
+    final boolean endZoom = Sprites.getInstance().getBigBad().isEnd();
 
     desiredPos.set( Sprites.getInstance().getPlayer().getX() + .5f, Sprites.getInstance().getPlayer().getY() + .5f);
     float angle =  Sprites.getInstance().getPlayer().getBody().getAngle();
@@ -119,8 +122,10 @@ public class GameScreen implements Screen, InputProcessor {
       desiredPos.y += Math.sin(angle) * Param.CAMERA_LEAD;
     }
 
-    currentPos.x = currentPos.x + (0.035f * (desiredPos.x - currentPos.x));
-    currentPos.y = currentPos.y + (0.035f * (desiredPos.y - currentPos.y));
+    float moveSpeed = 0.035f;
+    if (endZoom) moveSpeed = 0.8f;
+    currentPos.x = currentPos.x + (moveSpeed * (desiredPos.x - currentPos.x));
+    currentPos.y = currentPos.y + (moveSpeed * (desiredPos.y - currentPos.y));
 
     shakePos.set(currentPos);
     //TODO re-enable judder
@@ -140,12 +145,14 @@ public class GameScreen implements Screen, InputProcessor {
       desiredZoom *= mod;
     }
 
-    currentZoom = currentZoom + (0.025f * (desiredZoom - currentZoom));
+    float zoomSpeed = 0.025f;
+    if (endZoom) zoomSpeed = 0.8f;
+    currentZoom = currentZoom + (zoomSpeed * (desiredZoom - currentZoom));
 
     camera.position.set(shakePos, 0);
     camera.zoom = currentZoom;
-//    camera.up.set(0, 1, 0);
-//    camera.direction.set(0, 0, -1);
+    camera.up.set(0, 1, 0);
+    camera.direction.set(0, 0, -1);
 //    if (endZoom) camera.rotate(aMod);
 
     camera.update();

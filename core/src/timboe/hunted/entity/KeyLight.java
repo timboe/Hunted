@@ -14,6 +14,7 @@ public class KeyLight extends Torch {
   public int activationID = -1; // Which switch causes me to animate when true? -1 is invalid
   private Color lightColour;
   private String colourStr;
+  private float lightMax = 1f;
 
   public KeyLight(int x, int y, int aID, String tex, int frames) {
     super(x, y);
@@ -25,6 +26,8 @@ public class KeyLight extends Torch {
       default:
         Gdx.app.error("Sprites::addKeyShrine","FATAL n = " + aID); Gdx.app.exit();
     }
+    if (tex == "lampS") lightMax = .25f;
+    else if (tex == "lamp" || tex == "blob") lightMax = .5f;
     lightColour.a = 0f;
     boolean repeat = (frames == 3);
     setTexture(tex + colourStr, frames, repeat);
@@ -40,12 +43,12 @@ public class KeyLight extends Torch {
       if (GameState.getInstance().frame % Param.ANIM_SPEED == 0) ++currentFrame;
       if (nFrames == 2) {
         if (currentFrame % nFrames == 0) lightColour.a = 0f;
-        else lightColour.a = 1f;
+        else lightColour.a = 1f * lightMax;
       } else if (nFrames == 4) {
         switch (currentFrame % nFrames) {
           case 0: lightColour.a = 0f; break;
-          case 1: case 3: lightColour.a = .5f; break;
-          case 2: lightColour.a = 1f; break;
+          case 1: case 3: lightColour.a = .5f * lightMax; break;
+          case 2: lightColour.a = 1f * lightMax; break;
         }
       }
       torchLight[0].setColor(lightColour);
