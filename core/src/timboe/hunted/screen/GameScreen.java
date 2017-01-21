@@ -1,9 +1,7 @@
 package timboe.hunted.screen;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,14 +19,13 @@ import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.entity.Switch;
-import timboe.hunted.entity.Tile;
 import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.world.Room;
 import timboe.hunted.world.WorldGen;
 
-import java.util.AbstractCollection;
+import java.awt.*;
 
 /**
  * Created by Tim on 28/12/2016.
@@ -43,9 +40,9 @@ public class GameScreen implements Screen, InputProcessor {
 
   private ShapeRenderer shapeRenderer = new ShapeRenderer();
   private OrthographicCamera camera = new OrthographicCamera();
+  private boolean fullscreen = false;
 
-
-  private boolean keyN = false, keyE = false, keyS = false, keyW = false;
+  private boolean keyN = false, keyE = false, keyS = false, keyW = false, keyAlt = false;
   private Rectangle cullBox = new Rectangle(0, 0, Param.DISPLAY_X, Param.DISPLAY_Y);
 
   private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
@@ -203,7 +200,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     scaledLightingMatrix = camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
     Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
-//    Physics.getInstance().rayHandler.render();
+    Physics.getInstance().rayHandler.render();
 
     if (HuntedGame.debug) debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
 
@@ -287,28 +284,27 @@ public class GameScreen implements Screen, InputProcessor {
       keyS = false;
       keyW = false;
     }
-    if(keycode == Input.Keys.LEFT)
-      keyW = true;
-    if(keycode == Input.Keys.RIGHT)
-      keyE = true;
-    if(keycode == Input.Keys.UP)
-      keyN = true;
-    if(keycode == Input.Keys.DOWN)
-      keyS = true;
+    if (keycode == Input.Keys.LEFT) keyW = true;
+    else if (keycode == Input.Keys.RIGHT) keyE = true;
+    else if (keycode == Input.Keys.UP) keyN = true;
+    else if (keycode == Input.Keys.DOWN) keyS = true;
+    else if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = true;
+    if (keycode == Input.Keys.ENTER && keyAlt) {
+      fullscreen = !fullscreen;
+      if (fullscreen) Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+      else Gdx.graphics.setWindowedMode(Param.DISPLAY_X, Param.DISPLAY_Y);
+    }
     Sprites.getInstance().getPlayer().updateDirection(keyN, keyE, keyS, keyW);
     return false;
   }
 
   @Override
   public boolean keyUp(int keycode) {
-    if(keycode == Input.Keys.LEFT)
-      keyW = false;
-    if(keycode == Input.Keys.RIGHT)
-      keyE = false;
-    if(keycode == Input.Keys.UP)
-      keyN = false;
-    if(keycode == Input.Keys.DOWN)
-      keyS = false;
+    if (keycode == Input.Keys.LEFT) keyW = false;
+    else if (keycode == Input.Keys.RIGHT) keyE = false;
+    else if (keycode == Input.Keys.UP) keyN = false;
+    else if (keycode == Input.Keys.DOWN) keyS = false;
+    else if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = false;
     Sprites.getInstance().getPlayer().updateDirection(keyN, keyE, keyS, keyW);
     return false;
   }
