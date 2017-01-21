@@ -59,9 +59,12 @@ public class Sounds {
     footstepSound[ Utility.r.nextInt(nFootsteps) ].play();
   }
 
-  public void scream() {
+  public void scream(float volume) {
     if (!sfxOn) return;
-    monsterCall[ Utility.r.nextInt(nMonsterCall) ].play();
+    int n = Utility.r.nextInt(nMonsterCall);
+    long id =  monsterCall[ n ].play();
+    monsterCall[ n ].setVolume(id, volume);
+
   }
 
   public void doorOpen() {

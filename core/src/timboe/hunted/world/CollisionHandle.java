@@ -46,11 +46,9 @@ public class CollisionHandle implements ContactListener {
         Tile t = (Tile) myEntity;
         if (t.getIsWeb() && GameState.getInstance().aiCooldown == 0) {
           GameState.getInstance().aiCooldown = Param.BIGBAD_AI_COOLDOWN;
-          GameState.getInstance().aiDestination = t;
           GameState.getInstance().webEffect = true;
           Sprites.getInstance().resetWeb();
-          Sprites.getInstance().getBigBad().webHit();
-          t.startWebEffect();
+          t.startWebEffect(t);
           Sprites.getInstance().tintWeb();
         } else {
           Sounds.getInstance().thud();

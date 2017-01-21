@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.manager.GameState;
+import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.pathfinding.PathFinding;
@@ -148,6 +149,8 @@ public class BigBad extends ParticleEffectActor {
     Physics.getInstance().world.rayCast(raycastCallback, body.getPosition(), Sprites.getInstance().getPlayer().getBody().getPosition());
     // See if we should change AI state to get player
     checkStartChase();
+    // Or hunt them
+    checkWebHit();
 
     lookingAtPlayer = canSeePlayer; // TODO make this based on angle
 
@@ -219,10 +222,13 @@ public class BigBad extends ParticleEffectActor {
       body.getPosition());
   }
 
-  public void webHit() {
-    if (tileUnderMe.getIsWeb() && (aiState == PATHING || aiState == ROTATE)) {
+  public void checkWebHit() {
+    if (tileUnderMe.getIsWeb() && tileUnderMe.webEffect == 1 && (aiState == PATHING || aiState == ROTATE)) {
       aiState = BigBad.AIState.DOASTAR;
-      Gdx.app.log("AI","-> DO A*");
+      // TODO sound isn't working
+      float screamVol = Math.max(0f, (Param.TILE_X - (distanceFromPlayer * Param.TILE_SIZE)) / (float)Param.TILE_X);
+      Sounds.getInstance().scream(screamVol);
+      Gdx.app.log("AI","-> DO A* (dist from player, "+distanceFromPlayer+"scream vol " + screamVol + ")");
     }
   }
 
@@ -319,17 +325,13 @@ public class BigBad extends ParticleEffectActor {
       movementTargets.add( t1 );
       movementTargets.add( t2 );
     }
-    // Check we are not already at our first target
-//    for (Vector2 t : movementTargets) {
-//      Gdx.app.log("AI","Movement target - " + t);
-//    }
     aiState = AIState.ROTATE;
     Gdx.app.log("AI","basicPathing (idle) -> ROTATE");
 
   }
 
   private void doAStar() {
-    final Tile dest = GameState.getInstance().aiDestination;
+    final Tile dest =  getTileUnderEntity().webTarget;
     movementTargets.clear();
     LinkedList<Tile> pathFind = PathFinding.doAStar(getTileUnderEntity(), dest);
     if (pathFind != null) movementTargets.addAll( pathFind );

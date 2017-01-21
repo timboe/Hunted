@@ -17,7 +17,7 @@ public class GameState {
   public int frame = 0;
   public boolean[] switchStatus = new boolean[Param.KEY_ROOMS + 1];
   public int[] progress = new int[Param.KEY_ROOMS + 1];
-  public Tile aiDestination = null;
+//  public Tile aiDestination = null;
   public int aiCooldown = 0;
   public boolean webEffect = false;
   public GameScreen theGameScreen = null;
@@ -55,7 +55,6 @@ public class GameState {
       switchStatus[i] = false;
     }
     aiCooldown = 0;
-    aiDestination = null;
     webEffect = false;
     frame = 0;
     userControl = false;
@@ -120,7 +119,7 @@ public class GameState {
     if (chaseOn) {
       if (!chaseScream && Sprites.getInstance().getBigBad().isChasing()) {
         chaseScream = true;
-        Sounds.getInstance().scream();
+        Sounds.getInstance().scream(1f);
       }
       if (!Sprites.getInstance().getBigBad().musicSting) --chaseVolume;
       else chaseVolume = 100;

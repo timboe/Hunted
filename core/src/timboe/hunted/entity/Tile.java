@@ -22,6 +22,7 @@ public class Tile extends EntityBase implements Node<Tile> {
   public Room myRoom = null;
   private HashSet<Tile> webNeighbours = new HashSet<Tile>();
   public int webEffect = 0;
+  Tile webTarget;
   private final int nFloors = 35;
 
   public Tile(int x, int y) {
@@ -51,10 +52,11 @@ public class Tile extends EntityBase implements Node<Tile> {
     isWeb = true;
   }
 
-  public void startWebEffect() {
+  public void startWebEffect(Tile target) {
     if (webEffect == -1) return;
     webEffect = 1;
     webTint = 1f;
+    webTarget = target;
   }
 
   public boolean tintWeb() {
@@ -68,7 +70,7 @@ public class Tile extends EntityBase implements Node<Tile> {
   public void moveWeb() { // Only needed during WebEffect
     if (webEffect == 1) {
       webEffect = -1; // Prevents recursion
-      for (Tile t : webNeighbours) t.startWebEffect();
+      for (Tile t : webNeighbours) t.startWebEffect(webTarget);
     }
   }
 
