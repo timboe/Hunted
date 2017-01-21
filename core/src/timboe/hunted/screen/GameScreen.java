@@ -54,6 +54,7 @@ public class GameScreen implements Screen, InputProcessor {
   private Vector2 shakePos = new Vector2();
   private Vector2 currentPos = new Vector2();
   private Vector2 desiredPos = new Vector2();
+  private Vector2 screenCentre = new Vector2(Param.DISPLAY_X/2, Param.DISPLAY_Y/2);
   private float currentZoom = 1f;
   private float desiredZoom = 1f;
 
@@ -200,7 +201,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     scaledLightingMatrix = camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
     Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
-    Physics.getInstance().rayHandler.render();
+//    Physics.getInstance().rayHandler.render();
 
     if (HuntedGame.debug) debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
 
@@ -314,16 +315,22 @@ public class GameScreen implements Screen, InputProcessor {
 
   @Override
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    float angle = Utility.getTargetAngle(screenX, Param.DISPLAY_Y - screenY, screenCentre);
+    Sprites.getInstance().getPlayer().updateDirection(true, angle);
     return false;
   }
 
   @Override
   public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    float angle = Utility.getTargetAngle(screenX, Param.DISPLAY_Y - screenY, screenCentre);
+    Sprites.getInstance().getPlayer().updateDirection(false, angle);
     return false;
   }
 
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
+    float angle = Utility.getTargetAngle(screenX, Param.DISPLAY_Y - screenY, screenCentre);
+    Sprites.getInstance().getPlayer().updateDirection(true, angle);
     return false;
   }
 

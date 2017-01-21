@@ -95,7 +95,9 @@ public class Player extends ParticleEffectActor {
     else moving = false;
   }
 
-
-
+  public void updateDirection(boolean move, float a) {
+    moving = move;
+    setMoveDirection(a);
+  }
 
 }
