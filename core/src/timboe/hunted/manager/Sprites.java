@@ -32,6 +32,7 @@ public class Sprites {
   private BigBad bigBad;
   public ExitDoor exitDoor;
   public WinMask winMask;
+  public TreasurePile treasurePile;
   public Switch[] keySwitch = new Switch[Param.KEY_ROOMS + 1];
   public Vector<Tile> toUpdateWeb;
   public HashSet<Tile> webTiles;
@@ -50,6 +51,8 @@ public class Sprites {
     toUpdateWeb = new Vector<Tile>();
     clutter = new HashSet<EntityBase>();
     chests = new HashSet<Chest>();
+
+    treasurePile = new TreasurePile(6, -5);
 
     exitDoor = null;
     winMask = null;

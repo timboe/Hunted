@@ -52,6 +52,7 @@ public class GameScreen implements Screen, InputProcessor {
   private Matrix4 scaledLightingMatrix;
   private BitmapFont debugFont = new BitmapFont(); // debug only
   private SpriteBatch debugSpriteBatch = new SpriteBatch(); // debug only
+  private SpriteBatch uiBatch = new SpriteBatch();
 
   private Vector2 shakePos = new Vector2();
   private Vector2 currentPos = new Vector2();
@@ -201,11 +202,14 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     scaledLightingMatrix = camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
-
     Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
-    Physics.getInstance().rayHandler.render();
+//    Physics.getInstance().rayHandler.render();
 
     if (HuntedGame.debug) debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
+
+
+
+
 
     renderShapesAndUI();
   }
@@ -238,10 +242,13 @@ public class GameScreen implements Screen, InputProcessor {
     Gdx.gl.glLineWidth(1);
 
     // UI space
-//    camera.position.set(0f, 0f, 0f);
-//    camera.zoom = 1f;
-//    camera.update();
-
+    camera.position.set(0f, 0f, 0f);
+    camera.zoom = .5f;
+    camera.update();
+    uiBatch.setProjectionMatrix(camera.combined);
+    uiBatch.begin();
+    Sprites.getInstance().treasurePile.draw(uiBatch, 1f);
+    uiBatch.end();
   }
 
   public void drawX(float x, float y) {

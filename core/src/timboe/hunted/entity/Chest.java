@@ -9,10 +9,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
-import timboe.hunted.manager.GameState;
-import timboe.hunted.manager.Physics;
-import timboe.hunted.manager.Sounds;
-import timboe.hunted.manager.Textures;
+import timboe.hunted.manager.*;
 
 /**
  * Created by Tim on 15/01/2017.
@@ -20,31 +17,36 @@ import timboe.hunted.manager.Textures;
 public class Chest extends EntityBase {
 
   public boolean chestOpened = false;
-  private final int nTreasure = 5;
-  protected TextureRegion treasure[] = new TextureRegion[nTreasure];
+  protected TextureRegion treasure[] = new TextureRegion[Param.N_TREASURE];
   private  TextureRegion chestMask;
   private int treasureID;
   private int treasureHeight = -1;
   private boolean sound = false;
+  private boolean done = false;
 
   public Chest(int x, int y) {
     super(x, y);
     setTexture("chest",6);
     chestMask = Textures.getInstance().getTexture("chestMask");
-    for (int i = 0; i < nTreasure; ++i) {
+    for (int i = 0; i < Param.N_TREASURE; ++i) {
       treasure[i] = Textures.getInstance().getTexture("treasure" + Integer.toString(i));
     }
-    treasureID = Utility.r.nextInt(nTreasure);
+    treasureID = Utility.r.nextInt(Param.N_TREASURE);
     setAsChest();
   }
 
   @Override
   public void act (float delta) {
     updatePosition();
+    if (done) return;
     if (chestOpened && currentFrame < nFrames-1 && GameState.getInstance().frame % Param.ANIM_SPEED == 0) {
       ++currentFrame;
     } else if (currentFrame == nFrames-1 && treasureHeight < Param.TILE_SIZE) {
       ++treasureHeight;
+    } else if (treasureHeight == Param.TILE_SIZE) {
+      Sprites.getInstance().treasurePile.addToPile(treasureID);
+      treasureHeight = -1;
+      done = true;
     }
     if (chestOpened && !sound) {
       sound = true;
@@ -89,7 +91,6 @@ public class Chest extends EntityBase {
     if (treasureHeight >= 0) {
       batch.draw(chestMask,this.getX(),this.getY());
       batch.draw(treasure[treasureID] ,this.getX(),this.getY() + treasureHeight);
-
     }
   }
 
