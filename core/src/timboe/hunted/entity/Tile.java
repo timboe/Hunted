@@ -22,7 +22,7 @@ public class Tile extends EntityBase implements Node<Tile> {
   public Room myRoom = null;
   private HashSet<Tile> webNeighbours = new HashSet<Tile>();
   public int webEffect = 0;
-  private final int nFloors = 23;
+  private final int nFloors = 35;
 
   public Tile(int x, int y) {
     super(x, y);
@@ -38,8 +38,8 @@ public class Tile extends EntityBase implements Node<Tile> {
     isFloor = true;
     myRoom = room;
     int floor = Utility.r.nextInt(100);
-    if (room.getIsCorridor()) setTexture("floorZ"); // TODO DEBUg
-    else if (floor < nFloors)  setTexture("floor" + Integer.toString(floor));
+    //if (room.getIsCorridor()) setTexture("floorZ"); // TODO DEBUg
+    if (floor < nFloors)  setTexture("floor" + Integer.toString(floor));
     else setTexture("floor");
   }
 

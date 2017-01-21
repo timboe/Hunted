@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.entity.*;
 import timboe.hunted.manager.GameState;
+import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Sprites;
 
 import java.security.Key;
@@ -51,7 +52,13 @@ public class CollisionHandle implements ContactListener {
           Sprites.getInstance().getBigBad().webHit();
           t.startWebEffect();
           Sprites.getInstance().tintWeb();
+        } else {
+          Sounds.getInstance().thud();
         }
+      }
+
+      if (myEntity instanceof KeyLight || myEntity instanceof Clutter) {
+        Sounds.getInstance().thud();
       }
 
       if (myEntity instanceof Switch) {

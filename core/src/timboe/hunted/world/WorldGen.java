@@ -34,7 +34,7 @@ public class WorldGen {
   private Vector<Room> keyRooms;
 
   private final int ROOM_PLACE_TRIES = 2000;
-  public final int ROOM_MEAN_SIZE = 15;
+  private final int ROOM_MEAN_SIZE = 15;
   private final int ROOM_STD_D = 5;
   private final int ROOM_BORDER_X = 2; // minimum spacing between rooms
   private final int ROOM_BORDER_Y = 4;
@@ -116,6 +116,7 @@ public class WorldGen {
       long h = Math.round(ROOM_MEAN_SIZE + (r.nextGaussian() * ROOM_STD_D));
       if (w % 2 == 0) ++w; // Force odd
       if (h % 2 == 0) ++h; // Force odd
+      if (w > Param.MAX_ROOM_SIZE || h > Param.MAX_ROOM_SIZE) pass = false;
       final long x = minX + r.nextInt(maxX - minX);
       final long y = minY + r.nextInt(maxY - minY);
       Room room = new Room(x, y, w, h);
@@ -216,6 +217,8 @@ public class WorldGen {
     Sprites.getInstance().addExitRoom(exitRoom);
     Sprites.getInstance().getPlayer().setPhysicsPosition(exitRoom.x + exitRoom.width/2f - .5f,
       exitRoom.y + exitRoom.height - 3);
+    Sprites.getInstance().getPlayer().setMoveDirection(3f*Math.PI/2f);
+    Sprites.getInstance().getPlayer().updatePosition();
     GameState.getInstance().theGameScreen.centreOnPlayer();
     return true;
   }

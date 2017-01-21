@@ -37,7 +37,9 @@ public class Param {
   public static final float CHEST_INERTIA_MOD = 0.07f; // Have some travel
   public static final float PLAYER_INERTIA_MOD = 0.1f; // Still quite responsive (smaller = more sluggish)
 
-  public static final float PLAYER_SPEED = 5f*2;
+  public static final float PLAYER_SPEED = 5f;
+  public static final float PLAYER_SPEED_BOOST = PLAYER_SPEED * 1.5f;
+  public static final float PLAYER_SPEED_LOSS = 0.01f;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED = .8f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED_BOOST = .05f * PLAYER_SPEED;
@@ -52,6 +54,7 @@ public class Param {
   public static final float SMELL_DISSAPATE = PLAYER_SMELL/10f; // How much of the moving smell is lost
 
   public static final int MIN_ROOM_SIZE = 5;
+  public static final int MAX_ROOM_SIZE = 21;
   public static final int KEY_ROOMS = 3;
   public static final int CORRIDOR_SIZE = MIN_ROOM_SIZE;
 

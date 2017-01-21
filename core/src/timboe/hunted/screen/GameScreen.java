@@ -28,34 +28,36 @@ import timboe.hunted.manager.Physics;
 import timboe.hunted.world.Room;
 import timboe.hunted.world.WorldGen;
 
+import java.util.AbstractCollection;
+
 /**
  * Created by Tim on 28/12/2016.
  */
 public class GameScreen implements Screen, InputProcessor {
 
 
-  protected float deltaTot;
-  protected Stage stage;
+  private float deltaTot;
+  private Stage stage;
 
   protected GestureDetector gestureDetector = null;
 
-  protected ShapeRenderer shapeRenderer = new ShapeRenderer();
-  protected OrthographicCamera camera = new OrthographicCamera();
+  private ShapeRenderer shapeRenderer = new ShapeRenderer();
+  private OrthographicCamera camera = new OrthographicCamera();
 
 
   private boolean keyN = false, keyE = false, keyS = false, keyW = false;
   private Rectangle cullBox = new Rectangle(0, 0, Param.DISPLAY_X, Param.DISPLAY_Y);
 
-  Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
-  Matrix4 scaledLightingMatrix;
-  BitmapFont debugFont = new BitmapFont();
-  SpriteBatch debugSpriteBatch = new SpriteBatch();
+  private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
+  private Matrix4 scaledLightingMatrix;
+  private BitmapFont debugFont = new BitmapFont(); // debug only
+  private SpriteBatch debugSpriteBatch = new SpriteBatch(); // debug only
 
-  Vector2 shakePos = new Vector2();
-  Vector2 currentPos = new Vector2();
-  Vector2 desiredPos = new Vector2();
-  float currentZoom = 1f;
-  float desiredZoom = 1f;
+  private Vector2 shakePos = new Vector2();
+  private Vector2 currentPos = new Vector2();
+  private Vector2 desiredPos = new Vector2();
+  private float currentZoom = 1f;
+  private float desiredZoom = 1f;
 
   public GameScreen() {
     GameState.getInstance().theGameScreen = this;
@@ -103,7 +105,10 @@ public class GameScreen implements Screen, InputProcessor {
   }
 
   public void centreOnPlayer() {
-    currentPos.set( Sprites.getInstance().getPlayer().getBody().getPosition() );
+    currentPos.set( Sprites.getInstance().getPlayer().getX() + Param.TILE_SIZE/2,
+      Sprites.getInstance().getPlayer().getY() + Param.TILE_SIZE/2);
+    currentZoom = 0.25f;
+    Gdx.app.log("GameScreen","Centred on " + currentPos);
   }
 
   public void updatePhysics() {
@@ -114,7 +119,8 @@ public class GameScreen implements Screen, InputProcessor {
     final float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
     final boolean endZoom = Sprites.getInstance().getBigBad().isEnd();
 
-    desiredPos.set( Sprites.getInstance().getPlayer().getX() + .5f, Sprites.getInstance().getPlayer().getY() + .5f);
+    desiredPos.set( Sprites.getInstance().getPlayer().getX() + Param.TILE_SIZE/2,
+      Sprites.getInstance().getPlayer().getY() + Param.TILE_SIZE/2);
     float angle =  Sprites.getInstance().getPlayer().getBody().getAngle();
 
     if (!endZoom) {

@@ -8,7 +8,9 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Physics;
+import timboe.hunted.manager.Sounds;
 
 
 /**
@@ -47,8 +49,21 @@ public class Player extends ParticleEffectActor {
     PAOffsetX = Param.TILE_SIZE/4;
   }
 
+  @Override
+  public void act (float delta) {
+    int footsteps = Param.ANIM_SPEED * 2;
+    if (speed > Param.PLAYER_SPEED) {
+      speed -= Param.PLAYER_SPEED_LOSS;
+      footsteps /= 2;
+      Gdx.app.log("DBG","Speed " + speed);
+    }
+    getRoomUnderEntity().addToScent(Param.PLAYER_SMELL);  // Add player smelliness
+    if (moving && GameState.getInstance().frame % footsteps == 0) {
+      Sounds.getInstance().step();
+    }
+  }
+
   public void updatePhysics() {
-    getRoomUnderEntity().addToScent( Param.PLAYER_SMELL );  // Add player smelliness
     // Do force based movement
     Vector2 lv = body.getLinearVelocity();
     float targetX = moving ? (float)(speed * Math.cos(angle)) : 0f;

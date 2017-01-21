@@ -107,6 +107,8 @@ public class BigBad extends ParticleEffectActor {
     if (sameRoomAsPlayer && !isChasing()) {
       aiState = AIState.CHASE;
       Gdx.app.log("AI","checkStartChase -> CHASE");
+      // Give the player a hit of adrenalin
+      Sprites.getInstance().getPlayer().speed = Param.PLAYER_SPEED_BOOST;
     } // TODO also chase if nearby and within vision
   }
 
@@ -357,6 +359,7 @@ public class BigBad extends ParticleEffectActor {
     }
     setMoveDirection(getTargetAngle());
     setMoving(true);
+    speed = Param.PLAYER_SPEED * 1.1f; // 110% of player max speed (cannot be outrun after adrenalin runs out)
     if (aiState == AIState.CHASE && distanceFromPlayer < Param.BIGBAD_POUNCE_DISTANCE) { // see if it's game over
       aiState = AIState.END;
       Gdx.app.log("AI","doChase -> END");
@@ -368,11 +371,10 @@ public class BigBad extends ParticleEffectActor {
   }
 
   private void doEnd() {
-    speed = Param.PLAYER_SPEED * 1.1f;
-    // TODO animation step
     doChase();
+    speed = Sprites.getInstance().getPlayer().speed * 1.05f; // Based off of players CURRENT speed - will catch
     if (distanceFromPlayer < .5f) {
-      WorldGen.getInstance().generateWorld(); // Restart //TODO this is crashing
+      WorldGen.getInstance().generateWorld(); // Restart
     }
   }
 

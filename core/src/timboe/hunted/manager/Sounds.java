@@ -19,9 +19,13 @@ public class Sounds {
 
   private final int nMonsterCall = 4;
   private Sound monsterCall[] = new Sound[nMonsterCall];
+  private final int nFootsteps = 4;
+  private Sound footstepSound[] = new Sound[nFootsteps];
   private Sound unlockSound = Gdx.audio.newSound(Gdx.files.internal("336562__anthousai__keys-rustling-02.ogg"));
   private Sound treasureSound = Gdx.audio.newSound(Gdx.files.internal("202092__spookymodem__chest-opening.ogg"));
   private Sound ignitionSound = Gdx.audio.newSound(Gdx.files.internal("331621__hykenfreak__flame-ignition.ogg"));
+  private Sound thudSound = Gdx.audio.newSound(Gdx.files.internal("215162__otisjames__thud.ogg"));
+  private Sound doorOpenSound = Gdx.audio.newSound(Gdx.files.internal("97790__cgeffex__dungeon-gates.ogg"));
 
   private final int nChaseStarts = 4;
   private int currentChase = 0;
@@ -39,15 +43,35 @@ public class Sounds {
     monsterCall[2] = Gdx.audio.newSound(Gdx.files.internal("276485__xdimebagx__monster-scream-3-wet.ogg"));
     monsterCall[3] = Gdx.audio.newSound(Gdx.files.internal("276483__xdimebagx__monster-scream-4-wet.ogg"));
 
+    footstepSound[0] = Gdx.audio.newSound(Gdx.files.internal("197778__samulis__footstep-on-stone-1.ogg"));
+    footstepSound[1] = Gdx.audio.newSound(Gdx.files.internal("197779__samulis__footstep-on-stone-2.ogg"));
+    footstepSound[2] = Gdx.audio.newSound(Gdx.files.internal("197780__samulis__footstep-on-stone-3.ogg"));
+    footstepSound[3] = Gdx.audio.newSound(Gdx.files.internal("197781__samulis__footstep-on-stone-4.ogg"));
+
     chaseMusic[0] = Gdx.audio.newMusic(Gdx.files.internal("chase0.ogg"));
     chaseMusic[1] = Gdx.audio.newMusic(Gdx.files.internal("chase1.ogg"));
     chaseMusic[2] = Gdx.audio.newMusic(Gdx.files.internal("chase2.ogg"));
     chaseMusic[3] = Gdx.audio.newMusic(Gdx.files.internal("chase3.ogg"));
   }
 
+  public void step() {
+    if (!sfxOn) return;
+    footstepSound[ Utility.r.nextInt(nFootsteps) ].play();
+  }
+
   public void scream() {
     if (!sfxOn) return;
     monsterCall[ Utility.r.nextInt(nMonsterCall) ].play();
+  }
+
+  public void doorOpen() {
+    if (!sfxOn) return;
+    doorOpenSound.play();
+  }
+
+  public void thud() {
+    if (!sfxOn) return;
+    thudSound.play();
   }
 
   public void treasure() {
@@ -89,11 +113,13 @@ public class Sounds {
   }
 
   public void chaseVolume(float v) {
-      chaseMusic[currentChase].setVolume(v);
-      ambiance.setVolume(1f - v);
+    if (!musicOn) return;
+    chaseMusic[currentChase].setVolume(v);
+    ambiance.setVolume(1f - v);
   }
 
   public void machineNoise(float v) {
+    if (!musicOn) return;
     if (v == 0 && machineNoise.isPlaying()) {
       machineNoise.stop();
       return;
