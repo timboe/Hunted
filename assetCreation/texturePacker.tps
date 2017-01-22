@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>4</int>
         <key>texturePackerVersion</key>
-        <string>4.3.1</string>
+        <string>4.3.3</string>
         <key>fileName</key>
-        <string>C:/Users/Tim/Dropbox/git/Hunted/android/assets/texturePacker.tps</string>
+        <string>C:/Users/Tim/Dropbox/git/Hunted/assetCreation/texturePacker.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -150,7 +150,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>sprites.txt</filename>
+                <filename>../android/assets/sprites.txt</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -248,7 +248,19 @@
             <key type="filename">32/floor20.png</key>
             <key type="filename">32/floor21.png</key>
             <key type="filename">32/floor22.png</key>
+            <key type="filename">32/floor23.png</key>
+            <key type="filename">32/floor24.png</key>
+            <key type="filename">32/floor25.png</key>
+            <key type="filename">32/floor26.png</key>
+            <key type="filename">32/floor27.png</key>
+            <key type="filename">32/floor28.png</key>
+            <key type="filename">32/floor29.png</key>
             <key type="filename">32/floor3.png</key>
+            <key type="filename">32/floor30.png</key>
+            <key type="filename">32/floor31.png</key>
+            <key type="filename">32/floor32.png</key>
+            <key type="filename">32/floor33.png</key>
+            <key type="filename">32/floor34.png</key>
             <key type="filename">32/floor4.png</key>
             <key type="filename">32/floor5.png</key>
             <key type="filename">32/floor6.png</key>
@@ -457,6 +469,7 @@
             <key type="filename">large/entry2.png</key>
             <key type="filename">large/entry3.png</key>
             <key type="filename">large/entry4.png</key>
+            <key type="filename">large/exitMask.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

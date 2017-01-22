@@ -53,7 +53,7 @@ public class GameScreen implements Screen, InputProcessor {
 
   private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   private Matrix4 scaledLightingMatrix;
-  private BitmapFont debugFont = new BitmapFont(); // debug only
+//  private BitmapFont debugFont = new BitmapFont(); // debug only
   private SpriteBatch debugSpriteBatch = new SpriteBatch(); // debug only
   private SpriteBatch uiBatch = new SpriteBatch();
 
@@ -115,8 +115,8 @@ public class GameScreen implements Screen, InputProcessor {
     Gdx.app.log("Resize", "ReSize in Render ["+this+"] ("+width+","+height+")");
     stage.getViewport().update(width, height, true);
     screenCentre.set(width/2, height/2);
-    gameCamera.cullBox.setWidth(width);
-    gameCamera.cullBox.setHeight(height);
+//    gameCamera.cullBox.setWidth(width);
+//    gameCamera.cullBox.setHeight(height);
   }
 
   @Override
@@ -142,14 +142,14 @@ public class GameScreen implements Screen, InputProcessor {
 
   protected void renderMain() {
     renderStage.start();
+//        stage.getRoot().setCullingArea( gameCamera.cullBox );
     stage.draw();
-    stage.getRoot().setCullingArea( gameCamera.cullBox );
     if (HuntedGame.debug) {
       debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
       debugSpriteBatch.begin();
-      for (Room room : WorldGen.getInstance().getAllRooms()) {
-        debugFont.draw(debugSpriteBatch, Float.toString(room.getScent() * 100f), room.getX() * Param.TILE_SIZE, room.getY() * Param.TILE_SIZE);
-      }
+//      for (Room room : WorldGen.getInstance().getAllRooms()) {
+//        debugFont.draw(debugSpriteBatch, Float.toString(room.getScent() * 100f), room.getX() * Param.TILE_SIZE, room.getY() * Param.TILE_SIZE);
+//      }
       debugSpriteBatch.end();
     }
     renderStage.stop();

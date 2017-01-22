@@ -22,7 +22,7 @@ public class GameCamera {
   private Vector2 currentPos = new Vector2();
   private Vector2 desiredPos = new Vector2();
 
-  public Rectangle cullBox = new Rectangle(0, 0, Param.DISPLAY_X, Param.DISPLAY_Y);
+//  public Rectangle cullBox = new Rectangle(0, 0, Param.DISPLAY_X, Param.DISPLAY_Y);
 
   public OrthographicCamera camera = new OrthographicCamera();
 
@@ -64,7 +64,6 @@ public class GameCamera {
     currentPos.y = currentPos.y + (moveSpeed * (desiredPos.y - currentPos.y));
 
     shakePos.set(currentPos);
-    //TODO re-enable judder
     if (canSeePlayer && distance < Param.PLAYER_TORCH_STRENGTH) {
       int shakeAmount = (int)Math.ceil((Param.PLAYER_TORCH_STRENGTH - distance)/2f);
       shakePos.x = shakePos.x - shakeAmount + Utility.r.nextInt(2*shakeAmount);
@@ -92,7 +91,7 @@ public class GameCamera {
 //    if (endZoom) camera.rotate(aMod);
 
     camera.update();
-    cullBox.setCenter(currentPos);
+//    cullBox.setCenter(currentPos);
   }
 
 }
