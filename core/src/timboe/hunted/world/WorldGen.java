@@ -219,7 +219,7 @@ public class WorldGen {
       exitRoom.y + exitRoom.height - 3);
     Sprites.getInstance().getPlayer().setMoveDirection(3f*Math.PI/2f);
     Sprites.getInstance().getPlayer().updatePosition();
-    GameState.getInstance().theGameScreen.centreOnPlayer();
+    GameState.getInstance().theGameScreen.gameCamera.centreOnPlayer();
     return true;
   }
 

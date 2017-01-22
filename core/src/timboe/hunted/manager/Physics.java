@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.PerformanceCounter;
 import timboe.hunted.Param;
 import timboe.hunted.entity.Torch;
 import timboe.hunted.world.CollisionHandle;
@@ -29,6 +30,14 @@ public class Physics {
   Color ambientLightMod = Param.AMBIENT_LIGHT.cpy();
   float currentReductionPercent = 1f;
 
+  private PerformanceCounter physicsProbeBox = new PerformanceCounter("Phys-box");
+  private PerformanceCounter physicsProbeLight = new PerformanceCounter("Phys-light");
+  private PerformanceCounter physicsProbeSprite = new PerformanceCounter("Phys-sprites");
+  private PerformanceCounter physicsProbeStage = new PerformanceCounter("Phys-stage");
+  private PerformanceCounter physicsProbeGameState = new PerformanceCounter("Phys-gamestate");
+  private PerformanceCounter physicsProbeCamera = new PerformanceCounter("Phys-camera");
+
+
   private CollisionHandle collisionHandle = null;
   private boolean resetLights = false;
 
@@ -45,16 +54,40 @@ public class Physics {
     return addTorch(x,y,x,y,x,y,false,0f,Param.WALL_FLAME_CAST_C);
   }
 
-  public void updatePhysics() {
-    GameState.getInstance().updatePhysics();
-    Sprites.getInstance().updatePhysics();
+  public void updatePhysics(float delta) {
+    physicsProbeBox.start();
     world.step(Gdx.graphics.getDeltaTime(), 6, 2);
+    physicsProbeBox.stop();
+    //
+    physicsProbeLight.start();
     rayHandler.update();
-    Sprites.getInstance().updatePosition();
-    WorldGen.getInstance().updatePhysics();
-    GameState.getInstance().theGameScreen.updatePhysics();
     torchPhysics();
-
+    physicsProbeLight.stop();
+    //
+    physicsProbeSprite.start();
+    Sprites.getInstance().updatePhysics();
+    Sprites.getInstance().updatePosition();
+    physicsProbeSprite.stop();
+    //
+    physicsProbeStage.start();
+    GameState.getInstance().theGameScreen.stage.act(delta);
+    physicsProbeStage.stop();
+    //
+    physicsProbeGameState.start();
+    WorldGen.getInstance().updatePhysics();
+    GameState.getInstance().updatePhysics();
+    physicsProbeGameState.stop();
+    //
+    physicsProbeCamera.start();
+    GameState.getInstance().theGameScreen.gameCamera.updatePhysics();
+    physicsProbeCamera.stop();
+    //
+    physicsProbeBox.tick(delta);
+    physicsProbeLight.tick(delta);
+    physicsProbeSprite.tick(delta);
+    physicsProbeStage.tick(delta);
+    physicsProbeGameState.tick(delta);
+    physicsProbeCamera.tick(delta);
   }
 
   public void torchPhysics() {
@@ -109,5 +142,11 @@ public class Physics {
   public void dispose() {
     if (rayHandler != null) rayHandler.dispose();
     if (world != null) world.dispose();
+    Gdx.app.log("Perf", physicsProbeBox.toString());
+    Gdx.app.log("Perf", physicsProbeLight.toString());
+    Gdx.app.log("Perf", physicsProbeSprite.toString());
+    Gdx.app.log("Perf", physicsProbeStage.toString());
+    Gdx.app.log("Perf", physicsProbeGameState.toString());
+    Gdx.app.log("Perf", physicsProbeCamera.toString());
   }
 }

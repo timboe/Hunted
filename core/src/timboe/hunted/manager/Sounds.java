@@ -108,6 +108,7 @@ public class Sounds {
   }
 
   public void startChase() {
+    scream(1f);
     if (!musicOn) return;
     currentChase = Utility.r.nextInt(nChaseStarts);
     chaseMusic[currentChase].play();
@@ -127,7 +128,8 @@ public class Sounds {
       machineNoise.stop();
       return;
     }
-    if (!machineNoise.isPlaying()) {
+    else if (v == 0) return;
+    else if (!machineNoise.isPlaying()) {
       machineNoise.play();
       machineNoise.setLooping(true);
     }

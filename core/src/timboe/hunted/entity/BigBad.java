@@ -24,7 +24,7 @@ import static timboe.hunted.entity.BigBad.AIState.*;
 public class BigBad extends ParticleEffectActor {
 
   private Body lightAttachment;
-  private float torchOffset = 1.5f; // How much above the centre of the tile the bigbads torch it
+  private float torchOffset = 1.3f; // How much above the centre of the tile the bigbads torch it
 
   public enum AIState {IDLE, // need to choose a new destination
     ROTATE, // Slowly change angle. Leads to PATHING

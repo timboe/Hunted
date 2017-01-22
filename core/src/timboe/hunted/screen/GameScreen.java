@@ -3,6 +3,7 @@ package timboe.hunted.screen;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.PerformanceCounter;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
@@ -22,6 +24,7 @@ import timboe.hunted.entity.Switch;
 import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
+import timboe.hunted.world.GameCamera;
 import timboe.hunted.world.Room;
 import timboe.hunted.world.WorldGen;
 
@@ -34,16 +37,19 @@ public class GameScreen implements Screen, InputProcessor {
 
 
   private float deltaTot;
-  private Stage stage;
+  public Stage stage;
+  public GameCamera gameCamera = new GameCamera();
 
-  protected GestureDetector gestureDetector = null;
+  private PerformanceCounter renderStage = new PerformanceCounter("Render-Stage");
+  private PerformanceCounter renderLights = new PerformanceCounter("Render-Lights");
+  private PerformanceCounter renderUI = new PerformanceCounter("Render-UI");
+  private PerformanceCounter allProbe = new PerformanceCounter("ALL");
+  private FPSLogger fpsLogger = new FPSLogger();
 
   private ShapeRenderer shapeRenderer = new ShapeRenderer();
-  private OrthographicCamera camera = new OrthographicCamera();
   private boolean fullscreen = false;
 
   private boolean keyN = false, keyE = false, keyS = false, keyW = false, keyAlt = false;
-  private Rectangle cullBox = new Rectangle(0, 0, Param.DISPLAY_X, Param.DISPLAY_Y);
 
   private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   private Matrix4 scaledLightingMatrix;
@@ -51,12 +57,9 @@ public class GameScreen implements Screen, InputProcessor {
   private SpriteBatch debugSpriteBatch = new SpriteBatch(); // debug only
   private SpriteBatch uiBatch = new SpriteBatch();
 
-  private Vector2 shakePos = new Vector2();
-  private Vector2 currentPos = new Vector2();
-  private Vector2 desiredPos = new Vector2();
+
   private Vector2 screenCentre = new Vector2(Param.DISPLAY_X/2, Param.DISPLAY_Y/2);
-  private float currentZoom = 1f;
-  private float desiredZoom = 1f;
+
 
   public GameScreen() {
     GameState.getInstance().theGameScreen = this;
@@ -71,7 +74,7 @@ public class GameScreen implements Screen, InputProcessor {
     if (stage != null) {
       stage.dispose();
     }
-    stage = new Stage(new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, camera));
+    stage = new Stage(new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, gameCamera.camera));
     Sprites.getInstance().stage = stage;
     if (HuntedGame.debug) stage.setDebugAll(true);
   }
@@ -103,67 +106,6 @@ public class GameScreen implements Screen, InputProcessor {
 //		hookStage();
   }
 
-  public void centreOnPlayer() {
-    currentPos.set( Sprites.getInstance().getPlayer().getX() + Param.TILE_SIZE/2,
-      Sprites.getInstance().getPlayer().getY() + Param.TILE_SIZE/2);
-    currentZoom = 0.25f;
-    Gdx.app.log("GameScreen","Centred on " + currentPos);
-  }
-
-  public void updatePhysics() {
-
-    stage.act(Gdx.graphics.getDeltaTime());
-
-    final boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
-    final float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
-    final boolean endZoom = Sprites.getInstance().getBigBad().isEnd();
-
-    desiredPos.set( Sprites.getInstance().getPlayer().getX() + Param.TILE_SIZE/2,
-      Sprites.getInstance().getPlayer().getY() + Param.TILE_SIZE/2);
-    float angle =  Sprites.getInstance().getPlayer().getBody().getAngle();
-
-    if (!endZoom) {
-      desiredPos.x += Math.cos(angle) * Param.CAMERA_LEAD;
-      desiredPos.y += Math.sin(angle) * Param.CAMERA_LEAD;
-    }
-
-    float moveSpeed = 0.035f;
-    if (endZoom) moveSpeed = 0.8f;
-    currentPos.x = currentPos.x + (moveSpeed * (desiredPos.x - currentPos.x));
-    currentPos.y = currentPos.y + (moveSpeed * (desiredPos.y - currentPos.y));
-
-    shakePos.set(currentPos);
-    //TODO re-enable judder
-    if (canSeePlayer && distance < Param.PLAYER_TORCH_STRENGTH) {
-      int shakeAmount = (int)Math.ceil((Param.PLAYER_TORCH_STRENGTH - distance)/2f);
-      shakePos.x = shakePos.x - shakeAmount + Utility.r.nextInt(2*shakeAmount);
-      shakePos.y = shakePos.y - shakeAmount + Utility.r.nextInt(2*shakeAmount);
-    }
-
-    if (keyN || keyE || keyS || keyW) desiredZoom = .6f;
-    else desiredZoom = .4f;
-
-    float aMod = 0;
-    if (endZoom) {
-      final float mod = (distance - 1f) / Param.BIGBAD_POUNCE_DISTANCE; // Modification due to object size
-      aMod = (float)Math.PI * mod * 10f;
-      desiredZoom *= mod;
-    }
-
-    float zoomSpeed = 0.025f;
-    if (endZoom) zoomSpeed = 0.8f;
-    currentZoom = currentZoom + (zoomSpeed * (desiredZoom - currentZoom));
-
-    camera.position.set(shakePos, 0);
-    camera.zoom = currentZoom;
-    camera.up.set(0, 1, 0);
-    camera.direction.set(0, 0, -1);
-//    if (endZoom) camera.rotate(aMod);
-
-    camera.update();
-    cullBox.setCenter(currentPos);
-  }
-
   protected void renderClear() {
     Gdx.gl.glClearColor(.184f, .157f, .227f, 1);
     Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
@@ -172,24 +114,36 @@ public class GameScreen implements Screen, InputProcessor {
   public void resize (int width, int height) {
     Gdx.app.log("Resize", "ReSize in Render ["+this+"] ("+width+","+height+")");
     stage.getViewport().update(width, height, true);
+    screenCentre.set(width/2, height/2);
+    gameCamera.cullBox.setWidth(width);
+    gameCamera.cullBox.setHeight(height);
   }
 
   @Override
   public void render(float delta) {
+    allProbe.start();
     deltaTot += delta;
 
     renderClear();
     renderMain();
-    Physics.getInstance().updatePhysics();
 
+    Physics.getInstance().updatePhysics(delta);
+    fpsLogger.log();
+
+    allProbe.stop();
+
+    renderStage.tick(delta);
+    renderLights.tick(delta);
+    renderUI.tick(delta);
+    allProbe.tick(delta);
     ++(GameState.getInstance().frame);
   }
 
 
   protected void renderMain() {
-    stage.getRoot().setCullingArea( cullBox );
+    renderStage.start();
     stage.draw();
-
+    stage.getRoot().setCullingArea( gameCamera.cullBox );
     if (HuntedGame.debug) {
       debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
       debugSpriteBatch.begin();
@@ -198,18 +152,18 @@ public class GameScreen implements Screen, InputProcessor {
       }
       debugSpriteBatch.end();
     }
+    renderStage.stop();
 
-    scaledLightingMatrix = camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
+    renderLights.start();
+    scaledLightingMatrix = gameCamera.camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
     Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
-//    Physics.getInstance().rayHandler.render();
-
+    Physics.getInstance().rayHandler.render();
     if (HuntedGame.debug) debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
+    renderLights.stop();
 
-
-
-
-
+    renderUI.start();
     renderShapesAndUI();
+    renderUI.stop();
   }
 
   private void renderShapesAndUI() {
@@ -239,11 +193,8 @@ public class GameScreen implements Screen, InputProcessor {
     }
     Gdx.gl.glLineWidth(1);
 
-    // UI space
-    camera.position.set(0f, 0f, 0f);
-    camera.zoom = .5f;
-    camera.update();
-    uiBatch.setProjectionMatrix(camera.combined);
+
+    uiBatch.setProjectionMatrix(gameCamera.getUISpace());
     uiBatch.begin();
     Sprites.getInstance().treasurePile.draw(uiBatch, 1f);
     uiBatch.end();
@@ -275,6 +226,10 @@ public class GameScreen implements Screen, InputProcessor {
 
   public void dispose () {
     stage.dispose();
+    Gdx.app.log("Perf",allProbe.toString());
+    Gdx.app.log("Perf",renderStage.toString());
+    Gdx.app.log("Perf",renderLights.toString());
+    Gdx.app.log("Perf",renderUI.toString());
   }
 
   @Override
@@ -296,6 +251,7 @@ public class GameScreen implements Screen, InputProcessor {
       else Gdx.graphics.setWindowedMode(Param.DISPLAY_X, Param.DISPLAY_Y);
     }
     Sprites.getInstance().getPlayer().updateDirection(keyN, keyE, keyS, keyW);
+    GameState.getInstance().movementOn = (keyN || keyE || keyS || keyW);
     return false;
   }
 
@@ -307,6 +263,7 @@ public class GameScreen implements Screen, InputProcessor {
     else if (keycode == Input.Keys.DOWN) keyS = false;
     else if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = false;
     Sprites.getInstance().getPlayer().updateDirection(keyN, keyE, keyS, keyW);
+    GameState.getInstance().movementOn = (keyN || keyE || keyS || keyW);
     return false;
   }
 
@@ -317,6 +274,7 @@ public class GameScreen implements Screen, InputProcessor {
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
     float angle = Utility.getTargetAngle(screenX, Param.DISPLAY_Y - screenY, screenCentre);
     Sprites.getInstance().getPlayer().updateDirection(true, angle);
+    GameState.getInstance().movementOn = true;
     return false;
   }
 
@@ -324,6 +282,7 @@ public class GameScreen implements Screen, InputProcessor {
   public boolean touchUp(int screenX, int screenY, int pointer, int button) {
     float angle = Utility.getTargetAngle(screenX, Param.DISPLAY_Y - screenY, screenCentre);
     Sprites.getInstance().getPlayer().updateDirection(false, angle);
+    GameState.getInstance().movementOn = false;
     return false;
   }
 
@@ -331,6 +290,7 @@ public class GameScreen implements Screen, InputProcessor {
   public boolean touchDragged(int screenX, int screenY, int pointer) {
     float angle = Utility.getTargetAngle(screenX, Param.DISPLAY_Y - screenY, screenCentre);
     Sprites.getInstance().getPlayer().updateDirection(true, angle);
+    GameState.getInstance().movementOn = true;
     return false;
   }
 

@@ -1,6 +1,7 @@
 package timboe.hunted.manager;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
 import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Tile;
@@ -23,9 +24,9 @@ public class GameState {
   public GameScreen theGameScreen = null;
   public HashSet<Tile> waypoints; // Known good AI destinations
   public boolean userControl;
+  public boolean movementOn;
 
   private boolean chaseOn = false;
-  private boolean chaseScream = false;
   private int chaseVolume = 100;
 
   private boolean unlockSound = false;
@@ -39,7 +40,6 @@ public class GameState {
   private GameState() {
 
   }
-
 
   public void reset() {
     resetInternal();
@@ -86,13 +86,14 @@ public class GameState {
 
     // Update logic for key switches
     boolean allKeys = true;
+    Vector2 playerPos = Sprites.getInstance().getPlayer().getBody().getPosition();
     float minDist = 999f;
     for (int i = 1; i < Param.KEY_ROOMS + 1; ++i) {
       if (progress[i] < Param.SWITCH_TIME) {
         allKeys = false;
         doSwitchLogic(i);
       } else { // Machine is on
-        minDist = Math.min(minDist, Sprites.getInstance().getPlayer().getBody().getPosition().dst( Sprites.getInstance().keySwitch[i].getBody().getPosition() ) );
+        minDist = Math.min(minDist, Sprites.getInstance().keySwitch[i].getBody().getPosition().dst(playerPos) );
       }
     }
     if (minDist <= Param.BIGBAD_SENSE_DISTANCE) {
@@ -102,9 +103,7 @@ public class GameState {
     }
 
     // Update logic for exit switch
-    if (allKeys && progress[0] < Param.SWITCH_TIME) {
-      doSwitchLogic(0);
-    }
+    if (allKeys && progress[0] < Param.SWITCH_TIME) doSwitchLogic(0);
 
     musicLogic();
   }
@@ -113,14 +112,9 @@ public class GameState {
 
     if (!chaseOn && Sprites.getInstance().getBigBad().musicSting) {
       chaseOn = true;
-      chaseScream = false;
       Sounds.getInstance().startChase();
     }
     if (chaseOn) {
-      if (!chaseScream && Sprites.getInstance().getBigBad().isChasing()) {
-        chaseScream = true;
-        Sounds.getInstance().scream(1f);
-      }
       if (!Sprites.getInstance().getBigBad().musicSting) --chaseVolume;
       else chaseVolume = 100;
       Sounds.getInstance().chaseVolume(chaseVolume/100f);

@@ -130,7 +130,7 @@ public class Room extends Rectangle implements Node<Room> {
       if (entry.getKey() == toGetTo) return entry; // if toGetTo was a corridor
       else if (entry.getValue() == toGetTo) return entry; // if toGetTo was a room
     }
-    Gdx.app.log("getConnectionTo","No immediate connection to room: " + toGetTo);
+//    Gdx.app.log("getConnectionTo","No immediate connection to room: " + toGetTo);
     return null;
   }
 
