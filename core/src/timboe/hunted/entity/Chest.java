@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.manager.*;
@@ -37,9 +38,12 @@ public class Chest extends EntityBase {
 
   @Override
   public void act (float delta) {
-    updatePosition();
-    if (done) return;
-    if (chestOpened && currentFrame < nFrames-1 && GameState.getInstance().frame % Param.ANIM_SPEED == 0) {
+    if (HuntedGame.physicsChests) updatePosition();
+
+    if (done || !chestOpened) return;
+    deltaTot += delta;
+    if (currentFrame < nFrames-1 && deltaTot > Param.ANIM_TIME) {
+      deltaTot -= Param.ANIM_TIME;
       ++currentFrame;
     } else if (currentFrame == nFrames-1 && treasureHeight < Param.TILE_SIZE) {
       ++treasureHeight;
@@ -48,15 +52,23 @@ public class Chest extends EntityBase {
       treasureHeight = -1;
       done = true;
     }
-    if (chestOpened && !sound) {
+    if (!sound) {
       sound = true;
       Sounds.getInstance().treasure();
     }
+
+    if (!body.isAwake()) return;
+    Vector2 lv = body.getLinearVelocity();
+    // Apply retarding force
+    float deltaVX = 0 - lv.x;
+    float deltaVY = 0 - lv.y;
+    float mass = Param.CHEST_INERTIA_MOD * body.getMass();
+    body.applyLinearImpulse(mass * deltaVX, mass * deltaVY, body.getPosition().x, body.getPosition().y, true);
   }
 
   public void setAsChest() {
     BodyDef bodyDef = new BodyDef();
-    bodyDef.type = BodyDef.BodyType.DynamicBody;
+    bodyDef.type = HuntedGame.physicsChests ? BodyDef.BodyType.DynamicBody : BodyDef.BodyType.StaticBody;
     bodyDef.position.set((getX() / Param.TILE_SIZE) + .5f, (getY() / Param.TILE_SIZE) + .5f);
     bodyDef.fixedRotation = true; // No spiny physics
     body = Physics.getInstance().world.createBody(bodyDef);
@@ -73,17 +85,6 @@ public class Chest extends EntityBase {
     body.createFixture(fixtureDef);
     boxShape.dispose();
   }
-
-  public void updatePhysics() {
-    if (!body.isAwake()) return;
-    Vector2 lv = body.getLinearVelocity();
-    // Apply retarding force
-    float deltaVX = 0 - lv.x;
-    float deltaVY = 0 - lv.y;
-    float mass = Param.CHEST_INERTIA_MOD * body.getMass();
-    body.applyLinearImpulse(mass * deltaVX, mass * deltaVY, body.getPosition().x, body.getPosition().y, true);
-  }
-
 
   @Override
   public void draw(Batch batch, float alpha) {

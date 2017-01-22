@@ -11,9 +11,10 @@ import timboe.hunted.manager.Physics;
 public class HuntedGame extends Game {
 
   private GameScreen theGameScreen;
-  public static boolean debug = false;
+  public static boolean debug = true;
   public static boolean lights = true;
   public static boolean particles = true;
+  public static boolean physicsChests = false;
 
   @Override
 	public void create () {

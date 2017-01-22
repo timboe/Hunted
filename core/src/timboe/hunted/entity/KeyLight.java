@@ -39,8 +39,12 @@ public class KeyLight extends Torch {
 
   @Override
   public void act (float delta) {
-   if (activationID >= 0 && GameState.getInstance().progress[activationID] == Param.SWITCH_TIME) {
-      if (GameState.getInstance().frame % Param.ANIM_SPEED == 0) ++currentFrame;
+    if (activationID >= 0 && GameState.getInstance().progress[activationID] == Param.SWITCH_TIME) {
+      deltaTot += delta;
+      if (deltaTot > Param.ANIM_TIME) {
+        deltaTot -= Param.ANIM_TIME;
+        ++currentFrame;
+      }
       if (nFrames == 2) {
         if (currentFrame % nFrames == 0) lightColour.a = 0f;
         else lightColour.a = 1f * lightMax;
@@ -54,5 +58,4 @@ public class KeyLight extends Torch {
       torchLight[0].setColor(lightColour);
     }
   }
-
 }

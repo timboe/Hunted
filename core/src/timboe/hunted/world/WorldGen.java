@@ -78,7 +78,7 @@ public class WorldGen {
     addRoomsToTileMap();
     Sprites.getInstance().crinkleEdges(rooms, corridors);
     Sprites.getInstance().disableInvisibleTiles();
-    Sprites.getInstance().addTileActors();
+//    Sprites.getInstance().addTileActors(); // to-be defunct
     if (!placeExit()) return false;
     Sprites.getInstance().addTileRigidBodies();
     if (!placeBigBad()) return false;
@@ -101,6 +101,7 @@ public class WorldGen {
     nearestCentre = null;
     Physics.getInstance().reset();
     Sprites.getInstance().reset();
+    GameState.getInstance().theGameScreen.reset();
     GameState.getInstance().waypoints.clear();
   }
 

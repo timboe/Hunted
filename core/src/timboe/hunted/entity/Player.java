@@ -51,30 +51,30 @@ public class Player extends ParticleEffectActor {
   }
 
   @Override
-  public void act (float delta) {
-    super.act(delta);
-    int footsteps = Param.ANIM_SPEED * 2;
-    if (speed > Param.PLAYER_SPEED) {
-      speed -= Param.PLAYER_SPEED_LOSS;
-      footsteps /= 2;
-//      Gdx.app.log("DBG","Speed " + speed);
-    }
-    getRoomUnderEntity().addToScent(Param.PLAYER_SMELL);  // Add player smelliness
-    if (moving && GameState.getInstance().frame % footsteps == 0) {
-      Sounds.getInstance().step();
-    }
-    if (moving && GameState.getInstance().frame % (Param.ANIM_SPEED/2) == 0) {
-      ++currentFrame;
-    }
-  }
-
-  @Override
   public void draw(Batch batch, float parentAlpha) {
     batch.draw(textureRegion[(currentFrame % nFrames) + frameOffset], this.getX(), this.getY());
     if (particleEffect != null) particleEffect.draw(batch);
   }
 
-  public void updatePhysics() {
+  public void act (float delta) {
+    super.act(delta);
+
+    if (speed > Param.PLAYER_SPEED) {
+      speed -= Param.PLAYER_SPEED_LOSS;
+//      Gdx.app.log("DBG","Speed " + speed);
+    }
+    getRoomUnderEntity().addToScent(Param.PLAYER_SMELL);  // Add player smelliness
+
+    if (moving) {
+      deltaTot += delta;
+      if (deltaTot > Param.ANIM_TIME / 2) {
+        deltaTot -= Param.ANIM_TIME / 2;
+        ++currentFrame;
+        Sounds.getInstance().step();
+      }
+    }
+
+    // Update Physics
     // Do sprite angle
     float ang = body.getAngle();
     if (ang < Math.PI/4f) {
@@ -107,6 +107,8 @@ public class Player extends ParticleEffectActor {
     float mass = Param.PLAYER_INERTIA_MOD * body.getMass();
     body.applyLinearImpulse(mass * deltaVX, mass * deltaVY, body.getPosition().x, body.getPosition().y, true);
     flicker();
+
+    updatePosition();
   }
 
   @Override

@@ -71,23 +71,6 @@ public class Torch extends EntityBase {
     circleShape.dispose();
   }
 
-//  public void setAsTorchBody(float x, float y, float r) {
-//    BodyDef bodyDef = new BodyDef();
-//    bodyDef.type = BodyDef.BodyType.StaticBody;
-//    bodyDef.position.set(x, y);
-//    body = Physics.getInstance().world.createBody(bodyDef);
-//    body.setUserData(this);
-//    CircleShape circleShape = new CircleShape();
-//    circleShape.setRadius(r);
-//    FixtureDef fixtureDef = new FixtureDef();
-//    fixtureDef.shape = circleShape;
-//    fixtureDef.filter.categoryBits = Param.WORLD_ENTITY | Param.TORCH_SENSOR_ENTITY; // I am a
-//    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY; // I collide with
-//    fixtureDef.isSensor = true;
-//    body.createFixture(fixtureDef);
-//    circleShape.dispose();
-//  }
-
   public void addTorchToEntity(float range, float distance, Color c, boolean xRay, Vector2 loc) {
     torchLight[nLight] = new ConeLight(Physics.getInstance().rayHandler,
       Param.RAYS,

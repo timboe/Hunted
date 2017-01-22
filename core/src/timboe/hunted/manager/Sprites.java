@@ -26,7 +26,8 @@ public class Sprites {
     return ourInstance;
   }
 
-  private HashMap<Integer, Tile> tileMap;
+//  private HashMap<Integer, Tile> tileMap;
+  private Tile[][] tileMap;
   private HashSet<ParticleEffectActor> particles;
   private Player player;
   private BigBad bigBad;
@@ -45,24 +46,22 @@ public class Sprites {
 
   public void reset() {
     player = new Player();
-
     bigBad = new BigBad();
     webTiles = new HashSet<Tile>();
     toUpdateWeb = new Vector<Tile>();
     clutter = new HashSet<EntityBase>();
     chests = new HashSet<Chest>();
-
+    particles = new HashSet<ParticleEffectActor>();
     treasurePile = new TreasurePile(6, -5);
 
     exitDoor = null;
     winMask = null;
     for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) keySwitch[i] = null;
 
-    particles = new HashSet<ParticleEffectActor>();
-    tileMap = new HashMap<Integer, Tile>();
+    tileMap = new Tile[Param.TILE_X][Param.TILE_Y];
     for (int x = 0; x < Param.TILE_X; ++x) {
       for (int y = 0; y < Param.TILE_Y; ++y) {
-        tileMap.put(Utility.xyToID(x, y), new Tile(x, y));
+        tileMap[x][y] = new Tile(x, y);
       }
     }
   }
@@ -86,20 +85,17 @@ public class Sprites {
     if (isClutter) clutter.add(a);
   }
 
-  public void addTileActors() {
-    stage.clear();
-    for (int x = 0; x < Param.TILE_X; ++x) {
-      for (int y = 0; y < Param.TILE_Y; ++y) {
-        Tile t = tileMap.get(Utility.xyToID(x, y));
-        if (t.isVisible() == true) stage.addActor(t);
-      }
-    }
-  }
+//  public void addTileActors() {
+//    stage.clear();
+//    for (int x = 0; x < Param.TILE_X; ++x) {
+//      for (int y = 0; y < Param.TILE_Y; ++y) {
+//        Tile t = tileMap[x][y];
+//        if (t.isVisible()) stage.addActor(t);
+//      }
+//    }
+//  }
 
   public void updatePhysics() {
-    player.updatePhysics();
-    bigBad.updatePhysics();
-    for (Chest c : chests) c.updatePhysics();
     for (int i = 0; i < toUpdateWeb.size(); ++i) { // Note can only use basic iteration as we modify these mid-loop
       toUpdateWeb.get(i).updateNeighbours(false);
     }
@@ -110,12 +106,6 @@ public class Sprites {
       if (!tintWeb()) GameState.getInstance().webEffect = false; // Stop
     }
   }
-
-  public void updatePosition() {
-    player.updatePosition();
-    bigBad.updatePosition();
-  }
-
 
   public void addExitRoom(Room entryRoom) {
     final int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
@@ -556,10 +546,10 @@ public class Sprites {
   public BigBad getBigBad() { return  bigBad; }
 
   public Tile getTile(int x, int y) {
-    return tileMap.get(Utility.xyToID(x,y));
+    return tileMap[x][y];
   }
 
   public void dispose() {
-    tileMap.clear();
+
   }
 }

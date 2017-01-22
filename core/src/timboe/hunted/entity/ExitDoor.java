@@ -33,6 +33,10 @@ public class ExitDoor extends EntityBase {
       Physics.getInstance().world.destroyBody(body);
     }
     if (currentFrame == nFrames-1) return;
-    if (GameState.getInstance().frame % Param.ANIM_SPEED == 0) ++currentFrame;
+    deltaTot += delta;
+    if (deltaTot > Param.ANIM_TIME) {
+      deltaTot -= Param.ANIM_TIME;
+      ++currentFrame;
+    }
   }
 }

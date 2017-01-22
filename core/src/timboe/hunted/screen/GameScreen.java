@@ -1,18 +1,13 @@
 package timboe.hunted.screen;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -26,18 +21,13 @@ import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.world.GameCamera;
-import timboe.hunted.world.Room;
-import timboe.hunted.world.WorldGen;
 
-import java.awt.*;
 
 /**
  * Created by Tim on 28/12/2016.
  */
 public class GameScreen implements Screen, InputProcessor {
 
-
-  private float deltaTot;
   public Stage stage;
   public GameCamera gameCamera = new GameCamera();
 
@@ -74,14 +64,13 @@ public class GameScreen implements Screen, InputProcessor {
 
   public void reset() {
     if (stage != null) {
+      stage.clear();
       stage.dispose();
     }
     stage = new Stage(new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, gameCamera.camera));
     Sprites.getInstance().stage = stage;
-    if (HuntedGame.debug) stage.setDebugAll(true);
+    stage.setDebugAll(HuntedGame.debug);
   }
-
-
 
   @Override
   public void show() {
@@ -124,7 +113,6 @@ public class GameScreen implements Screen, InputProcessor {
   @Override
   public void render(float delta) {
     allProbe.start();
-    deltaTot += delta;
     GLProfiler.reset();
 
     renderClear();
@@ -186,7 +174,7 @@ public class GameScreen implements Screen, InputProcessor {
     // World space TIMERS
     for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) {
       if (GameState.getInstance().progress[i] > 0 && GameState.getInstance().progress[i] < Param.SWITCH_TIME) {
-        final float prog = GameState.getInstance().progress[i] / (float) Param.SWITCH_TIME;
+        final float prog = GameState.getInstance().progress[i] / Param.SWITCH_TIME;
         final float xOff = (i == 0) ? -.5f * Param.TILE_SIZE : 0f;
         final float yOff = (i == 0) ? 2f * Param.TILE_SIZE : 1f * Param.TILE_SIZE;
         drawProgressTimer(Sprites.getInstance().keySwitch[i].getX() + xOff,
@@ -195,6 +183,7 @@ public class GameScreen implements Screen, InputProcessor {
       }
     }
     // World space Xs
+    // TODO update with time delta
     if (GameState.getInstance().switchStatus[0] && GameState.getInstance().frame % (8*Param.ANIM_SPEED) < 4*Param.ANIM_SPEED) {
       Switch s = Sprites.getInstance().keySwitch[0];
       for (int i = 0; i < Param.KEY_ROOMS; ++i) {
@@ -204,7 +193,6 @@ public class GameScreen implements Screen, InputProcessor {
       }
     }
     Gdx.gl.glLineWidth(1);
-
 
     uiBatch.setProjectionMatrix(gameCamera.getUISpace());
     uiBatch.begin();

@@ -11,7 +11,7 @@ import timboe.hunted.manager.Physics;
  */
 public class Clutter extends EntityBase {
 
-  private final int nClutters = 17;
+  private final int nClutters = 18;
   private int clutter;
 
   public Clutter(int x, int y) {
@@ -34,12 +34,12 @@ public class Clutter extends EntityBase {
     body = Physics.getInstance().world.createBody(bodyDef);
     body.setUserData(this);
     Shape shape;
-    if (clutter < 10) {
+    if (clutter == 9) {
+      shape = new PolygonShape();
+      ((PolygonShape) shape).setAsBox(w, .65f * h);
+    } else if (clutter < 10) {
       shape = new CircleShape();
       shape.setRadius(.9f * w);
-    } else if (clutter == 9) {
-      shape = new PolygonShape();
-      ((PolygonShape)shape).setAsBox(w, .75f * h);
     } else if (clutter < 12) {
       shape = new PolygonShape();
       ((PolygonShape)shape).setAsBox(.8f * w, h);
@@ -49,14 +49,21 @@ public class Clutter extends EntityBase {
     } else if (clutter < 15) {
       shape = new CircleShape();
       shape.setRadius(.8f * w);
+    } else if (clutter == 17) {
+      shape = new PolygonShape();
+      ((PolygonShape)shape).setAsBox(1f * w, 1f * h);
     } else {
       shape = new PolygonShape();
-      ((PolygonShape)shape).setAsBox(.5f * w, .5f * h);
+      ((PolygonShape)shape).setAsBox(.6f * w, .8f * h);
     }
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.filter.categoryBits = Param.CLUTTER_ENTITY; // I am a
     fixtureDef.filter.maskBits = Param.CLUTTER_COLLIDES; // I collide with
+    if (clutter == 17) {
+      fixtureDef.filter.categoryBits = Param.PIT_ENTITY; // I am a
+      fixtureDef.filter.maskBits = Param.PIT_COLLIDES; // I collide with
+    }
     body.createFixture(fixtureDef);
     shape.dispose();
   }

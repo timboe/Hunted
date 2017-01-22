@@ -69,7 +69,6 @@ public class Physics {
     //
     physicsProbeSprite.start();
     Sprites.getInstance().updatePhysics();
-    Sprites.getInstance().updatePosition();
     physicsProbeSprite.stop();
     //
     physicsProbeStage.start();
@@ -78,7 +77,7 @@ public class Physics {
     //
     physicsProbeGameState.start();
     WorldGen.getInstance().updatePhysics();
-    GameState.getInstance().updatePhysics();
+    GameState.getInstance().updatePhysics(delta);
     physicsProbeGameState.stop();
     //
     physicsProbeCamera.start();
@@ -125,7 +124,9 @@ public class Physics {
   }
 
   public void reset() {
-    dispose();
+    if (rayHandler != null) rayHandler.dispose();
+    if (world != null) world.dispose();
+
     collisionHandle = new CollisionHandle();
     world = new World(new Vector2(0f, 0f), true);
     world.setContactListener(collisionHandle);

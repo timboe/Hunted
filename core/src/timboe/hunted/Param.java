@@ -44,7 +44,6 @@ public class Param {
   public static final float BIGBAD_SPEED = .8f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED_BOOST = .05f * PLAYER_SPEED;
   public static final float BIGBAD_ANGULAR_SPEED = (float)Math.PI/90f;
-  public static final int BIGBAD_AI_COOLDOWN = 100;
   public static final int BIGBAD_POUNCE_DISTANCE = 2;
   public static final int BIGBAD_SIXTH_SENSE = 25; //% chance to guess correct direction
   public static final int BIGBAD_SIXTH_SENSE_BOOST = 25; //% chance boost with every key shrine
@@ -65,20 +64,27 @@ public class Param {
   public static final short SENSOR_ENTITY = 0x1 << 3; // 1000
   public static final short TORCH_ENTITY = 0x1 << 4; // 10000
   public static final short CLUTTER_ENTITY = 0x1 << 5;
+  public static final short PIT_ENTITY = 0x1 << 6;
 
-  public static final short PLAYER_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|SENSOR_ENTITY|CLUTTER_ENTITY;
+  public static final short PLAYER_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|SENSOR_ENTITY|CLUTTER_ENTITY|PIT_ENTITY;
   public static final short TORCH_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|SENSOR_ENTITY|PLAYER_ENTITY|CLUTTER_ENTITY;
   public static final short BIGBAD_COLLIDES = TORCH_ENTITY;
-  public static final short BIGBAD_CAN_SEE_THROUGH = CLUTTER_ENTITY|SENSOR_ENTITY|TORCH_ENTITY;
-  public static final short WORLD_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|PLAYER_ENTITY|CLUTTER_ENTITY;
-  public static final short CLUTTER_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|PLAYER_ENTITY|CLUTTER_ENTITY;
+  public static final short BIGBAD_CAN_SEE_THROUGH = CLUTTER_ENTITY|SENSOR_ENTITY|TORCH_ENTITY|PIT_ENTITY;
+  public static final short WORLD_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|PLAYER_ENTITY|CLUTTER_ENTITY|PIT_ENTITY;
+  public static final short CLUTTER_COLLIDES = TORCH_ENTITY|WORLD_ENTITY|PLAYER_ENTITY|CLUTTER_ENTITY|PIT_ENTITY;
   public static final short SENSOR_COLLIDES = PLAYER_ENTITY;
+  public static final short PIT_COLLIDES = WORLD_ENTITY|PLAYER_ENTITY|CLUTTER_ENTITY|PIT_ENTITY;
 
-  public static final int SWITCH_TIME = 250;
 
   public static final int ANIM_SPEED = 12; // Frames per anim update
-  public static final int MAX_FRAMES = 12;
+  public static final float DESIRED_FPS = 60; // FPS ANIM_SPEED is tuned for
+  public static final float FRAME_TIME = (1f/DESIRED_FPS);
+  public static final float ANIM_TIME = FRAME_TIME * ANIM_SPEED;
+  public static final float SWITCH_TIME = FRAME_TIME * 250f;
+  public static final float BIGBAD_AI_COOLDOWN = FRAME_TIME * 100f;
+  public static final float CHASE_VOL_MAX = FRAME_TIME * 100f;
 
+  public static final int MAX_FRAMES = 12;
   public static final int MAX_CRINKLE = 3;
 
   public static final int N_TREASURE = 5;

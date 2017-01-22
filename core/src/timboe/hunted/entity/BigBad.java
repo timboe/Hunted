@@ -114,7 +114,7 @@ public class BigBad extends ParticleEffectActor {
     } // TODO also chase if nearby and within vision
   }
 
-  public void updatePhysics() {
+  public void act (float delta) {
     sixthSense = Param.BIGBAD_SIXTH_SENSE;
     // Get straight line distance from player
     distanceFromPlayer = Sprites.getInstance().getPlayer().getBody().getPosition().dst( body.getPosition() );
@@ -160,6 +160,8 @@ public class BigBad extends ParticleEffectActor {
     flicker();
     // Do all the AI stuff
     runAI();
+
+    updatePosition();
   }
 
   @Override
