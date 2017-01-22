@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.PerformanceCounter;
+import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.entity.Torch;
 import timboe.hunted.world.CollisionHandle;
@@ -60,8 +61,10 @@ public class Physics {
     physicsProbeBox.stop();
     //
     physicsProbeLight.start();
-    rayHandler.update();
-    torchPhysics();
+    if (HuntedGame.lights) {
+      rayHandler.update();
+      torchPhysics();
+    }
     physicsProbeLight.stop();
     //
     physicsProbeSprite.start();

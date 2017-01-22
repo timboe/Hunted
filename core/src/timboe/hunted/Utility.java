@@ -39,6 +39,7 @@ public class Utility {
   }
 
   static public ParticleEffect getNewFlameEffect() {
+    if (!HuntedGame.particles) return null;
     ParticleEffect effect = new ParticleEffect();
     effect.load(Gdx.files.internal("flame.p"), Textures.getInstance().getAtlas());
     effect.scaleEffect(0.2f);

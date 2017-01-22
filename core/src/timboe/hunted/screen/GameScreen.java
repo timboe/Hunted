@@ -155,10 +155,12 @@ public class GameScreen implements Screen, InputProcessor {
     renderStage.stop();
 
     renderLights.start();
-    scaledLightingMatrix = gameCamera.camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
-    Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
-    Physics.getInstance().rayHandler.render();
-    if (HuntedGame.debug) debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
+    if (HuntedGame.lights) {
+      scaledLightingMatrix = gameCamera.camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
+      Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
+      Physics.getInstance().rayHandler.render();
+      if (HuntedGame.debug) debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
+    }
     renderLights.stop();
 
     renderUI.start();
