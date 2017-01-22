@@ -272,7 +272,7 @@ public class GameScreen implements Screen, InputProcessor {
 
   @Override
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    float angle = Utility.getTargetAngle(screenX, Param.DISPLAY_Y - screenY, screenCentre);
+    float angle = Utility.getTargetAngle(screenX, Gdx.graphics.getHeight() - screenY, screenCentre);
     Sprites.getInstance().getPlayer().updateDirection(true, angle);
     GameState.getInstance().movementOn = true;
     return false;
@@ -280,7 +280,7 @@ public class GameScreen implements Screen, InputProcessor {
 
   @Override
   public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-    float angle = Utility.getTargetAngle(screenX, Param.DISPLAY_Y - screenY, screenCentre);
+    float angle = Utility.getTargetAngle(screenX, Gdx.graphics.getHeight() - screenY, screenCentre);
     Sprites.getInstance().getPlayer().updateDirection(false, angle);
     GameState.getInstance().movementOn = false;
     return false;
@@ -288,7 +288,7 @@ public class GameScreen implements Screen, InputProcessor {
 
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
-    float angle = Utility.getTargetAngle(screenX, Param.DISPLAY_Y - screenY, screenCentre);
+    float angle = Utility.getTargetAngle(screenX, Gdx.graphics.getHeight() - screenY, screenCentre);
     Sprites.getInstance().getPlayer().updateDirection(true, angle);
     GameState.getInstance().movementOn = true;
     return false;
