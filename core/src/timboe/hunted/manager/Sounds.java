@@ -21,6 +21,8 @@ public class Sounds {
   private Sound monsterCall[] = new Sound[nMonsterCall];
   private final int nFootsteps = 4;
   private Sound footstepSound[] = new Sound[nFootsteps];
+  private final int nTwang = 4;
+  private Sound twangSound[] = new Sound[nTwang];
   private Sound unlockSound = Gdx.audio.newSound(Gdx.files.internal("336562__anthousai__keys-rustling-02.ogg"));
   private Sound treasureSound = Gdx.audio.newSound(Gdx.files.internal("202092__spookymodem__chest-opening.ogg"));
   private Sound ignitionSound = Gdx.audio.newSound(Gdx.files.internal("331621__hykenfreak__flame-ignition.ogg"));
@@ -52,6 +54,11 @@ public class Sounds {
     chaseMusic[1] = Gdx.audio.newMusic(Gdx.files.internal("chase1.ogg"));
     chaseMusic[2] = Gdx.audio.newMusic(Gdx.files.internal("chase2.ogg"));
     chaseMusic[3] = Gdx.audio.newMusic(Gdx.files.internal("chase3.ogg"));
+
+    twangSound[0] = Gdx.audio.newSound(Gdx.files.internal("twang0.ogg"));
+    twangSound[1] = Gdx.audio.newSound(Gdx.files.internal("twang1.ogg"));
+    twangSound[2] = Gdx.audio.newSound(Gdx.files.internal("twang2.ogg"));
+    twangSound[3] = Gdx.audio.newSound(Gdx.files.internal("twang3.ogg"));
   }
 
   public void step() {
@@ -76,6 +83,13 @@ public class Sounds {
     if (!sfxOn) return;
     thudSound.play();
   }
+
+
+  public void twang() {
+    if (!sfxOn) return;
+    twangSound[Utility.r.nextInt(nTwang)].play();
+  }
+
 
   public void treasure() {
     if (!sfxOn) return;
@@ -146,6 +160,8 @@ public class Sounds {
     unlockSound.dispose();
     for (Music m : chaseMusic) m.dispose();
     for (Sound s : monsterCall) s.dispose();
+    for (Sound s : twangSound) s.dispose();
+    for (Sound s : footstepSound) s.dispose();
   }
 
 }

@@ -57,7 +57,7 @@ public class BigBad extends ParticleEffectActor {
     speed = Param.BIGBAD_SPEED;
     roomsVisited = new HashSet<Room>();
     setTexture("bb", 8);
-    setAsPlayerBody(0.5f, 0.25f);
+    setAsPlayerBody(0.5f);
     movementTargets = new LinkedList<Tile>();
     raycastCallback = new RayCastCallback() {
       @Override
@@ -228,6 +228,7 @@ public class BigBad extends ParticleEffectActor {
       aiState = BigBad.AIState.DOASTAR;
       // TODO sound isn't working
       float screamVol = Math.max(0f, (Param.TILE_X - (distanceFromPlayer * Param.TILE_SIZE)) / (float)Param.TILE_X);
+      screamVol = 1f;
       Sounds.getInstance().scream(screamVol);
       Gdx.app.log("AI","-> DO A* (dist from player, "+distanceFromPlayer+"scream vol " + screamVol + ")");
     }

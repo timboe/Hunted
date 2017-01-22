@@ -20,7 +20,7 @@ import timboe.hunted.manager.Sounds;
 public class Player extends ParticleEffectActor {
 
   Body lightAttachment;
-  private final float torchOff = .5f;
+  private final float torchOff = .35f;
   private int frameOffset = 0;
 
   public Player() {
@@ -28,7 +28,7 @@ public class Player extends ParticleEffectActor {
     setTexture("p",12);
     nFrames = 3;
     speed = Param.PLAYER_SPEED;
-    setAsPlayerBody(0.5f, 0.25f);
+    setAsPlayerBody(0.9f);
 
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.DynamicBody;

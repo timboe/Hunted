@@ -49,8 +49,9 @@ public class CollisionHandle implements ContactListener {
           GameState.getInstance().webEffect = true;
           Sprites.getInstance().resetWeb();
           t.startWebEffect(t);
+          Sounds.getInstance().twang();
           Sprites.getInstance().tintWeb();
-        } else {
+        } else if (!t.getIsWeb()) {
           Sounds.getInstance().thud();
         }
       }

@@ -23,7 +23,6 @@ public class EntityBase extends Actor {
 
   protected Body body = null;
   protected Rectangle worldBox = null; // TODO get rid of this
-  protected float offsetMod = 0f;
   protected float angle = 0;
   protected float speed = 0;
   protected boolean moving = false;
@@ -110,14 +109,13 @@ public class EntityBase extends Actor {
     boxShape.dispose();
   }
 
-  public void setAsPlayerBody(float scale, float offset) {
+  public void setAsPlayerBody(float scale) {
     BodyDef bodyDef = new BodyDef();
     float newWidth2 = (scale * worldBox.width) / 2f;
     float heightMod = worldBox.height / 2f;
-    offsetMod = worldBox.height * offset;
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     bodyDef.fixedRotation = true; // No spiny physics
-    bodyDef.position.set(worldBox.x + newWidth2, worldBox.y + heightMod - offsetMod);
+    bodyDef.position.set(worldBox.x + newWidth2, worldBox.y + heightMod);
     body = Physics.getInstance().world.createBody(bodyDef);
     body.setUserData(this);
 
@@ -148,7 +146,7 @@ public class EntityBase extends Actor {
 
   public void updatePosition() {
     float x = (body.getPosition().x * Param.TILE_SIZE) - getWidth()/2;
-    float y = (body.getPosition().y * Param.TILE_SIZE) - getHeight()/2 + offsetMod;
+    float y = (body.getPosition().y * Param.TILE_SIZE) - getHeight()/2;
     setPosition(x,y);
     worldBox.setPosition((float)Math.floor(body.getPosition().x), (float)Math.floor(body.getPosition().y));
   }
