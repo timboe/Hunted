@@ -1,6 +1,7 @@
 package timboe.hunted.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -20,10 +21,12 @@ public class Player extends ParticleEffectActor {
 
   Body lightAttachment;
   private final float torchOff = .5f;
+  private int frameOffset = 0;
 
   public Player() {
     super(0,0);
-    setTexture("playerE");
+    setTexture("p",12);
+    nFrames = 3;
     speed = Param.PLAYER_SPEED;
     setAsPlayerBody(0.5f, 0.25f);
 
@@ -45,12 +48,11 @@ public class Player extends ParticleEffectActor {
     torchLight[0].setIgnoreAttachedBody(true);
 
     particleEffect = Utility.getNewFlameEffect();
-    PAOffsetY = Param.TILE_SIZE/2;
-    PAOffsetX = Param.TILE_SIZE/4;
   }
 
   @Override
   public void act (float delta) {
+    super.act(delta);
     int footsteps = Param.ANIM_SPEED * 2;
     if (speed > Param.PLAYER_SPEED) {
       speed -= Param.PLAYER_SPEED_LOSS;
@@ -61,9 +63,41 @@ public class Player extends ParticleEffectActor {
     if (moving && GameState.getInstance().frame % footsteps == 0) {
       Sounds.getInstance().step();
     }
+    if (moving && GameState.getInstance().frame % (Param.ANIM_SPEED/2) == 0) {
+      ++currentFrame;
+    }
+  }
+
+  @Override
+  public void draw(Batch batch, float parentAlpha) {
+    batch.draw(textureRegion[(currentFrame % nFrames) + frameOffset], this.getX(), this.getY());
+    if (particleEffect != null) particleEffect.draw(batch);
   }
 
   public void updatePhysics() {
+    // Do sprite angle
+    float ang = body.getAngle();
+    if (ang < Math.PI/4f) {
+      frameOffset = 0;
+      PAOffsetY = 14;
+      PAOffsetX = 10;
+    } else if (ang < 3*Math.PI/4f) {
+      frameOffset = nFrames;
+      PAOffsetY = 14;
+      PAOffsetX = -12;
+    } else if (ang < 5*Math.PI/4f) {
+      frameOffset = 2*nFrames;
+      PAOffsetY = 14;
+      PAOffsetX = 12;
+    } else if (ang < 7*Math.PI/4f) {
+      frameOffset = 3*nFrames;
+      PAOffsetY = 14;
+      PAOffsetX = 12;
+    } else {
+      frameOffset = 0;
+      PAOffsetY = 14;
+      PAOffsetX = 10;
+    }
     // Do force based movement
     Vector2 lv = body.getLinearVelocity();
     float targetX = moving ? (float)(speed * Math.cos(angle)) : 0f;

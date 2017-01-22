@@ -107,8 +107,7 @@ public class Sounds {
     ambiance.stop();
   }
 
-  public void startChase() {
-    scream(1f);
+  public void startChaseMusic() {
     if (!musicOn) return;
     currentChase = Utility.r.nextInt(nChaseStarts);
     chaseMusic[currentChase].play();

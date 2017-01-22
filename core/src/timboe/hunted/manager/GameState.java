@@ -112,7 +112,7 @@ public class GameState {
 
     if (!chaseOn && Sprites.getInstance().getBigBad().musicSting) {
       chaseOn = true;
-      Sounds.getInstance().startChase();
+      Sounds.getInstance().startChaseMusic();
     }
     if (chaseOn) {
       if (!Sprites.getInstance().getBigBad().musicSting) --chaseVolume;

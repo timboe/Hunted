@@ -110,6 +110,7 @@ public class BigBad extends ParticleEffectActor {
       Gdx.app.log("AI","checkStartChase -> CHASE");
       // Give the player a hit of adrenalin
       Sprites.getInstance().getPlayer().speed = Param.PLAYER_SPEED_BOOST;
+      Sounds.getInstance().scream(1f);
     } // TODO also chase if nearby and within vision
   }
 
