@@ -57,7 +57,7 @@ public class Player extends ParticleEffectActor {
     if (speed > Param.PLAYER_SPEED) {
       speed -= Param.PLAYER_SPEED_LOSS;
       footsteps /= 2;
-      Gdx.app.log("DBG","Speed " + speed);
+//      Gdx.app.log("DBG","Speed " + speed);
     }
     getRoomUnderEntity().addToScent(Param.PLAYER_SMELL);  // Add player smelliness
     if (moving && GameState.getInstance().frame % footsteps == 0) {

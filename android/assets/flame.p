@@ -6,7 +6,7 @@ lowMin: 1000.0
 lowMax: 1000.0
 - Count - 
 min: 1
-max: 180
+max: 75
 - Emission - 
 lowMin: 100.0
 lowMax: 100.0
@@ -26,11 +26,11 @@ relative: false
 scalingCount: 3
 scaling0: 1.0
 scaling1: 1.0
-scaling2: 0.3
+scaling2: 1.0
 timelineCount: 3
 timeline0: 0.0
 timeline1: 0.66
-timeline2: 1.0
+timeline2: 0.98630136
 - Life Offset - 
 active: false
 - X Offset - 
@@ -151,4 +151,4 @@ additive: true
 behind: false
 premultipliedAlpha: false
 - Image Path -
-particle.png
+/C:/Users/Tim/Dropbox/git/Hunted/particle.png

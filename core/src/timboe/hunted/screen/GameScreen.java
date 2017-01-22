@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -62,6 +63,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 
   public GameScreen() {
+    GLProfiler.enable();
     GameState.getInstance().theGameScreen = this;
   }
 
@@ -123,6 +125,7 @@ public class GameScreen implements Screen, InputProcessor {
   public void render(float delta) {
     allProbe.start();
     deltaTot += delta;
+    GLProfiler.reset();
 
     renderClear();
     renderMain();
@@ -131,6 +134,13 @@ public class GameScreen implements Screen, InputProcessor {
     fpsLogger.log();
 
     allProbe.stop();
+
+    if (GameState.getInstance().frame % 60 == 0) {
+      Gdx.app.log("OpenGL","DrawCalls:" + GLProfiler.drawCalls +
+      ", ShaderSwitches:" + GLProfiler.shaderSwitches +
+      ", TexBindings:" + GLProfiler.textureBindings +
+      ", Vertexies:" +GLProfiler.vertexCount.total);
+    }
 
     renderStage.tick(delta);
     renderLights.tick(delta);
@@ -227,6 +237,7 @@ public class GameScreen implements Screen, InputProcessor {
   }
 
   public void dispose () {
+//    Gdx.app.log("Perf","Max sprites in batch " );
     stage.dispose();
     Gdx.app.log("Perf",allProbe.toString());
     Gdx.app.log("Perf",renderStage.toString());
