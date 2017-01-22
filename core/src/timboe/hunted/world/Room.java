@@ -108,9 +108,9 @@ public class Room extends Rectangle implements Node<Room> {
     }
   }
 
-  public void updatePhysics() {
+  public void updatePhysics(float delta) {
     // Scent dies away
-    scent = Math.max(scent - Param.SMELL_DISSAPATE, 0f);
+    scent = Math.max(scent - (Param.SMELL_DISSAPATE * delta), 0f);
   }
 
   public float getScent() { return scent; }

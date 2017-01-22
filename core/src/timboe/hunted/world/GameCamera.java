@@ -42,8 +42,10 @@ public class GameCamera {
     currentZoom = 0.25f;
     Gdx.app.log("GameScreen","Centred on " + currentPos);
   }
-  public void updatePhysics() {
 
+  public void updatePhysics(float delta) {
+
+    float frames = delta / Param.FRAME_TIME;
 
     final boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
     final float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
@@ -58,8 +60,7 @@ public class GameCamera {
       desiredPos.y += Math.sin(angle) * Param.CAMERA_LEAD;
     }
 
-    float moveSpeed = 0.035f;
-    if (endZoom) moveSpeed = 0.8f;
+    float moveSpeed = frames * (endZoom ? .5f : 0.035f);
     currentPos.x = currentPos.x + (moveSpeed * (desiredPos.x - currentPos.x));
     currentPos.y = currentPos.y + (moveSpeed * (desiredPos.y - currentPos.y));
 
@@ -80,8 +81,7 @@ public class GameCamera {
       desiredZoom *= mod;
     }
 
-    float zoomSpeed = 0.025f;
-    if (endZoom) zoomSpeed = 0.8f;
+    float zoomSpeed = frames * (endZoom ? .5f : 0.025f);
     currentZoom = currentZoom + (zoomSpeed * (desiredZoom - currentZoom));
 
     camera.position.set(shakePos, 0);

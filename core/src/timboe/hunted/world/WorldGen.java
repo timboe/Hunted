@@ -47,9 +47,9 @@ public class WorldGen {
 
   public Vector<Room> getAllRooms() { return allRooms; }
 
-  public void updatePhysics() {
+  public void updatePhysics(float delta) {
     for (Room room : allRooms) {
-      room.updatePhysics(); // Smell dissipation
+      room.updatePhysics(delta); // Smell dissipation
     }
   }
 
@@ -446,12 +446,6 @@ public class WorldGen {
       }
     }
   }
-
-
-
-
-
-
 
 }
 

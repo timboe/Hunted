@@ -26,7 +26,7 @@ public class Sprites {
     return ourInstance;
   }
 
-//  private HashMap<Integer, Tile> tileMap;
+  private float deltaTot;
   private Tile[][] tileMap;
   private HashSet<ParticleEffectActor> particles;
   private Player player;
@@ -53,7 +53,7 @@ public class Sprites {
     chests = new HashSet<Chest>();
     particles = new HashSet<ParticleEffectActor>();
     treasurePile = new TreasurePile(6, -5);
-
+    deltaTot = 0f;
     exitDoor = null;
     winMask = null;
     for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) keySwitch[i] = null;
@@ -95,14 +95,18 @@ public class Sprites {
 //    }
 //  }
 
-  public void updatePhysics() {
+  public void updatePhysics(float delta) {
     for (int i = 0; i < toUpdateWeb.size(); ++i) { // Note can only use basic iteration as we modify these mid-loop
       toUpdateWeb.get(i).updateNeighbours(false);
     }
     toUpdateWeb.clear();
 
     if (GameState.getInstance().webEffect) {
-      if (GameState.getInstance().frame % Param.ANIM_SPEED/4 == 0) moveWeb();
+      deltaTot += delta;
+      if (deltaTot >= Param.ANIM_TIME/4f) {
+        moveWeb();
+        deltaTot -= Param.ANIM_TIME/4f;
+      }
       if (!tintWeb()) GameState.getInstance().webEffect = false; // Stop
     }
   }

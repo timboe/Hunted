@@ -32,6 +32,7 @@ public class Torch extends EntityBase {
 //  private float torchDistanceTarget;
   Color primaryTorchType;
 
+  // TODO static torches
 
   public Torch(int x, int y) {
     super (x,y);
@@ -102,10 +103,12 @@ public class Torch extends EntityBase {
     float range = isPartial ? 90f : 180f;
 //    Gdx.app.log("Torch", "Turning on " + this + " at angle " + torchAngle);
     addTorchToEntity(range, Param.WALL_TORCH_STRENGTH,  primaryTorchType, false, lightPos);
+    torchLight[0].setStaticLight(true);
     Physics.getInstance().litTorches.add(this);
     Sprites.getInstance().addFlameEffect(lightEffectPos);
     if (needsSecondLight) {
       addTorchToEntity(180f, Param.SMALL_TORCH_STRENGTH, Param.WALL_FLAME_SPOT,  true, lightEffectPos);
+      torchLight[1].setStaticLight(true);
     }
   }
 

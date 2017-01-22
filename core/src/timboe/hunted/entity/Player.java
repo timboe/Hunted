@@ -63,7 +63,7 @@ public class Player extends ParticleEffectActor {
       speed -= Param.PLAYER_SPEED_LOSS;
 //      Gdx.app.log("DBG","Speed " + speed);
     }
-    getRoomUnderEntity().addToScent(Param.PLAYER_SMELL);  // Add player smelliness
+    getRoomUnderEntity().addToScent(Param.PLAYER_SMELL * delta);  // Add player smelliness
 
     if (moving) {
       deltaTot += delta;

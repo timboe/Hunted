@@ -68,7 +68,7 @@ public class Physics {
     physicsProbeLight.stop();
     //
     physicsProbeSprite.start();
-    Sprites.getInstance().updatePhysics();
+    Sprites.getInstance().updatePhysics(delta);
     physicsProbeSprite.stop();
     //
     physicsProbeStage.start();
@@ -76,12 +76,12 @@ public class Physics {
     physicsProbeStage.stop();
     //
     physicsProbeGameState.start();
-    WorldGen.getInstance().updatePhysics();
+    WorldGen.getInstance().updatePhysics(delta);
     GameState.getInstance().updatePhysics(delta);
     physicsProbeGameState.stop();
     //
     physicsProbeCamera.start();
-    GameState.getInstance().theGameScreen.gameCamera.updatePhysics();
+    GameState.getInstance().theGameScreen.gameCamera.updatePhysics(delta);
     physicsProbeCamera.stop();
     //
     physicsProbeBox.tick(delta);

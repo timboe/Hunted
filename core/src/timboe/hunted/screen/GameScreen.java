@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
@@ -21,6 +22,8 @@ import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.world.GameCamera;
+import timboe.hunted.world.Room;
+import timboe.hunted.world.WorldGen;
 
 
 /**
@@ -44,7 +47,7 @@ public class GameScreen implements Screen, InputProcessor {
 
   private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   private Matrix4 scaledLightingMatrix;
-//  private BitmapFont debugFont = new BitmapFont(); // debug only
+  private BitmapFont debugFont = new BitmapFont(); // debug only
   private SpriteBatch debugSpriteBatch = new SpriteBatch(); // debug only
   private SpriteBatch uiBatch = new SpriteBatch();
 
@@ -140,14 +143,14 @@ public class GameScreen implements Screen, InputProcessor {
 
   protected void renderMain() {
     renderStage.start();
-//        stage.getRoot().setCullingArea( gameCamera.cullBox );
+    //stage.getRoot().setCullingArea( gameCamera.cullBox );
     stage.draw();
     if (HuntedGame.debug) {
       debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
       debugSpriteBatch.begin();
-//      for (Room room : WorldGen.getInstance().getAllRooms()) {
-//        debugFont.draw(debugSpriteBatch, Float.toString(room.getScent() * 100f), room.getX() * Param.TILE_SIZE, room.getY() * Param.TILE_SIZE);
-//      }
+      for (Room room : WorldGen.getInstance().getAllRooms()) {
+        debugFont.draw(debugSpriteBatch, Float.toString(room.getScent() * 100f), room.getX() * Param.TILE_SIZE, room.getY() * Param.TILE_SIZE);
+      }
       debugSpriteBatch.end();
     }
     renderStage.stop();

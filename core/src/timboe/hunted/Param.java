@@ -49,7 +49,7 @@ public class Param {
   public static final int BIGBAD_SIXTH_SENSE_BOOST = 25; //% chance boost with every key shrine
   public static final float BIGBAD_SENSE_DISTANCE = 20f; // Within what line of sight can we see the player
 
-  public static final float PLAYER_SMELL = 0.001f;
+  public static final float PLAYER_SMELL = 0.1f;
   public static final float SMELL_DISSAPATE = PLAYER_SMELL/10f; // How much of the moving smell is lost
 
   public static final int MIN_ROOM_SIZE = 5;
