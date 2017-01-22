@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -109,8 +110,8 @@ public class GameScreen implements Screen, InputProcessor {
     Gdx.app.log("Resize", "ReSize in Render ["+this+"] ("+width+","+height+")");
     stage.getViewport().update(width, height, true);
     screenCentre.set(width/2, height/2);
-//    gameCamera.cullBox.setWidth(width);
-//    gameCamera.cullBox.setHeight(height);
+    gameCamera.cullBox.setWidth(width);
+    gameCamera.cullBox.setHeight(height);
   }
 
   @Override
@@ -143,8 +144,14 @@ public class GameScreen implements Screen, InputProcessor {
 
   protected void renderMain() {
     renderStage.start();
-    //stage.getRoot().setCullingArea( gameCamera.cullBox );
-    stage.draw();
+    stage.getRoot().setCullingArea( gameCamera.cullBox );
+
+    Batch batch = stage.getBatch();
+    batch.setProjectionMatrix(gameCamera.camera.combined);
+    batch.begin();
+    stage.getRoot().draw(batch, 1);
+    batch.end();
+
     if (HuntedGame.debug) {
       debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
       debugSpriteBatch.begin();
@@ -200,6 +207,7 @@ public class GameScreen implements Screen, InputProcessor {
     uiBatch.setProjectionMatrix(gameCamera.getUISpace());
     uiBatch.begin();
     Sprites.getInstance().treasurePile.draw(uiBatch, 1f);
+    debugFont.draw(uiBatch, String.valueOf(Gdx.graphics.getFramesPerSecond()), -310f, 170f);
     uiBatch.end();
   }
 

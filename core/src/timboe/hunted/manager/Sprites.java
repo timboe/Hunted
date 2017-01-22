@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.entity.*;
@@ -85,15 +86,15 @@ public class Sprites {
     if (isClutter) clutter.add(a);
   }
 
-//  public void addTileActors() {
-//    stage.clear();
-//    for (int x = 0; x < Param.TILE_X; ++x) {
-//      for (int y = 0; y < Param.TILE_Y; ++y) {
-//        Tile t = tileMap[x][y];
-//        if (t.isVisible()) stage.addActor(t);
-//      }
-//    }
-//  }
+  public void addTileActors() {
+    if (!HuntedGame.world) return;
+    for (int x = 0; x < Param.TILE_X; ++x) {
+      for (int y = 0; y < Param.TILE_Y; ++y) {
+        Tile t = tileMap[x][y];
+        if (t.isVisible()) stage.addActor(t);
+      }
+    }
+  }
 
   public void updatePhysics(float delta) {
     for (int i = 0; i < toUpdateWeb.size(); ++i) { // Note can only use basic iteration as we modify these mid-loop
@@ -162,7 +163,7 @@ public class Sprites {
     addToStage(blobLight, true);
     Physics.getInstance().addTorch(x + 3.5f, y + 3.2f).doCollision(false);
     Physics.getInstance().addTorch(x + .5f, y + 3.2f).doCollision(false);
-    for (int i = 0; i < Utility.r.nextInt(Param.MAX_MINI_LIGHT); ++i) {
+    for (int i = 0; i < 5 + Utility.r.nextInt(Param.MAX_MINI_LIGHT - 5); ++i) {
       int rX = (int)r.getX() + Utility.r.nextInt((int)r.getWidth()-1);
       int rY = (int)r.getY() + Utility.r.nextInt((int)r.getHeight()-1);
       if (getClear(rX,rY,1,1)) {
@@ -191,7 +192,6 @@ public class Sprites {
     }
     return true;
   }
-
 
   public void addFlameEffect(Vector2 position) {
     ParticleEffectActor PEA = new ParticleEffectActor(Utility.getNewFlameEffect());
@@ -235,12 +235,12 @@ public class Sprites {
     return size;
   }
 
-    public void addTileRigidBodies() {
-      //addTileRigidBodies(false);
-      addTileRigidBodies(true);
-    }
+  public void addTileRigidBodies() {
+    //addTileRigidBodies(false);
+    addTileRigidBodies(true);
+  }
 
-    public void addTileRigidBodies(boolean incInvisible) {
+  public void addTileRigidBodies(boolean incInvisible) {
     int count = 0;
     for (int x = 0; x < Param.TILE_X; ++x) {
       for (int y = 0; y < Param.TILE_Y; ++y) {
@@ -385,7 +385,6 @@ public class Sprites {
       }
     }
   }
-
 
   private void getNeighbourFloor(final int x, final int y, HashMap<String, Boolean> map) {
     map.clear(); // Should not be needed
@@ -537,7 +536,7 @@ public class Sprites {
           else t.setTexture("wallNB");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
         } else {
-          Gdx.app.error("Sprites","Painting error at " + x + "," + y);
+          Gdx.app.error("Sprites","Tile Texture Painting error at " + x + "," + y);
         }
       }
     }
@@ -554,6 +553,5 @@ public class Sprites {
   }
 
   public void dispose() {
-
   }
 }

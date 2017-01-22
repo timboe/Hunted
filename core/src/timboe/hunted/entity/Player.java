@@ -70,7 +70,7 @@ public class Player extends ParticleEffectActor {
       if (deltaTot > Param.ANIM_TIME / 2) {
         deltaTot -= Param.ANIM_TIME / 2;
         ++currentFrame;
-        Sounds.getInstance().step();
+        if (currentFrame % 2 == 0) Sounds.getInstance().step();
       }
     }
 

@@ -4,6 +4,7 @@ package timboe.hunted.manager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import timboe.hunted.HuntedGame;
 import timboe.hunted.Utility;
 
 /**
@@ -59,6 +60,11 @@ public class Sounds {
     twangSound[1] = Gdx.audio.newSound(Gdx.files.internal("twang1.ogg"));
     twangSound[2] = Gdx.audio.newSound(Gdx.files.internal("twang2.ogg"));
     twangSound[3] = Gdx.audio.newSound(Gdx.files.internal("twang3.ogg"));
+
+    if (!HuntedGame.sounds) {
+      musicOn = false;
+      sfxOn = false;
+    }
   }
 
   public void step() {

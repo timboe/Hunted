@@ -78,7 +78,7 @@ public class WorldGen {
     addRoomsToTileMap();
     Sprites.getInstance().crinkleEdges(rooms, corridors);
     Sprites.getInstance().disableInvisibleTiles();
-//    Sprites.getInstance().addTileActors(); // to-be defunct
+    Sprites.getInstance().addTileActors(); // to-be defunct
     if (!placeExit()) return false;
     Sprites.getInstance().addTileRigidBodies();
     if (!placeBigBad()) return false;
