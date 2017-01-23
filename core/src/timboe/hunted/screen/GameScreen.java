@@ -207,6 +207,7 @@ public class GameScreen implements Screen, InputProcessor {
     uiBatch.setProjectionMatrix(gameCamera.getUISpace());
     uiBatch.begin();
     Sprites.getInstance().treasurePile.draw(uiBatch, 1f);
+    Sprites.getInstance().compass.draw(uiBatch, 1f);
     debugFont.draw(uiBatch, String.valueOf(Gdx.graphics.getFramesPerSecond()), -310f, 170f);
     uiBatch.end();
   }

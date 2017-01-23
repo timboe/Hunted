@@ -35,6 +35,7 @@ public class Sprites {
   public ExitDoor exitDoor;
   public WinMask winMask;
   public TreasurePile treasurePile;
+  public Compass compass;
   public Switch[] keySwitch = new Switch[Param.KEY_ROOMS + 1];
   public Vector<Tile> toUpdateWeb;
   public HashSet<Tile> webTiles;
@@ -54,6 +55,7 @@ public class Sprites {
     chests = new HashSet<Chest>();
     particles = new HashSet<ParticleEffectActor>();
     treasurePile = new TreasurePile(6, -5);
+    compass = new Compass(-9, -5);
     deltaTot = 0f;
     exitDoor = null;
     winMask = null;

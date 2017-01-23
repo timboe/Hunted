@@ -98,6 +98,7 @@ public class Player extends ParticleEffectActor {
       PAOffsetY = 14;
       PAOffsetX = 10;
     }
+
     // Do force based movement
     Vector2 lv = body.getLinearVelocity();
     float targetX = moving ? (float)(speed * Math.cos(angle)) : 0f;

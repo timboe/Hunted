@@ -89,6 +89,8 @@ public class Param {
 
   public static final int N_TREASURE = 5;
 
+  public static final float COMPASS_SPEED =2f;
+
   public static final Color LIGHT_RED = new Color(1f,0f,0f,1f);
   public static final Color LIGHT_GREEN = new Color(0f,1f,0f,1f);
   public static final Color LIGHT_BLUE = new Color(0f,0f,1f,1f);

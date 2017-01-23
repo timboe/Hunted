@@ -78,6 +78,7 @@ public class Physics {
     physicsProbeGameState.start();
     WorldGen.getInstance().updatePhysics(delta);
     GameState.getInstance().updatePhysics(delta);
+    Sprites.getInstance().compass.act(delta);
     physicsProbeGameState.stop();
     //
     physicsProbeCamera.start();

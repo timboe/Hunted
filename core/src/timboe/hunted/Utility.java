@@ -38,6 +38,10 @@ public class Utility {
     return targetAngle;
   }
 
+  static public float clampSignedAngle(float angle) {
+    return angle + (float)((angle > Math.PI) ? -2*Math.PI : (angle < -Math.PI) ? 2*Math.PI : 0);
+  }
+
   static public ParticleEffect getNewFlameEffect() {
     if (!HuntedGame.particles) return null;
     ParticleEffect effect = new ParticleEffect();

@@ -40,7 +40,6 @@ public class EntityBase extends Actor {
     webTexture = Textures.getInstance().getTexture(name);
   }
 
-
   public void setTexture(String name) {
     setTexture(name, 1, false);
   }
