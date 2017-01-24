@@ -39,7 +39,7 @@ public class Utility {
   }
 
   static public float getTargetAngle(Vector2 target, Vector2 from) {
-    float targetAngle = (float) Math.atan2(target.y - from.y, target.y - from.x);
+    float targetAngle = (float) Math.atan2(target.y - from.y, target.x - from.x);
     if (targetAngle < 0) targetAngle += (float)2*Math.PI;
     return targetAngle;
   }

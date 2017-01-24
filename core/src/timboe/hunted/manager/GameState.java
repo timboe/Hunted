@@ -2,6 +2,7 @@ package timboe.hunted.manager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
