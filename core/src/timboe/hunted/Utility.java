@@ -38,6 +38,12 @@ public class Utility {
     return targetAngle;
   }
 
+  static public float getTargetAngle(Vector2 target, Vector2 from) {
+    float targetAngle = (float) Math.atan2(target.y - from.y, target.y - from.x);
+    if (targetAngle < 0) targetAngle += (float)2*Math.PI;
+    return targetAngle;
+  }
+
   static public float clampSignedAngle(float angle) {
     return angle + (float)((angle > Math.PI) ? -2*Math.PI : (angle < -Math.PI) ? 2*Math.PI : 0);
   }

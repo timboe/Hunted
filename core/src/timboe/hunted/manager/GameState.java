@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
+import timboe.hunted.Utility;
 import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.screen.GameScreen;
@@ -91,18 +92,35 @@ public class GameState {
     boolean allKeys = true;
     Vector2 playerPos = Sprites.getInstance().getPlayer().getBody().getPosition();
     float minDist = 999f;
+    int minSwitch = 0;
     for (int i = 1; i < Param.KEY_ROOMS + 1; ++i) {
+      float dist = Sprites.getInstance().keySwitch[i].getBody().getPosition().dst(playerPos);
+      if (dist < minDist) {
+        minDist = dist;
+        minSwitch = i;
+      }
       if (progress[i] < Param.SWITCH_TIME) {
         allKeys = false;
         doSwitchLogic(i, delta);
-      } else { // Machine is on
-        minDist = Math.min(minDist, Sprites.getInstance().keySwitch[i].getBody().getPosition().dst(playerPos) );
       }
     }
-    if (minDist <= Param.BIGBAD_SENSE_DISTANCE) {
+    // Sounds
+    if (minDist <= Param.BIGBAD_SENSE_DISTANCE && progress[minSwitch] >= Param.SWITCH_TIME) {
       Sounds.getInstance().machineNoise((Param.BIGBAD_SENSE_DISTANCE - minDist) / Param.BIGBAD_SENSE_DISTANCE);
     } else {
       Sounds.getInstance().machineNoise(0);
+    }
+    // Compass
+    if (Sprites.getInstance().getBigBad().distanceFromPlayer <= 1.5f*Param.BIGBAD_SENSE_DISTANCE) {
+      float pointAngle = Utility.getTargetAngle(Sprites.getInstance().getBigBad().getBody().getPosition(),
+        Sprites.getInstance().getPlayer().getBody().getPosition());
+      Sprites.getInstance().compass.setDesiredArrow(pointAngle, 0, 0.75f, .1f);
+    } else if (minDist <= 2*Param.BIGBAD_SENSE_DISTANCE) {
+      float pointAngle = Utility.getTargetAngle(Sprites.getInstance().keySwitch[minSwitch].getBody().getPosition(),
+        Sprites.getInstance().getPlayer().getBody().getPosition());
+      Sprites.getInstance().compass.setDesiredArrow(pointAngle, minSwitch, 0.1f, 2f);
+    } else {
+      Sprites.getInstance().compass.setDesiredArrow((float)Math.PI/2f, 0, 0.1f, 2f);
     }
 
     // Update logic for exit switch
