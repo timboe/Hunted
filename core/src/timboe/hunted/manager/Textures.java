@@ -1,6 +1,7 @@
 package timboe.hunted.manager;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -15,13 +16,16 @@ public class Textures {
   private Textures() {}
 
   private TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
+  private Texture splash = new Texture(Gdx.files.internal("splash.png"));
 
   public TextureRegion getTexture(String name) {
     return atlas.findRegion(name);
   }
+  public Texture getSplash() { return splash; }
 
   public TextureAtlas getAtlas() { return  atlas; }
   public void dispose() {
+    splash.dispose();
     atlas.dispose();
   }
 }

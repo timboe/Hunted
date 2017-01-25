@@ -61,7 +61,6 @@ public class GameScreen implements Screen, InputProcessor {
     GameState.getInstance().theGameScreen = this;
   }
 
-
   public void init() {
     GameState.getInstance().reset();
   }
@@ -247,7 +246,7 @@ public class GameScreen implements Screen, InputProcessor {
 
   public void dispose () {
 //    Gdx.app.log("Perf","Max sprites in batch " );
-    stage.dispose();
+    if (stage != null) stage.dispose();
     Gdx.app.log("Perf",allProbe.toString());
     Gdx.app.log("Perf",renderStage.toString());
     Gdx.app.log("Perf",renderLights.toString());

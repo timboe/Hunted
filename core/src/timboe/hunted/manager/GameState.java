@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.entity.BigBad;
@@ -24,6 +25,7 @@ public class GameState {
   public float aiCooldown = 0;
   public boolean webEffect = false;
   public GameScreen theGameScreen = null;
+  public HuntedGame game = null;
   public HashSet<Tile> waypoints; // Known good AI destinations
   public boolean userControl;
   public boolean movementOn;
@@ -137,8 +139,9 @@ public class GameState {
       Sounds.getInstance().startChaseMusic();
     }
     if (chaseOn) {
-      if (!Sprites.getInstance().getBigBad().musicSting) --delta;
+      if (!Sprites.getInstance().getBigBad().musicSting) chaseVolume -= delta;
       else chaseVolume = Param.CHASE_VOL_MAX;
+
       if (chaseVolume <= 0) chaseVolume = 0;
       Sounds.getInstance().chaseVolume(chaseVolume/Param.CHASE_VOL_MAX);
       if (chaseVolume == 0) {
