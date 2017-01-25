@@ -49,7 +49,6 @@ public class GameState {
     resetInternal();
     theGameScreen.reset();
     WorldGen.getInstance().generateWorld();
-    Sounds.getInstance().startAmbiance();
     userControl = true;
   }
 

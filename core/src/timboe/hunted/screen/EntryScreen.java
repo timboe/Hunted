@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import timboe.hunted.Param;
 import timboe.hunted.manager.GameState;
+import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Textures;
 
 /**
@@ -35,6 +36,7 @@ public class EntryScreen implements Screen, InputProcessor {
     buttonRec = new Rectangle(Param.TILE_SIZE * 10, Param.TILE_SIZE * 5,
       escape0.getRegionWidth(), escape0.getRegionHeight());
     escape = escape0;
+    Sounds.getInstance().startAmbiance();
   }
 
   @Override

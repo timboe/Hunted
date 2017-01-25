@@ -380,7 +380,7 @@ public class BigBad extends ParticleEffectActor {
     doChase();
     speed = Sprites.getInstance().getPlayer().speed * 1.05f; // Based off of players CURRENT speed - will catch
     if (distanceFromPlayer < .5f) {
-      WorldGen.getInstance().generateWorld(); // Restart
+      GameState.getInstance().game.setToLoose();
     }
   }
 

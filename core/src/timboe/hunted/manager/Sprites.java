@@ -107,9 +107,9 @@ public class Sprites {
 
     if (GameState.getInstance().webEffect) {
       deltaTot += delta;
-      if (deltaTot >= Param.ANIM_TIME/4f) {
+      if (deltaTot >= Param.ANIM_TIME/8f) {
         moveWeb();
-        deltaTot -= Param.ANIM_TIME/4f;
+        deltaTot -= Param.ANIM_TIME/8f;
       }
       if (!tintWeb()) GameState.getInstance().webEffect = false; // Stop
     }
@@ -245,8 +245,8 @@ public class Sprites {
 
   public void addTileRigidBodies(boolean incInvisible) {
     int count = 0;
-    for (int x = 0; x < Param.TILE_X; ++x) {
-      for (int y = 0; y < Param.TILE_Y; ++y) {
+    for (int y = 0; y < Param.TILE_Y; ++y) {
+      for (int x = 0; x < Param.TILE_X; ++x) {
         Tile t = getTile(x, y); // Find a solid tile
         if (canIncludeInRigidBody(t, incInvisible)) {
           Vector2 size = expandRigidBody(x, y, incInvisible);
@@ -521,7 +521,6 @@ public class Sprites {
           if (rnd < .5f) t.setTexture("wallNTorchA");
           else t.setTexture("wallNTorchB");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          // TODO make the light be in the correct section
           Physics.getInstance().addTorch(x + .5f, y + 1.2f, x + .5f, y + 1.f, x + .5f, y, true, (float)Math.PI*3f/2f, Param.WALL_FLAME_CAST_N);
           ///////////////////
           ///////////////////

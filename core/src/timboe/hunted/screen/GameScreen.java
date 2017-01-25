@@ -33,7 +33,7 @@ import timboe.hunted.world.WorldGen;
 public class GameScreen implements Screen, InputProcessor {
 
   public Stage stage;
-  public GameCamera gameCamera = new GameCamera();
+  public GameCamera gameCamera;
 
   private PerformanceCounter renderStage = new PerformanceCounter("Render-Stage");
   private PerformanceCounter renderLights = new PerformanceCounter("Render-Lights");
@@ -70,6 +70,7 @@ public class GameScreen implements Screen, InputProcessor {
       stage.clear();
       stage.dispose();
     }
+    gameCamera = new GameCamera();
     stage = new Stage(new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, gameCamera.camera));
     Sprites.getInstance().stage = stage;
     stage.setDebugAll(HuntedGame.debug);

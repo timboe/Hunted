@@ -38,7 +38,7 @@ public class GameCamera {
 
   public void centreOnPlayer(boolean withOffset) {
     currentPos.set( Sprites.getInstance().getPlayer().getX() + Param.TILE_SIZE/2,
-      Sprites.getInstance().getPlayer().getY() + Param.TILE_SIZE/2 + (withOffset ? 1024 : 0));
+      Sprites.getInstance().getPlayer().getY() + Param.TILE_SIZE/2 + (withOffset ? 2048 : 0));
     currentZoom = 0.25f;
     Gdx.app.log("GameScreen","Centred on " + currentPos);
   }
