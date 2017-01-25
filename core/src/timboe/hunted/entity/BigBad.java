@@ -87,8 +87,8 @@ public class BigBad extends ParticleEffectActor {
     lightAttachment.createFixture(fixtureDef);
     circleShape.dispose();
 
-    addTorchToEntity(45f, Param.PLAYER_TORCH_STRENGTH, Param.EVIL_FLAME, false, null);
-    addTorchToEntity(180f, Param.SMALL_TORCH_STRENGTH, Param.EVIL_FLAME, true, null);
+    addTorchToEntity(Param.RAYS_BIGBAD, 45f, Param.PLAYER_TORCH_STRENGTH, Param.EVIL_FLAME, false, null);
+    addTorchToEntity(Param.RAYS_SMALL, 180f, Param.SMALL_TORCH_STRENGTH, Param.EVIL_FLAME, true, null);
     torchLight[0].attachToBody(lightAttachment);
     torchLight[0].setIgnoreAttachedBody(true);
     torchLight[0].setContactFilter(Param.TORCH_ENTITY,

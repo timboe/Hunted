@@ -149,6 +149,15 @@ public class GameScreen implements Screen, InputProcessor {
     Batch batch = stage.getBatch();
     batch.setProjectionMatrix(gameCamera.camera.combined);
     batch.begin();
+    // Draw base
+//    for (int x = (int)gameCamera.cullBox.x/Param.TILE_SIZE; x < (gameCamera.cullBox.x + gameCamera.cullBox.width)/Param.TILE_SIZE; ++x) {
+//      for (int y = (int)gameCamera.cullBox.y/Param.TILE_SIZE; y < (gameCamera.cullBox.y + gameCamera.cullBox.height)/Param.TILE_SIZE; ++y) {
+//        if (!Utility.getOutOfBound(x,y) && Sprites.getInstance().tileMap[x][y].isVisible()) {
+//          Sprites.getInstance().tileMap[x][y].draw(batch,1f);
+//        }
+//      }
+//    }
+    // Optional
     stage.getRoot().draw(batch, 1);
     batch.end();
 

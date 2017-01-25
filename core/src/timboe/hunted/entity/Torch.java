@@ -46,7 +46,6 @@ public class Torch extends EntityBase {
     torchAngle = a * (float)(180f/Math.PI); // Degrees needed below - WTF?
     primaryTorchType = c;
     isPartial = partial;
-//    setAsTorchBody(x,y,r);
     addTorchSensor(sX,sY);
     lightEffectPos = new Vector2(lX, lY);
     lightPos = new Vector2(x,y);
@@ -72,9 +71,9 @@ public class Torch extends EntityBase {
     circleShape.dispose();
   }
 
-  public void addTorchToEntity(float range, float distance, Color c, boolean xRay, Vector2 loc) {
+  public void addTorchToEntity(int rays, float range, float distance, Color c, boolean xRay, Vector2 loc) {
     torchLight[nLight] = new ConeLight(Physics.getInstance().rayHandler,
-      Param.RAYS,
+      rays,
       c,
       distance,
       loc != null ? loc.x : 0f, loc != null ? loc.y : 0f, torchAngle, range); // Degrees? WTF?
@@ -101,13 +100,14 @@ public class Torch extends EntityBase {
     isOn = true;
     if (doSound) Sounds.getInstance().ignite();
     float range = isPartial ? 90f : 180f;
-//    Gdx.app.log("Torch", "Turning on " + this + " at angle " + torchAngle);
-    addTorchToEntity(range, Param.WALL_TORCH_STRENGTH,  primaryTorchType, false, lightPos);
+    float distance = (primaryTorchType == Param.WALL_FLAME_CAST_N ? Param.WALL_N_TORCH_STRENGTH : Param.WALL_TORCH_STRENGTH);
+    distance = Param.WALL_TORCH_STRENGTH;
+    addTorchToEntity(Param.RAYS, range, distance,  primaryTorchType, false, lightPos);
     torchLight[0].setStaticLight(true);
     Physics.getInstance().litTorches.add(this);
     Sprites.getInstance().addFlameEffect(lightEffectPos);
     if (needsSecondLight) {
-      addTorchToEntity(180f, Param.SMALL_TORCH_STRENGTH, Param.WALL_FLAME_SPOT,  true, lightEffectPos);
+      addTorchToEntity(Param.RAYS_SMALL, 180f, Param.SMALL_TORCH_STRENGTH, Param.WALL_FLAME_SPOT,  true, lightEffectPos);
       torchLight[1].setStaticLight(true);
     }
   }

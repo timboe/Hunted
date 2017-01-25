@@ -12,11 +12,11 @@ public class HuntedGame extends Game {
 
   private GameScreen theGameScreen;
   public static boolean debug = false;
-  public static boolean lights = false;
+  public static boolean lights = true;
   public static boolean particles = true;
   public static boolean world = true;
   public static boolean physicsChests = false;
-  public static boolean sounds = false;
+  public static boolean sounds = true;
 
   @Override
 	public void create () {

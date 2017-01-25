@@ -28,7 +28,7 @@ public class Sprites {
   }
 
   private float deltaTot;
-  private Tile[][] tileMap;
+  public Tile[][] tileMap;
   private HashSet<ParticleEffectActor> particles;
   private Player player;
   private BigBad bigBad;
@@ -88,6 +88,7 @@ public class Sprites {
     if (isClutter) clutter.add(a);
   }
 
+  // TODO depricate this?
   public void addTileActors() {
     if (!HuntedGame.world) return;
     for (int x = 0; x < Param.TILE_X; ++x) {
@@ -520,6 +521,7 @@ public class Sprites {
           if (rnd < .5f) t.setTexture("wallNTorchA");
           else t.setTexture("wallNTorchB");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
+          // TODO make the light be in the correct section
           Physics.getInstance().addTorch(x + .5f, y + 1.2f, x + .5f, y + 1.f, x + .5f, y, true, (float)Math.PI*3f/2f, Param.WALL_FLAME_CAST_N);
           ///////////////////
           ///////////////////

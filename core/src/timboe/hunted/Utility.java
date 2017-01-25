@@ -27,10 +27,10 @@ public class Utility {
   static public boolean prob(float chanceOfPass) {
     return (r.nextFloat() <= chanceOfPass);
   }
-//
-//  static public float getTargetAngle(Vector2 target, Body from) {
-//    return getTargetAngle(target, from.getPosition());
-//  }
+
+  static public boolean getOutOfBound(int x, int y) {
+    return x < 0 || y < 0 || x >= Param.TILE_X || y >= Param.TILE_Y;
+  }
 
   static public float getTargetAngle(float targetX, float targetY, Vector2 from) {
     float targetAngle = (float) Math.atan2(targetY - from.y, targetX - from.x);

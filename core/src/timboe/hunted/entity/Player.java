@@ -40,12 +40,12 @@ public class Player extends ParticleEffectActor {
     lightAttachment.createFixture(fixtureDef);
     circleShape.dispose();
 
-    addTorchToEntity(180f, Param.PLAYER_TORCH_STRENGTH, Param.PLAYER_FLAME,  false, null);
+    addTorchToEntity(Param.RAYS_PLAYER, 180f, Param.PLAYER_TORCH_STRENGTH, Param.PLAYER_FLAME,  false, null);
     torchLight[0].setContactFilter(Param.TORCH_ENTITY,
       (short)0,
       (short)(Param.BIGBAD_ENTITY|Param.WORLD_ENTITY|Param.CLUTTER_ENTITY)); // I am a, 0, I collide with
     torchLight[0].attachToBody(lightAttachment);
-    torchLight[0].setIgnoreAttachedBody(true);
+//    torchLight[0].setActive(false);
 
     particleEffect = Utility.getNewFlameEffect();
   }
