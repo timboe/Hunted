@@ -13,7 +13,7 @@ public class Param {
   public static final int DISPLAY_X = 1280;
   public static final int DISPLAY_Y = 720;
 
-  public static final int WORLDGEN_TRIES = 100;
+  public static final int WORLDGEN_TRIES = 250;
 
   public static final int CAMERA_LEAD = TILE_SIZE*2;
 

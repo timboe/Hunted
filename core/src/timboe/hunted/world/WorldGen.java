@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Chest;
 import timboe.hunted.entity.Clutter;
 import timboe.hunted.entity.Tile;
@@ -140,10 +141,10 @@ public class WorldGen {
   }
 
   private boolean placeBigBad() {
-    // Find the room nearest the centre
+    // Find the room nearest the centre-bottom
     nearestCentre = null;
     float minDist = 9999f;
-    final Vector2 target = new Vector2(Param.TILE_X/2, Param.TILE_Y/2);
+    final Vector2 target = new Vector2(Param.TILE_X/2, Param.TILE_Y/4);
     for (Room room : rooms) {
       Vector2 dist = new Vector2(room.x + room.width/2, room.y + room.height/2);
       dist.sub(target);
@@ -158,6 +159,7 @@ public class WorldGen {
     }
     // Place baddy
     Sprites.getInstance().getBigBad().setPhysicsPosition(Math.round(nearestCentre.x + nearestCentre.width/2), Math.round(nearestCentre.y + nearestCentre.height/2));
+    Sprites.getInstance().getBigBad().aiState = BigBad.AIState.RETURN_TO_WAYPOINT;
     return true;
   }
 

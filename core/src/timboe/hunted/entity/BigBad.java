@@ -35,7 +35,7 @@ public class BigBad extends ParticleEffectActor {
     RETURN_TO_WAYPOINT, // Clear destination list and add just the most recent waypoint. Leads to PATHING_TO_WAYPOINT
     CHASE, // Home in on player. Leads to END or RETURN_TO_WAYPOINT.
     END} // Home in faster than player's speed. No return.
-  private AIState aiState = AIState.RETURN_TO_WAYPOINT;
+  public AIState aiState = AIState.RETURN_TO_WAYPOINT;
   private LinkedList<Tile> movementTargets; // List of destinations for AI
   private HashSet<Room> roomsVisited;
   private Vector2 atDestinationVector = new Vector2();

@@ -136,6 +136,7 @@ public class Physics {
     litTorches = new HashSet<Torch>();
 
     ambientLightMod = Param.AMBIENT_LIGHT.cpy();
+    currentReductionPercent = 1f;
 
     RayHandler.setGammaCorrection(false);     // enable or disable gamma correction
     RayHandler.useDiffuseLight(false);       // enable or disable diffused lighting
