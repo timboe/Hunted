@@ -100,8 +100,7 @@ public class Torch extends EntityBase {
     isOn = true;
     if (doSound) Sounds.getInstance().ignite();
     float range = isPartial ? 90f : 180f;
-    float distance = (primaryTorchType == Param.WALL_FLAME_CAST_N ? Param.WALL_N_TORCH_STRENGTH : Param.WALL_TORCH_STRENGTH);
-    distance = Param.WALL_TORCH_STRENGTH;
+    float distance = Param.WALL_TORCH_STRENGTH;
     addTorchToEntity(Param.RAYS, range, distance,  primaryTorchType, false, lightPos);
     torchLight[0].setStaticLight(true);
     Physics.getInstance().litTorches.add(this);

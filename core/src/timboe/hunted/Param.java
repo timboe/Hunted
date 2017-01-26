@@ -24,22 +24,19 @@ public class Param {
 
   public static final Color EVIL_FLAME = new Color(1f, 0f, 0f, 1f);
 //  public static final Color PLAYER_FLAME = new Color(.5f, .5f, .2f, .9f);
-  public static final Color PLAYER_FLAME = new Color(.0f, .0f, .0f, 1f);
+  public static final Color PLAYER_FLAME = new Color(.15f, .15f, 0.0f, .8f);
 //  public static final Color WALL_FLAME_CAST_N = new Color(.5f, .5f, .2f, .7f);
 //  public static final Color WALL_FLAME_CAST_ESW = new Color(.5f, .5f, .2f, .4f);
 //  public static final Color WALL_FLAME_CAST_C = new Color(.5f, .5f, .2f, .4f);
-  public static final Color WALL_FLAME_CAST_N = new Color(.0f, .0f, .0f, 1f);
-  public static final Color WALL_FLAME_CAST_ESW = new Color(.0f, .0f, .0f, 1f);
-  public static final Color WALL_FLAME_CAST_C = new Color(.0f, .0f, .0f, 1f);
+  public static final Color WALL_FLAME_CAST = new Color(.15f, .15f, .0f, .8f);
   public static final Color WALL_FLAME_SPOT = new Color(1f, 0f, 0f, .8f);
 
-  public static final int PLAYER_TORCH_STRENGTH = 10;
-  public static final int WALL_TORCH_STRENGTH = PLAYER_TORCH_STRENGTH/2;
-  public static final int WALL_N_TORCH_STRENGTH = PLAYER_TORCH_STRENGTH; // this one has more to shine through
+  public static final float PLAYER_TORCH_STRENGTH = 10f;
+  public static final float WALL_TORCH_STRENGTH = 7f;
   public static final float SMALL_TORCH_STRENGTH = 2f;
   public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, .03f);
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
-  public static final int TORCH_SPACING = 5;
+  public static final int TORCH_SPACING = 7;
   public static final float TORCH_FLICKER = 2f;
   public static final int MAX_MINI_LIGHT = 20; // Mini lights per key room
 

@@ -33,13 +33,12 @@ public class WorldGen {
   private Room exitRoom;
   private Vector<Room> keyRooms;
 
-  private final int ROOM_PLACE_TRIES = 200;
   private final int ROOM_MEAN_SIZE = 15;
   private final int ROOM_STD_D = 5;
   private final int ROOM_BORDER_X = 2; // minimum spacing between rooms
   private final int ROOM_BORDER_Y = 4;
   private final int CORRIDOR_MAX_LENGTH = 20;
-  private final int CORRIDOR_CHANCE = 95; //%
+  private final int CORRIDOR_CHANCE = 100; //%
 
   private WorldGen() {
     r = new Random();
@@ -111,7 +110,7 @@ public class WorldGen {
     final int minY = 1;
     final int maxX = Param.TILE_X - Param.MIN_ROOM_SIZE;
     final int maxY = Param.TILE_Y - Param.MIN_ROOM_SIZE;
-    while (t < ROOM_PLACE_TRIES) {
+    while (t < Param.WORLDGEN_TRIES) {
       boolean pass = true;
       long w = Math.round(ROOM_MEAN_SIZE + (r.nextGaussian() * ROOM_STD_D));
       long h = Math.round(ROOM_MEAN_SIZE + (r.nextGaussian() * ROOM_STD_D));
@@ -168,7 +167,7 @@ public class WorldGen {
       int chests = MathUtils.clamp((int) Math.round(Math.abs(r.nextGaussian())), 0, 2);
       if (room.getConnectedRooms().size() == 1) ++chests;
       if (chests == 0) continue;
-      for (int t = 0; t < ROOM_PLACE_TRIES; ++t) {
+      for (int t = 0; t < Param.WORLDGEN_TRIES; ++t) {
         int rX = (int)room.getX() + r.nextInt((int)room.getWidth() - 1);
         int rY = (int)room.getY() + r.nextInt((int)room.getHeight() - 1);
         if (!Sprites.getInstance().getClear(rX,rY,1,1)) continue;
@@ -184,7 +183,7 @@ public class WorldGen {
     for (Room room : allRooms) {
       int clutter = MathUtils.clamp((int) Math.round(Math.abs(r.nextGaussian())), 0, 5);
       if (clutter == 0) continue;
-      for (int t = 0; t < ROOM_PLACE_TRIES; ++t) {
+      for (int t = 0; t < Param.WORLDGEN_TRIES; ++t) {
         int rX = (int)room.getX() + r.nextInt((int)room.getWidth() - 1);
         int rY = (int)room.getY() + r.nextInt((int)room.getHeight() - 1);
         Clutter c = new Clutter(rX,rY);
@@ -236,7 +235,7 @@ public class WorldGen {
       possibleRooms.add(room);
     }
     if (possibleRooms.size() < Param.KEY_ROOMS) return false;
-    while (keyRooms.size() != Param.KEY_ROOMS && ++attempt < ROOM_PLACE_TRIES) {
+    while (keyRooms.size() != Param.KEY_ROOMS && ++attempt < Param.WORLDGEN_TRIES) {
       Room room = possibleRooms.get( Utility.r.nextInt(possibleRooms.size()) );
       Vector2 roomPos = room.getPosition(new Vector2());
       boolean vetoed = roomPos.dst(entryRoomPos) < exclusionDist;

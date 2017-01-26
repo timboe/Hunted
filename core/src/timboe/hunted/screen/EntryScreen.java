@@ -22,15 +22,15 @@ import timboe.hunted.manager.Textures;
  */
 public class EntryScreen implements Screen, InputProcessor {
 
-  private Texture splash = Textures.getInstance().getSplash();
+  protected Texture splash;
   private TextureRegion escape0 = Textures.getInstance().getTexture("escape0");
   private TextureRegion escape1 = Textures.getInstance().getTexture("escape1");
   private TextureRegion escape;
 
-  private OrthographicCamera camera;
+  protected OrthographicCamera camera;
   private FitViewport viewPort;
   private Batch batch = new SpriteBatch();
-  private Rectangle buttonRec;
+  protected Rectangle buttonRec;
   private Vector2 convert = new Vector2();
 
   public EntryScreen() {
@@ -41,6 +41,11 @@ public class EntryScreen implements Screen, InputProcessor {
 
     camera = new OrthographicCamera();
     viewPort = new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, camera);
+    loadBack();
+  }
+
+  void loadBack() {
+    splash = Textures.getInstance().getSplash();
   }
 
   @Override
@@ -49,6 +54,8 @@ public class EntryScreen implements Screen, InputProcessor {
     batch.setProjectionMatrix(camera.combined);
     batch.begin();
     batch.draw(splash,0,0);
+//    camera.position.set(0 - viewPort.getWorldWidth()/2, 0 - viewPort.getWorldHeight()/2, 0);
+//    camera.update();
     batch.draw(escape, buttonRec.x, buttonRec.y);
     batch.end();
   }

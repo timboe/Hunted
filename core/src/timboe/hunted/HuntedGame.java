@@ -26,7 +26,7 @@ public class HuntedGame extends Game {
     theGameScreen = new GameScreen();
     theLooseScreen = new LooseScreen();
     theEntryScreen = new EntryScreen();
-    setScreen(theEntryScreen);
+    setToEntry();
   }
 
   public void setToGame() {

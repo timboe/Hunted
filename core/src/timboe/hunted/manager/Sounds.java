@@ -24,9 +24,10 @@ public class Sounds {
   private Sound footstepSound[] = new Sound[nFootsteps];
   private final int nTwang = 4;
   private Sound twangSound[] = new Sound[nTwang];
+  private final int nIgnite = 3;
+  private Sound ignitionSound[] = new Sound[nIgnite];
   private Sound unlockSound = Gdx.audio.newSound(Gdx.files.internal("336562__anthousai__keys-rustling-02.ogg"));
   private Sound treasureSound = Gdx.audio.newSound(Gdx.files.internal("202092__spookymodem__chest-opening.ogg"));
-  private Sound ignitionSound = Gdx.audio.newSound(Gdx.files.internal("331621__hykenfreak__flame-ignition.ogg"));
   private Sound thudSound = Gdx.audio.newSound(Gdx.files.internal("215162__otisjames__thud.ogg"));
   private Sound doorOpenSound = Gdx.audio.newSound(Gdx.files.internal("97790__cgeffex__dungeon-gates.ogg"));
 
@@ -60,6 +61,10 @@ public class Sounds {
     twangSound[1] = Gdx.audio.newSound(Gdx.files.internal("twang1.ogg"));
     twangSound[2] = Gdx.audio.newSound(Gdx.files.internal("twang2.ogg"));
     twangSound[3] = Gdx.audio.newSound(Gdx.files.internal("twang3.ogg"));
+
+    ignitionSound[0] = Gdx.audio.newSound(Gdx.files.internal("331621__hykenfreak__flame-ignition0.ogg"));
+    ignitionSound[1] = Gdx.audio.newSound(Gdx.files.internal("331621__hykenfreak__flame-ignition1.ogg"));
+    ignitionSound[2] = Gdx.audio.newSound(Gdx.files.internal("331621__hykenfreak__flame-ignition2.ogg"));
 
     if (!HuntedGame.sounds) {
       musicOn = false;
@@ -104,7 +109,7 @@ public class Sounds {
 
   public void ignite() {
     if (!sfxOn) return;
-    ignitionSound.play();
+    ignitionSound[Utility.r.nextInt(nIgnite)].play();
   }
 
   public void unlock() {
@@ -168,6 +173,7 @@ public class Sounds {
     for (Sound s : monsterCall) s.dispose();
     for (Sound s : twangSound) s.dispose();
     for (Sound s : footstepSound) s.dispose();
+    for (Sound s : ignitionSound) s.dispose();
   }
 
 }

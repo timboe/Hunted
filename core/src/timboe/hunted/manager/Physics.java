@@ -52,7 +52,7 @@ public class Physics {
   }
 
   public Torch addTorch(float x, float y) {
-    return addTorch(x,y,x,y,x,y,false,0f,Param.WALL_FLAME_CAST_C);
+    return addTorch(x,y,x,y,x,y,false,0f,Param.WALL_FLAME_CAST);
   }
 
   public void updatePhysics(float delta) {
@@ -134,6 +134,8 @@ public class Physics {
     rayHandler = new RayHandler(world);
     torches = new HashSet<Torch>();
     litTorches = new HashSet<Torch>();
+
+    ambientLightMod = Param.AMBIENT_LIGHT.cpy();
 
     RayHandler.setGammaCorrection(false);     // enable or disable gamma correction
     RayHandler.useDiffuseLight(false);       // enable or disable diffused lighting

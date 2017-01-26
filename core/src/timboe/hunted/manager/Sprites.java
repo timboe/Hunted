@@ -508,20 +508,20 @@ public class Sprites {
           && (y+3 >= Param.TILE_Y || !getTile(x,y+3).getIsFloor()) ) { //TODO horrid condition
           t.setTexture("wallWTorch");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .25f, y + 1.3f, x + .85f, y + 1.3f, x + 1f, y + 1.3f, true, 0f, Param.WALL_FLAME_CAST_ESW);
+          Physics.getInstance().addTorch(x + .25f, y + 1.3f, x + .85f, y + 1.3f, x + 1f, y + 1.3f, true, 0f, Param.WALL_FLAME_CAST);
         } else if (torch && y%Param.TORCH_SPACING==0 && f.get("W") && !f.get("N") && !f.get("S") && f.get("NW") // EAST TORCH
           && (y+3 >= Param.TILE_Y || !getTile(x,y+3).getIsFloor()) ) { //TODO horrid condition
           t.setTexture("wallETorch");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .75f, y + 1.3f, x + .15f, y + 1.3f, x, y + 1.3f, true, (float)Math.PI, Param.WALL_FLAME_CAST_ESW);
+          Physics.getInstance().addTorch(x + .75f, y + 1.3f, x + .15f, y + 1.3f, x, y + 1.3f, true, (float)Math.PI, Param.WALL_FLAME_CAST);
         } else if (torch && x%Param.TORCH_SPACING==0 && f.get("N") && !f.get("E") && !f.get("W")) { // SOUTH TORCH
           t.setTexture("wallSTorch");
-          Physics.getInstance().addTorch(x + .5f, y + .25f, x + .5f, y + .85f, x + .5f, y + 1f, true, (float)Math.PI/2f, Param.WALL_FLAME_CAST_ESW);
+          Physics.getInstance().addTorch(x + .5f, y + .25f, x + .5f, y + .85f, x + .5f, y + 1f, true, (float)Math.PI/2f, Param.WALL_FLAME_CAST);
         } else if (torch && x%Param.TORCH_SPACING==0 && f.get("S") && !f.get("E") && !f.get("W")) { // NORTH TORCH
           if (rnd < .5f) t.setTexture("wallNTorchA");
           else t.setTexture("wallNTorchB");
           getTile(x, y+1).setVisible(false); // DOUBLE-TILE
-          Physics.getInstance().addTorch(x + .5f, y + 1.2f, x + .5f, y + 1.f, x + .5f, y, true, (float)Math.PI*3f/2f, Param.WALL_FLAME_CAST_N);
+          Physics.getInstance().addTorch(x + .5f, y + 1.2f, x + .5f, y + 1.f, x + .5f, y, true, (float)Math.PI*3f/2f, Param.WALL_FLAME_CAST);
           ///////////////////
           ///////////////////
         } else if (f.get("E") && !f.get("N") && !f.get("S")) { // WEST WALL
