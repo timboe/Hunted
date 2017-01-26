@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import timboe.hunted.Param;
 import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sounds;
@@ -27,21 +27,26 @@ public class EntryScreen implements Screen, InputProcessor {
   private TextureRegion escape1 = Textures.getInstance().getTexture("escape1");
   private TextureRegion escape;
 
-  private OrthographicCamera camera = new OrthographicCamera();
-  private Viewport viewPort = new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, camera);
+  private OrthographicCamera camera;
+  private FitViewport viewPort;
   private Batch batch = new SpriteBatch();
   private Rectangle buttonRec;
+  private Vector2 convert = new Vector2();
 
   public EntryScreen() {
     buttonRec = new Rectangle(Param.TILE_SIZE * 10, Param.TILE_SIZE * 5,
       escape0.getRegionWidth(), escape0.getRegionHeight());
     escape = escape0;
     Sounds.getInstance().startAmbiance();
+
+    camera = new OrthographicCamera();
+    viewPort = new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, camera);
   }
 
   @Override
   public void render(float delta) {
     renderClear();
+    batch.setProjectionMatrix(camera.combined);
     batch.begin();
     batch.draw(splash,0,0);
     batch.draw(escape, buttonRec.x, buttonRec.y);
@@ -73,7 +78,9 @@ public class EntryScreen implements Screen, InputProcessor {
 
   @Override
   public void resize(int width, int height) {
+    Gdx.app.log("Resize", "ReSize in ["+this+"] ("+width+","+height+")");
     viewPort.update(width, height, true);
+    camera.update();
   }
 
   @Override
@@ -102,8 +109,9 @@ public class EntryScreen implements Screen, InputProcessor {
 
   @Override
   public boolean mouseMoved(int screenX, int screenY) {
-    screenY = (int)camera.viewportHeight - screenY;
-    if (buttonRec.contains(screenX, screenY)) {
+    convert.set(screenX, screenY);
+    convert = viewPort.unproject(convert);
+    if (buttonRec.contains(convert)) {
       escape = escape1;
     } else {
       escape = escape0;
@@ -114,12 +122,14 @@ public class EntryScreen implements Screen, InputProcessor {
   @Override
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
     return mouseMoved(screenX, screenY);
+
   }
 
   @Override
   public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-    screenY = (int)camera.viewportHeight - screenY;
-    if (buttonRec.contains(screenX, screenY)) {
+    convert.set(screenX, screenY);
+    convert = viewPort.unproject(convert);
+    if (buttonRec.contains(convert)) {
       GameState.getInstance().game.setToGame();
     }
     return false;
@@ -127,6 +137,6 @@ public class EntryScreen implements Screen, InputProcessor {
 
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
-    return false;
+    return mouseMoved(screenX, screenY);
   }
 }

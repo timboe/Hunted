@@ -85,20 +85,14 @@ public class GameScreen implements Screen, InputProcessor {
   @Override
   public void hide() {
     Gdx.input.setInputProcessor(null);
-//		unHookStage();
   }
 
   @Override
   public void pause() {
-//		unHookStage();
-//		Starmap.unHookListners();
   }
 
   @Override
   public void resume() {
-    // TODO Auto-generated method stub
-    //ADD RESTORE LINE
-//		hookStage();
   }
 
   protected void renderClear() {

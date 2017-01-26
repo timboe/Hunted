@@ -6,7 +6,7 @@ import com.badlogic.gdx.Screen;
 /**
  * Created by Tim on 25/01/2017.
  */
-public class LooseScreen implements Screen, InputProcessor {
+public class LooseScreen extends EntryScreen implements Screen, InputProcessor {
 
   public LooseScreen() {
   }
@@ -39,44 +39,5 @@ public class LooseScreen implements Screen, InputProcessor {
   public void resume() {
   }
 
-  @Override
-  public boolean keyTyped(char character) {
-    return false;
-  }
-
-  @Override
-  public boolean keyDown(int keycode) {
-    return false;
-  }
-
-  @Override
-  public boolean keyUp(int keycode) {
-    return false;
-  }
-
-  @Override
-  public boolean scrolled(int amount) {
-    return false;
-  }
-
-  @Override
-  public boolean mouseMoved(int screenX, int screenY) {
-    return false;
-  }
-
-  @Override
-  public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    return false;
-  }
-
-  @Override
-  public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-    return false;
-  }
-
-  @Override
-  public boolean touchDragged(int screenX, int screenY, int pointer) {
-    return false;
-  }
 }
 
