@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.manager.GameState;
@@ -40,6 +41,8 @@ public class GameCamera {
     currentPos.set( Sprites.getInstance().getPlayer().getX() + Param.TILE_SIZE/2,
       Sprites.getInstance().getPlayer().getY() + Param.TILE_SIZE/2 + (withOffset ? 2048 : 0));
     currentZoom = 0.25f;
+    cullBox.setWidth(Param.DISPLAY_X);
+    cullBox.setHeight(Param.DISPLAY_Y);
     Gdx.app.log("GameScreen","Centred on " + currentPos);
   }
 
@@ -49,10 +52,13 @@ public class GameCamera {
 
     final boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
     final float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
-    final boolean endZoom = Sprites.getInstance().getBigBad().isEnd();
+    boolean endZoom = Sprites.getInstance().getBigBad().isEnd();
+    final boolean winZoom = GameState.getInstance().gameIsWon || HuntedGame.zoomOut;
+    if (winZoom) endZoom = false;
 
     desiredPos.set( Sprites.getInstance().getPlayer().getX() + Param.TILE_SIZE/2,
       Sprites.getInstance().getPlayer().getY() + Param.TILE_SIZE/2);
+
     float angle =  Sprites.getInstance().getPlayer().getBody().getAngle();
 
     if (!endZoom) {
@@ -60,7 +66,14 @@ public class GameCamera {
       desiredPos.y += Math.sin(angle) * Param.CAMERA_LEAD;
     }
 
-    float moveSpeed = frames * (endZoom ? .5f : 0.035f);
+    float moveSpeed = frames * (endZoom ? .4f : 0.035f);
+    if (winZoom) {
+      desiredPos.set((Param.TILE_X*Param.TILE_SIZE)/2, (Param.TILE_Y*Param.TILE_SIZE)/2);
+      moveSpeed = 0.003f;
+      cullBox.setWidth(Param.TILE_X * Param.TILE_SIZE);
+      cullBox.setHeight(Param.TILE_Y * Param.TILE_SIZE);
+    }
+
     currentPos.x = currentPos.x + (moveSpeed * (desiredPos.x - currentPos.x));
     currentPos.y = currentPos.y + (moveSpeed * (desiredPos.y - currentPos.y));
 
@@ -74,14 +87,20 @@ public class GameCamera {
     if (GameState.getInstance().movementOn) desiredZoom = .6f;
     else desiredZoom = .4f;
 
+
     float aMod = 0;
-    if (endZoom) {
-      final float mod = (distance - 1f) / Param.BIGBAD_POUNCE_DISTANCE; // Modification due to object size
+    if (endZoom) { // EndZoom is loosing inner zoom
+      final float mod = (distance - 0.5f) / Param.BIGBAD_POUNCE_DISTANCE; // Modification due to object size
       aMod = (float)Math.PI * mod * 10f;
       desiredZoom *= mod;
     }
 
-    float zoomSpeed = frames * (endZoom ? .5f : 0.025f);
+    float zoomSpeed = frames * (endZoom ? .4f : 0.025f);
+    if (winZoom) {
+      desiredZoom = 6f; // 128/(720/32)
+      zoomSpeed = 0.003f;
+    }
+
     currentZoom = currentZoom + (zoomSpeed * (desiredZoom - currentZoom));
 
     camera.position.set(shakePos, 0);

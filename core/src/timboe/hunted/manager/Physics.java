@@ -94,12 +94,17 @@ public class Physics {
   }
 
   public void torchPhysics() {
+
+    for (Torch t : litTorches) {
+      t.flicker();
+    }
+
     // Check if torches need dimming
     float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
     boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
     boolean update = false;
     if (canSeePlayer && distance <= Param.PLAYER_TORCH_STRENGTH) {
-      float desiredReductionPercent = distance / (float)Param.PLAYER_TORCH_STRENGTH;
+      float desiredReductionPercent = distance / Param.PLAYER_TORCH_STRENGTH;
       currentReductionPercent = currentReductionPercent + (0.05f * (desiredReductionPercent - currentReductionPercent));
       update = true;
       resetLights = true;
@@ -112,16 +117,13 @@ public class Physics {
     if (update) {
       Sprites.getInstance().getPlayer().modTorch( currentReductionPercent );
       Sprites.getInstance().getBigBad().modTorch( Math.min(currentReductionPercent + 0.5f, 1f) );
-      ambientLightMod.a = Param.AMBIENT_LIGHT.a * (distance / (float)Param.PLAYER_TORCH_STRENGTH);
+      ambientLightMod.a = Param.AMBIENT_LIGHT.a * (distance / Param.PLAYER_TORCH_STRENGTH);
       rayHandler.setAmbientLight(ambientLightMod);
       for (Torch t : litTorches) {
         t.modTorch( currentReductionPercent );
       }
     }
 
-    for (Torch t : litTorches) {
-      t.flicker();
-    }
   }
 
   public void reset() {

@@ -35,6 +35,7 @@ public class GameScreen implements Screen, InputProcessor {
   public Stage stage;
   public GameCamera gameCamera;
 
+
   private PerformanceCounter renderStage = new PerformanceCounter("Render-Stage");
   private PerformanceCounter renderLights = new PerformanceCounter("Render-Lights");
   private PerformanceCounter renderUI = new PerformanceCounter("Render-UI");
@@ -42,7 +43,6 @@ public class GameScreen implements Screen, InputProcessor {
   private FPSLogger fpsLogger = new FPSLogger();
 
   private ShapeRenderer shapeRenderer = new ShapeRenderer();
-  private boolean fullscreen = false;
 
   private boolean keyN = false, keyE = false, keyS = false, keyW = false, keyAlt = false;
 
@@ -262,8 +262,8 @@ public class GameScreen implements Screen, InputProcessor {
     else if (keycode == Input.Keys.DOWN) keyS = true;
     else if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = true;
     if (keycode == Input.Keys.ENTER && keyAlt) {
-      fullscreen = !fullscreen;
-      if (fullscreen) Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+      GameState.getInstance().fullscreen = !GameState.getInstance().fullscreen;
+      if (GameState.getInstance().fullscreen) Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
       else Gdx.graphics.setWindowedMode(Param.DISPLAY_X, Param.DISPLAY_Y);
     }
     Sprites.getInstance().getPlayer().updateDirection(keyN, keyE, keyS, keyW);

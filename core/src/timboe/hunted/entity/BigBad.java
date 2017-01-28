@@ -11,7 +11,6 @@ import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.pathfinding.PathFinding;
 import timboe.hunted.world.Room;
-import timboe.hunted.world.WorldGen;
 
 import java.util.*;
 
@@ -105,6 +104,7 @@ public class BigBad extends ParticleEffectActor {
   public boolean isEnd() { return aiState == AIState.END; }
 
   private void checkStartChase() {
+    if (GameState.getInstance().gameIsWon) return;
     if (sameRoomAsPlayer && !isChasing()) {
       aiState = AIState.CHASE;
       Gdx.app.log("AI","checkStartChase -> CHASE");

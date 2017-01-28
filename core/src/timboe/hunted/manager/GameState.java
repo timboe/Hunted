@@ -1,13 +1,9 @@
 package timboe.hunted.manager;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
-import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Tile;
 import timboe.hunted.screen.GameScreen;
 import timboe.hunted.world.WorldGen;
@@ -19,6 +15,7 @@ import java.util.HashSet;
  */
 public class GameState {
 
+  public boolean fullscreen = false;
   public int frame = 0;
   public boolean[] switchStatus = new boolean[Param.KEY_ROOMS + 1];
   public float[] progress = new float[Param.KEY_ROOMS + 1];
@@ -29,6 +26,8 @@ public class GameState {
   public HashSet<Tile> waypoints; // Known good AI destinations
   public boolean userControl;
   public boolean movementOn;
+
+  public boolean gameIsWon = false;
 
   private boolean chaseOn = false;
   private float chaseVolume = 100;
@@ -54,19 +53,20 @@ public class GameState {
 
   private void resetInternal() {
     for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) {
-      progress[i] = 0;
+      progress[i] = Param.SWITCH_TIME;
       switchStatus[i] = false;
     }
     aiCooldown = 0;
     webEffect = false;
     frame = 0;
     userControl = false;
+    gameIsWon = false;
     waypoints = new HashSet<Tile>();
   }
 
   private void doSwitchLogic(int i, float delta) {
     if (switchStatus[i]) {
-      progress[i] += delta;
+      progress[i] += (i == 0 ? delta/2f : delta); // Twice as long to unlock final
       if (progress[i] >= Param.SWITCH_TIME) { // finished unlocking
         progress[i] = Param.SWITCH_TIME;
         unlockSound = false;

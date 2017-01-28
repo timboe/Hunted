@@ -1,14 +1,11 @@
 package timboe.hunted.world;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.entity.*;
 import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Sprites;
-
-import java.security.Key;
 
 /**
  * Created by Tim on 02/01/2017.
@@ -40,6 +37,9 @@ public class CollisionHandle implements ContactListener {
       if (myEntity instanceof WinMask) {
         // This means we won
         GameState.getInstance().userControl = false;
+        GameState.getInstance().gameIsWon = true;
+        Sprites.getInstance().exitDoor.sound = false;
+        Sprites.getInstance().getBigBad().aiState = BigBad.AIState.RETURN_TO_WAYPOINT;
       }
 
       if (myEntity instanceof Tile) {

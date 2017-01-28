@@ -59,10 +59,10 @@ public class LooseScreen extends EntryScreen implements Screen, InputProcessor {
   void loadBack() {
     splash = Textures.getInstance().getLoose();
 
-    torchLight[0] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_CAST, 300, 465, 560);
+    torchLight[0] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_CAST, 400, 465, 560);
     torchLight[0].setXray(true);
 
-    torchLight[1] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_SPOT, 300, 815, 560);
+    torchLight[1] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_SPOT, 400, 815, 560);
     torchLight[1].setXray(true);
   }
 

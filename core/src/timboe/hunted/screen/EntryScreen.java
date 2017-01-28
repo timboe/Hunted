@@ -5,6 +5,7 @@ import box2dLight.PointLight;
 import box2dLight.PositionalLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -48,6 +49,8 @@ public class EntryScreen implements Screen, InputProcessor {
   public ParticleEffect[] particleEffect = {null,null};
 
   protected RayHandler rayHandler;
+
+  private boolean keyAlt = false;
 
   private int torchX0 = 150;
   private int torchX1 = 1130;
@@ -165,11 +168,18 @@ public class EntryScreen implements Screen, InputProcessor {
 
   @Override
   public boolean keyDown(int keycode) {
+    if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = true;
+    if (keycode == Input.Keys.ENTER && keyAlt) {
+      GameState.getInstance().fullscreen = !GameState.getInstance().fullscreen;
+      if (GameState.getInstance().fullscreen) Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+      else Gdx.graphics.setWindowedMode(Param.DISPLAY_X, Param.DISPLAY_Y);
+    }
     return false;
   }
 
   @Override
   public boolean keyUp(int keycode) {
+    if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = false;
     return false;
   }
 

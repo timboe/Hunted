@@ -10,8 +10,8 @@ import timboe.hunted.manager.Sounds;
  */
 public class ExitDoor extends EntityBase {
 
-  boolean blocked = true;
-  boolean sound = false;
+  public boolean blocked = true;
+  public boolean sound = false;
 
   public ExitDoor(int x, int y) {
     super(x,y);
@@ -22,7 +22,6 @@ public class ExitDoor extends EntityBase {
 
   @Override
   public void act (float delta) {
-    // TODO do we need to call on the super here? We don't animate any of these so prob not
     if (GameState.getInstance().progress[0] < Param.SWITCH_TIME) return;
     if (!sound) {
       sound = true;
@@ -32,11 +31,27 @@ public class ExitDoor extends EntityBase {
       blocked = false;
       Physics.getInstance().world.destroyBody(body);
     }
-    if (currentFrame == nFrames-1) return;
-    deltaTot += delta;
-    if (deltaTot > Param.ANIM_TIME) {
-      deltaTot -= Param.ANIM_TIME;
-      ++currentFrame;
+
+    if (GameState.getInstance().gameIsWon) {
+
+      // End of game
+      if (currentFrame == 0) return;
+      deltaTot += delta;
+      if (deltaTot > Param.ANIM_TIME) {
+        deltaTot -= Param.ANIM_TIME;
+        --currentFrame;
+      }
+
+    } else {
+
+      // Not end of game
+      if (currentFrame == nFrames - 1) return;
+      deltaTot += delta;
+      if (deltaTot > Param.ANIM_TIME) {
+        deltaTot -= Param.ANIM_TIME;
+        ++currentFrame;
+      }
+
     }
   }
 }

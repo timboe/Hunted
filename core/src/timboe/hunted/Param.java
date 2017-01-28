@@ -34,7 +34,7 @@ public class Param {
   public static final float PLAYER_TORCH_STRENGTH = 10f;
   public static final float WALL_TORCH_STRENGTH = 7f;
   public static final float SMALL_TORCH_STRENGTH = 2f;
-  public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, .02f);
+  public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, .92f);
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
   public static final int TORCH_SPACING = 7;
   public static final float TORCH_FLICKER = 2f;

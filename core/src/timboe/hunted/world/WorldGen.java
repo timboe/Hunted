@@ -64,6 +64,7 @@ public class WorldGen {
       Gdx.app.exit();
     } else {
       Gdx.app.log("WorldGen", "World generation finished on " + tryN + " attempt.");
+      GameState.getInstance().userControl = true;
     }
   }
 
