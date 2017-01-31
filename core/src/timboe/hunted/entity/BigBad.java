@@ -70,9 +70,6 @@ public class BigBad extends ParticleEffectActor {
       }
     };
 
-    //    particleEffect = Utility.getNewFlameEffect();
-    // BB should not have?
-
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     lightAttachment = Physics.getInstance().world.createBody(bodyDef);
@@ -105,7 +102,8 @@ public class BigBad extends ParticleEffectActor {
 
   private void checkStartChase() {
     if (GameState.getInstance().gameIsWon) return;
-    if (sameRoomAsPlayer && !isChasing()) {
+    if (isChasing()) return;
+    if (sameRoomAsPlayer || canSeePlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE/4f) {
       aiState = AIState.CHASE;
       Gdx.app.log("AI","checkStartChase -> CHASE");
       // Give the player a hit of adrenalin
@@ -122,7 +120,8 @@ public class BigBad extends ParticleEffectActor {
     speed = Param.BIGBAD_SPEED;
     if (aiState == AIState.HUNTPATHING) {
       // If close to the destination then try slowing down a little so as not to overshoot
-      final float mod = (float)Math.min(1f, Math.log10(distanceToDestination() * 10));
+      final float mod = (float)Math.min(.95f, Math.log10(distanceToDestination() * 10)) + .05f;
+      Gdx.app.log("Dbg","Hunt mod is " + mod);
       speed = Param.BIGBAD_RUSH * mod;
     } else {
       for (int i = 1; i <= Param.KEY_ROOMS; ++i) {
@@ -153,7 +152,7 @@ public class BigBad extends ParticleEffectActor {
     // Or hunt them
     checkWebHit();
 
-    lookingAtPlayer = canSeePlayer; // TODO make this based on angle
+    lookingAtPlayer = getLookingAtPlayer();
 
     musicSting = (isChasing() || (lookingAtPlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE));
     // Lighting call
@@ -162,6 +161,15 @@ public class BigBad extends ParticleEffectActor {
     runAI();
 
     updatePosition();
+  }
+
+  private boolean getLookingAtPlayer() {
+    if (!canSeePlayer) return false;
+    float myClampedAngle = Utility.clampSignedAngle(body.getAngle());
+    float playerClampedAngle = Utility.clampSignedAngle(Sprites.getInstance().getPlayer().body.getAngle());
+    float diff = Utility.clampSignedAngle(myClampedAngle - playerClampedAngle);
+//    Gdx.app.log("Dbg","Angle Diff:" + Math.toDegrees(diff));
+    return (Math.abs(diff) < Math.PI/3f);
   }
 
   @Override
@@ -264,12 +272,12 @@ public class BigBad extends ParticleEffectActor {
     HashMap.Entry<Room, Room> toGoTo = getRoomUnderEntity().getConnectionTo(playerRoom);
     if (canSeePlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE && toGoTo != null) {
       Gdx.app.log("AI","Got visual on player in neighbouring room/corridor");
-    } else if (Utility.prob(getRoomUnderEntity().getScent()) ) { // Follow scent
-      toGoTo = getRoomUnderEntity().getNeighborRoomWithHighestScentTrail();
-      Gdx.app.log("AI", "Got scent of " + getRoomUnderEntity().getScent() * 100 + "% following to " + toGoTo.getValue() + " with scent " + toGoTo.getValue().getScent() * 100);
     } else if (Utility.prob(sixthSense)) { // Clairvoyant!
       Gdx.app.log("AI", "Being clairvoyant");
       toGoTo = getBestRoom();
+    } else if (Utility.prob(getRoomUnderEntity().getScent()) ) { // Follow scent
+      toGoTo = getRoomUnderEntity().getNeighborRoomWithHighestScentTrail();
+      Gdx.app.log("AI", "Got scent of " + getRoomUnderEntity().getScent() * 100 + "% following to " + toGoTo.getValue() + " with scent " + toGoTo.getValue().getScent() * 100);
     } else { // Pick random, prefer new rooms
       toGoTo = getRoomUnderEntity().getRandomNeighbourRoom(roomsVisited);
     }

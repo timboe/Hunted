@@ -13,7 +13,7 @@ public class Param {
   public static final int DISPLAY_X = 1280;
   public static final int DISPLAY_Y = 720;
 
-  public static final int WORLDGEN_TRIES = 250;
+  public static final int WORLDGEN_TRIES = 500;
 
   public static final int CAMERA_LEAD = TILE_SIZE*2;
 
@@ -26,15 +26,13 @@ public class Param {
 //  public static final Color PLAYER_FLAME = new Color(.5f, .5f, .2f, .9f);
   public static final Color PLAYER_FLAME = new Color(.15f, .15f, 0.0f, .8f);
 //  public static final Color WALL_FLAME_CAST_N = new Color(.5f, .5f, .2f, .7f);
-//  public static final Color WALL_FLAME_CAST_ESW = new Color(.5f, .5f, .2f, .4f);
-//  public static final Color WALL_FLAME_CAST_C = new Color(.5f, .5f, .2f, .4f);
   public static final Color WALL_FLAME_CAST = new Color(.15f, .15f, .0f, .8f);
   public static final Color WALL_FLAME_SPOT = new Color(1f, 0f, 0f, .8f);
 
   public static final float PLAYER_TORCH_STRENGTH = 10f;
   public static final float WALL_TORCH_STRENGTH = 7f;
   public static final float SMALL_TORCH_STRENGTH = 2f;
-  public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, .92f);
+  public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, .02f);
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
   public static final int TORCH_SPACING = 7;
   public static final float TORCH_FLICKER = 2f;
@@ -59,7 +57,7 @@ public class Param {
   public static final float SMELL_DISSAPATE = PLAYER_SMELL/10f; // How much of the moving smell is lost
 
   public static final int MIN_ROOM_SIZE = 5;
-  public static final int MAX_ROOM_SIZE = 21;
+  public static final int MAX_ROOM_SIZE = 25;
   public static final int KEY_ROOMS = 3;
   public static final int CORRIDOR_SIZE = MIN_ROOM_SIZE;
 

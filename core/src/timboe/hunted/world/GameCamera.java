@@ -69,7 +69,7 @@ public class GameCamera {
     float moveSpeed = frames * (endZoom ? .4f : 0.035f);
     if (winZoom) {
       desiredPos.set((Param.TILE_X*Param.TILE_SIZE)/2, (Param.TILE_Y*Param.TILE_SIZE)/2);
-      moveSpeed = 0.003f;
+      moveSpeed = 0.008f;
       cullBox.setWidth(Param.TILE_X * Param.TILE_SIZE);
       cullBox.setHeight(Param.TILE_Y * Param.TILE_SIZE);
     }
@@ -98,7 +98,7 @@ public class GameCamera {
     float zoomSpeed = frames * (endZoom ? .4f : 0.025f);
     if (winZoom) {
       desiredZoom = 6f; // 128/(720/32)
-      zoomSpeed = 0.003f;
+      zoomSpeed = 0.004f;
     }
 
     currentZoom = currentZoom + (zoomSpeed * (desiredZoom - currentZoom));

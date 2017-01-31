@@ -52,9 +52,9 @@ public class EntryScreen implements Screen, InputProcessor {
 
   private boolean keyAlt = false;
 
-  private int torchX0 = 150;
-  private int torchX1 = 1130;
-  private int torchY = 720 - 420;
+  protected int torchX0 = 150;
+  protected int torchX1 = 1130;
+  protected int torchY = 720 - 420;
 
   public EntryScreen() {
     buttonRec = new Rectangle(Param.TILE_SIZE * 10, Param.TILE_SIZE * 5,

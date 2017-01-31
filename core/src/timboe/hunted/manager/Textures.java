@@ -19,6 +19,7 @@ public class Textures {
   private Texture splash = new Texture(Gdx.files.internal("splash.png"));
   private Texture loose = new Texture(Gdx.files.internal("loose.png"));
   private Texture title = new Texture(Gdx.files.internal("Hunted.png"));
+  private Texture win = new Texture(Gdx.files.internal("win.png"));
 
   public TextureRegion getTexture(String name) {
     return atlas.findRegion(name);
@@ -26,6 +27,7 @@ public class Textures {
   public Texture getSplash() { return splash; }
   public Texture getLoose() { return loose; }
   public Texture getTitle() { return  title;  }
+  public Texture getWin() { return win; }
 
   public TextureAtlas getAtlas() { return  atlas; }
   public void dispose() {
@@ -33,5 +35,6 @@ public class Textures {
     atlas.dispose();
     loose.dispose();
     title.dispose();
+    win.dispose();
   }
 }

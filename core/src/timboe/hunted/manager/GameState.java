@@ -53,7 +53,7 @@ public class GameState {
 
   private void resetInternal() {
     for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) {
-      progress[i] = Param.SWITCH_TIME;
+      progress[i] = 0;
       switchStatus[i] = false;
     }
     aiCooldown = 0;
@@ -113,11 +113,11 @@ public class GameState {
       Sounds.getInstance().machineNoise(0);
     }
     // Compass
-    if (Sprites.getInstance().getBigBad().distanceFromPlayer <= 1.5f*Param.BIGBAD_SENSE_DISTANCE) {
+    if (Sprites.getInstance().getBigBad().distanceFromPlayer <= 2f*Param.BIGBAD_SENSE_DISTANCE) {
       float pointAngle = Utility.getTargetAngle(Sprites.getInstance().getBigBad().getBody().getPosition(),
         Sprites.getInstance().getPlayer().getBody().getPosition());
       Sprites.getInstance().compass.setDesiredArrow(pointAngle, 0, 0.75f, .1f);
-    } else if (minDist <= 2*Param.BIGBAD_SENSE_DISTANCE) {
+    } else if (minDist <= 2f*Param.BIGBAD_SENSE_DISTANCE) {
       float pointAngle = Utility.getTargetAngle(Sprites.getInstance().keySwitch[minSwitch].getBody().getPosition(),
         Sprites.getInstance().getPlayer().getBody().getPosition());
       Sprites.getInstance().compass.setDesiredArrow(pointAngle, minSwitch, 0.1f, 2f);

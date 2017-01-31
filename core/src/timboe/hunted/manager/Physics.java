@@ -28,8 +28,9 @@ public class Physics {
   public RayHandler rayHandler = null;
   public HashSet<Torch> torches = null;
   public HashSet<Torch> litTorches = null;
-  Color ambientLightMod = Param.AMBIENT_LIGHT.cpy();
-  float currentReductionPercent = 1f;
+  private Color ambientLightMod = Param.AMBIENT_LIGHT.cpy();
+  private float currentReductionPercent = 1f;
+  private boolean updateLights;
 
   private PerformanceCounter physicsProbeBox = new PerformanceCounter("Phys-box");
   private PerformanceCounter physicsProbeLight = new PerformanceCounter("Phys-light");
@@ -102,22 +103,22 @@ public class Physics {
     // Check if torches need dimming
     float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
     boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
-    boolean update = false;
+    updateLights = false;
     if (canSeePlayer && distance <= Param.PLAYER_TORCH_STRENGTH) {
       float desiredReductionPercent = distance / Param.PLAYER_TORCH_STRENGTH;
       currentReductionPercent = currentReductionPercent + (0.05f * (desiredReductionPercent - currentReductionPercent));
-      update = true;
+      updateLights = true;
       resetLights = true;
     } else if (resetLights) {
       float desiredReductionPercent = 1f;
       currentReductionPercent = currentReductionPercent + (0.05f * (desiredReductionPercent - currentReductionPercent));
-      update = true;
+      updateLights = true;
       if (Math.abs(currentReductionPercent - 1f) < 1e-4) resetLights = false;
     }
-    if (update) {
+    if (updateLights) {
       Sprites.getInstance().getPlayer().modTorch( currentReductionPercent );
       Sprites.getInstance().getBigBad().modTorch( Math.min(currentReductionPercent + 0.5f, 1f) );
-      ambientLightMod.a = Param.AMBIENT_LIGHT.a * (distance / Param.PLAYER_TORCH_STRENGTH);
+      ambientLightMod.a = Param.AMBIENT_LIGHT.a * Math.min(1f, distance / Param.PLAYER_TORCH_STRENGTH);
       rayHandler.setAmbientLight(ambientLightMod);
       for (Torch t : litTorches) {
         t.modTorch( currentReductionPercent );
@@ -139,6 +140,7 @@ public class Physics {
 
     ambientLightMod = Param.AMBIENT_LIGHT.cpy();
     currentReductionPercent = 1f;
+    updateLights = true;
 
     RayHandler.setGammaCorrection(false);     // enable or disable gamma correction
     RayHandler.useDiffuseLight(false);       // enable or disable diffused lighting
@@ -146,7 +148,7 @@ public class Physics {
     rayHandler.setBlurNum(1);           // set number of gaussian blur passes
     rayHandler.setShadows(true);        // enable or disable shadow
     rayHandler.setCulling(true);        // enable or disable culling
-    rayHandler.setAmbientLight(Param.AMBIENT_LIGHT);   // set default ambient light
+    rayHandler.setAmbientLight(ambientLightMod);   // set default ambient light
   }
 
   public void dispose() {
