@@ -106,6 +106,7 @@ public class Player extends ParticleEffectActor {
     float deltaVX = targetX - lv.x;
     float deltaVY = targetY - lv.y;
     float mass = Param.PLAYER_INERTIA_MOD * body.getMass();
+//    Gdx.app.log("Plr","V:"+lv.len() +" TargetSpeed:" + speed + " dX:" + deltaVX + " dY:" + deltaVY);
     body.applyLinearImpulse(mass * deltaVX, mass * deltaVY, body.getPosition().x, body.getPosition().y, true);
     flicker();
 

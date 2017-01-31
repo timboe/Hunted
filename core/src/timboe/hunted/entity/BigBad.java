@@ -191,8 +191,8 @@ public class BigBad extends ParticleEffectActor {
       case ROTATE: rotate(); break;
       case PATHING: case HUNTPATHING: case PATHING_TO_WAYPOINT: path(); break;
       case DOASTAR: doAStar(); break;
-      case CHASE: doChase(); break;
-      case END: doEnd(); break;
+      case CHASE: doChase(Param.PLAYER_SPEED * 1.1f); break; // Faster after player looses their speed boost
+      case END: doEnd(Sprites.getInstance().getPlayer().speed * 1.5f); break; // Always faster than player
     }
   }
 
@@ -355,7 +355,7 @@ public class BigBad extends ParticleEffectActor {
     aiState = AIState.HUNTPATHING;
   }
 
-  private void doChase() {
+  private void doChase(float bbSpeed) {
     // Keep one entry in the list
     if (movementTargets.size() > 1) movementTargets.clear();
     if (movementTargets.size() == 0) {
@@ -363,9 +363,9 @@ public class BigBad extends ParticleEffectActor {
     } else {
       movementTargets.set(0, Sprites.getInstance().getPlayer().getTileUnderEntity() );
     }
+    speed = bbSpeed; // 110% of player max speed (cannot be outrun after adrenalin runs out)
     setMoveDirection(getTargetAngle());
     setMoving(true);
-    speed = Param.PLAYER_SPEED * 1.1f; // 110% of player max speed (cannot be outrun after adrenalin runs out)
     if (aiState == AIState.CHASE && distanceFromPlayer < Param.BIGBAD_POUNCE_DISTANCE) { // see if it's game over
       aiState = AIState.END;
       Gdx.app.log("AI","doChase -> END");
@@ -376,10 +376,10 @@ public class BigBad extends ParticleEffectActor {
     }
   }
 
-  private void doEnd() {
-    doChase();
-    speed = Sprites.getInstance().getPlayer().speed * 1.05f; // Based off of players CURRENT speed - will catch
+  private void doEnd(float bbSpeed) {
+    doChase(bbSpeed);
     if (distanceFromPlayer < .5f) {
+      Sounds.getInstance().startDied();
       GameState.getInstance().game.setToLoose();
     }
   }

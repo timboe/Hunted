@@ -19,7 +19,7 @@ public class HuntedGame extends Game {
   public static boolean world = true;
   public static boolean physicsChests = false;
   public static boolean sounds = true;
-  public static boolean zoomOut = true;
+  public static boolean zoomOut = false;
 
   @Override
 	public void create () {

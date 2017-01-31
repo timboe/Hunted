@@ -17,6 +17,7 @@ public class Sounds {
 
   private Music ambiance = Gdx.audio.newMusic(Gdx.files.internal("Echoes_of_Time_v2.mp3"));
   private Music machineNoise = Gdx.audio.newMusic(Gdx.files.internal("260815__iccleste__industrial-machine-cycle.ogg"));
+  private Music died = Gdx.audio.newMusic(Gdx.files.internal("Inner_Sanctum.ogg"));
 
   private final int nMonsterCall = 4;
   private Sound monsterCall[] = new Sound[nMonsterCall];
@@ -26,7 +27,7 @@ public class Sounds {
   private Sound twangSound[] = new Sound[nTwang];
   private final int nIgnite = 3;
   private Sound ignitionSound[] = new Sound[nIgnite];
-  private Sound unlockSound = Gdx.audio.newSound(Gdx.files.internal("336562__anthousai__keys-rustling-02.ogg"));
+  private Sound unlockSound = Gdx.audio.newSound(Gdx.files.internal("336562__anthousai__keys-rustling-02.mp3"));
   private Sound treasureSound = Gdx.audio.newSound(Gdx.files.internal("202092__spookymodem__chest-opening.ogg"));
   private Sound thudSound = Gdx.audio.newSound(Gdx.files.internal("215162__otisjames__thud.ogg"));
   private Sound doorOpenSound = Gdx.audio.newSound(Gdx.files.internal("97790__cgeffex__dungeon-gates.ogg"));
@@ -77,12 +78,19 @@ public class Sounds {
     footstepSound[ Utility.r.nextInt(nFootsteps) ].play();
   }
 
+  public void startDied() {
+    if (!musicOn) return;
+    stopAmbiance();
+    chaseVolume(0);
+    died.play();
+    died.setLooping(true);
+  }
+
   public void scream(float volume) {
     if (!sfxOn) return;
     int n = Utility.r.nextInt(nMonsterCall);
     long id =  monsterCall[ n ].play();
     monsterCall[ n ].setVolume(id, volume);
-
   }
 
   public void doorOpen() {
@@ -124,6 +132,7 @@ public class Sounds {
 
   public void startAmbiance() {
     if (!musicOn) return;
+    died.stop();
     ambiance.play();
     ambiance.setLooping(true);
   }
@@ -143,6 +152,7 @@ public class Sounds {
   public void chaseVolume(float v) {
     if (!musicOn) return;
     chaseMusic[currentChase].setVolume(v);
+    if (Math.abs(v) < 1e-6) chaseMusic[currentChase].stop();
     ambiance.setVolume(1f - v);
   }
 
@@ -169,6 +179,7 @@ public class Sounds {
     ambiance.stop();
     ambiance.dispose();
     unlockSound.dispose();
+    died.dispose();
     for (Music m : chaseMusic) m.dispose();
     for (Sound s : monsterCall) s.dispose();
     for (Sound s : twangSound) s.dispose();

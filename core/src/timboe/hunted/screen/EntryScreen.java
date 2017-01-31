@@ -206,12 +206,16 @@ public class EntryScreen implements Screen, InputProcessor {
 
   }
 
+  protected void startGame() {
+    GameState.getInstance().game.setToGame();
+  }
+
   @Override
   public boolean touchUp(int screenX, int screenY, int pointer, int button) {
     convert.set(screenX, screenY);
     convert = viewPort.unproject(convert);
     if (buttonRec.contains(convert)) {
-      GameState.getInstance().game.setToGame();
+      startGame();
     }
     return false;
   }

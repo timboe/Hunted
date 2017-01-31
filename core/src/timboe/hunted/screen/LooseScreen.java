@@ -4,11 +4,13 @@ import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
+import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Textures;
 
 /**
@@ -21,6 +23,12 @@ public class LooseScreen extends EntryScreen implements Screen, InputProcessor {
   public LooseScreen() {
     super();
     buttonRec.y -= 3 * Param.TILE_SIZE;
+  }
+
+  @Override
+  protected void startGame() {
+    Sounds.getInstance().startAmbiance();
+    super.startGame();
   }
 
   @Override

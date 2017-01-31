@@ -255,12 +255,13 @@ public class GameScreen implements Screen, InputProcessor {
       keyE = false;
       keyS = false;
       keyW = false;
+    } else {
+      if (keycode == Input.Keys.LEFT) keyW = true;
+      else if (keycode == Input.Keys.RIGHT) keyE = true;
+      else if (keycode == Input.Keys.UP) keyN = true;
+      else if (keycode == Input.Keys.DOWN) keyS = true;
     }
-    if (keycode == Input.Keys.LEFT) keyW = true;
-    else if (keycode == Input.Keys.RIGHT) keyE = true;
-    else if (keycode == Input.Keys.UP) keyN = true;
-    else if (keycode == Input.Keys.DOWN) keyS = true;
-    else if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = true;
+    if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = true;
     if (keycode == Input.Keys.ENTER && keyAlt) {
       GameState.getInstance().fullscreen = !GameState.getInstance().fullscreen;
       if (GameState.getInstance().fullscreen) Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
@@ -273,11 +274,18 @@ public class GameScreen implements Screen, InputProcessor {
 
   @Override
   public boolean keyUp(int keycode) {
-    if (keycode == Input.Keys.LEFT) keyW = false;
-    else if (keycode == Input.Keys.RIGHT) keyE = false;
-    else if (keycode == Input.Keys.UP) keyN = false;
-    else if (keycode == Input.Keys.DOWN) keyS = false;
-    else if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = false;
+    if (!GameState.getInstance().userControl) {
+      keyN = false;
+      keyE = false;
+      keyS = false;
+      keyW = false;
+    } else {
+      if (keycode == Input.Keys.LEFT) keyW = false;
+      else if (keycode == Input.Keys.RIGHT) keyE = false;
+      else if (keycode == Input.Keys.UP) keyN = false;
+      else if (keycode == Input.Keys.DOWN) keyS = false;
+    }
+    if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = false;
     Sprites.getInstance().getPlayer().updateDirection(keyN, keyE, keyS, keyW);
     GameState.getInstance().movementOn = (keyN || keyE || keyS || keyW);
     return false;
@@ -288,9 +296,11 @@ public class GameScreen implements Screen, InputProcessor {
 
   @Override
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    boolean toMove = true;
+    if (!GameState.getInstance().userControl) toMove = false;
     float angle = Utility.getTargetAngle(screenX, Gdx.graphics.getHeight() - screenY, screenCentre);
-    Sprites.getInstance().getPlayer().updateDirection(true, angle);
-    GameState.getInstance().movementOn = true;
+    Sprites.getInstance().getPlayer().updateDirection(toMove, angle);
+    GameState.getInstance().movementOn = toMove;
     return false;
   }
 
@@ -304,9 +314,11 @@ public class GameScreen implements Screen, InputProcessor {
 
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
+    boolean toMove = true;
+    if (!GameState.getInstance().userControl) toMove = false;
     float angle = Utility.getTargetAngle(screenX, Gdx.graphics.getHeight() - screenY, screenCentre);
-    Sprites.getInstance().getPlayer().updateDirection(true, angle);
-    GameState.getInstance().movementOn = true;
+    Sprites.getInstance().getPlayer().updateDirection(toMove, angle);
+    GameState.getInstance().movementOn = toMove;
     return false;
   }
 

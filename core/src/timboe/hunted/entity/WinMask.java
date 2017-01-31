@@ -26,7 +26,7 @@ public class WinMask extends EntityBase {
     body.setUserData(this);
     bodyDef.type = BodyDef.BodyType.StaticBody;
     CircleShape circleShape = new CircleShape();
-    circleShape.setRadius(1.5f);
+    circleShape.setRadius(0.05f);
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
     fixtureDef.filter.categoryBits = Param.SENSOR_ENTITY; // I am a

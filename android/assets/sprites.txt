@@ -1,60 +1,60 @@
 sprites.png
-size: 1024, 788
+size: 1020, 820
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 bb0
   rotate: false
-  xy: 661, 367
+  xy: 595, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 bb1
   rotate: false
-  xy: 563, 269
+  xy: 231, 301
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 bb2
   rotate: false
-  xy: 695, 269
+  xy: 67, 301
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 bb3
   rotate: false
-  xy: 761, 269
+  xy: 493, 301
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 bb4
   rotate: false
-  xy: 893, 269
+  xy: 887, 301
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 bb5
   rotate: false
-  xy: 959, 269
+  xy: 821, 301
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 bb6
   rotate: false
-  xy: 827, 269
+  xy: 953, 301
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 bb7
   rotate: false
-  xy: 629, 269
+  xy: 559, 301
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
@@ -222,7 +222,7 @@ clutter8
   index: -1
 clutter9
   rotate: false
-  xy: 269, 203
+  xy: 137, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
@@ -243,7 +243,7 @@ clutter11
   index: -1
 clutter12
   rotate: false
-  xy: 303, 203
+  xy: 1, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
@@ -264,114 +264,114 @@ clutter14
   index: -1
 clutter15
   rotate: false
-  xy: 165, 269
+  xy: 839, 203
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 clutter16
   rotate: false
-  xy: 231, 269
+  xy: 773, 203
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 clutter17
   rotate: false
-  xy: 297, 269
+  xy: 707, 203
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 compass0
   rotate: false
-  xy: 405, 203
+  xy: 641, 203
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 compass1
   rotate: false
-  xy: 1, 269
+  xy: 509, 203
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 compass2
   rotate: false
-  xy: 203, 203
+  xy: 905, 203
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 compass3
   rotate: false
-  xy: 505, 203
+  xy: 575, 203
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 compass4
   rotate: false
-  xy: 35, 203
+  xy: 443, 203
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 entry0
   rotate: false
-  xy: 817, 137
+  xy: 395, 301
   size: 96, 64
   orig: 96, 64
   offset: 0, 0
   index: -1
 entry1
   rotate: false
-  xy: 465, 269
+  xy: 723, 301
   size: 96, 64
   orig: 96, 64
   offset: 0, 0
   index: -1
 entry2
   rotate: false
-  xy: 671, 203
+  xy: 297, 301
   size: 96, 64
   orig: 96, 64
   offset: 0, 0
   index: -1
 entry3
   rotate: false
-  xy: 769, 203
+  xy: 625, 301
   size: 96, 64
   orig: 96, 64
   offset: 0, 0
   index: -1
 entry4
   rotate: false
-  xy: 67, 269
+  xy: 133, 301
   size: 96, 64
   orig: 96, 64
   offset: 0, 0
   index: -1
 escape0
   rotate: false
-  xy: 1, 627
+  xy: 1, 659
   size: 640, 160
   orig: 640, 160
   offset: 0, 0
   index: -1
 escape1
   rotate: false
-  xy: 331, 465
+  xy: 363, 497
   size: 640, 160
   orig: 640, 160
   offset: 0, 0
   index: -1
 exitMask
   rotate: false
-  xy: 867, 203
-  size: 96, 64
-  orig: 96, 64
+  xy: 265, 497
+  size: 96, 128
+  orig: 96, 128
   offset: 0, 0
   index: -1
 floor
@@ -453,28 +453,28 @@ floor9
   index: -1
 floor10
   rotate: false
-  xy: 749, 137
+  xy: 715, 137
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 floor11
   rotate: false
-  xy: 681, 137
+  xy: 647, 137
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 floor12
   rotate: false
-  xy: 647, 137
+  xy: 681, 137
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 floor13
   rotate: false
-  xy: 715, 137
+  xy: 749, 137
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -635,7 +635,7 @@ floorZ
   index: -1
 ladder
   rotate: false
-  xy: 605, 203
+  xy: 1, 301
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -859,7 +859,7 @@ particle
   index: -1
 pillar
   rotate: false
-  xy: 397, 269
+  xy: 273, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
@@ -943,133 +943,133 @@ switch6
   index: -1
 torchTall
   rotate: false
-  xy: 431, 269
+  xy: 341, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 totemABlue0
   rotate: false
-  xy: 727, 367
+  xy: 925, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemABlue1
   rotate: false
-  xy: 1, 465
+  xy: 793, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemABlue2
   rotate: false
-  xy: 793, 367
+  xy: 661, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemAGreen0
   rotate: false
-  xy: 893, 367
+  xy: 859, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemAGreen1
   rotate: false
-  xy: 1, 367
+  xy: 1, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemAGreen2
   rotate: false
-  xy: 463, 367
+  xy: 397, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemARed0
   rotate: false
-  xy: 595, 367
+  xy: 529, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemARed1
   rotate: false
-  xy: 529, 367
+  xy: 463, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemARed2
   rotate: false
-  xy: 397, 367
+  xy: 331, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemBBlue0
   rotate: false
-  xy: 331, 367
+  xy: 265, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemBBlue1
   rotate: false
-  xy: 133, 367
+  xy: 133, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemBBlue2
   rotate: false
-  xy: 265, 367
+  xy: 67, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemBGreen0
   rotate: false
-  xy: 199, 367
+  xy: 199, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemBGreen1
   rotate: false
-  xy: 67, 367
+  xy: 133, 497
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemBGreen2
   rotate: false
-  xy: 67, 465
+  xy: 67, 497
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemBRed0
   rotate: false
-  xy: 133, 465
+  xy: 199, 497
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemBRed1
   rotate: false
-  xy: 265, 465
+  xy: 727, 399
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
   index: -1
 totemBRed2
   rotate: false
-  xy: 199, 465
+  xy: 1, 497
   size: 64, 96
   orig: 64, 96
   offset: 0, 0
@@ -1132,35 +1132,35 @@ wallEC
   index: -1
 wallETorch
   rotate: false
-  xy: 571, 203
+  xy: 205, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallInnerNE
   rotate: false
-  xy: 1, 203
+  xy: 919, 137
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallInnerNEConnectE
   rotate: false
-  xy: 101, 203
+  xy: 851, 137
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallInnerNW
   rotate: false
-  xy: 949, 137
+  xy: 953, 137
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallInnerNWConnectW
   rotate: false
-  xy: 983, 137
+  xy: 817, 137
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
@@ -1174,63 +1174,63 @@ wallInnerSE
   index: -1
 wallInnerSEConnectE
   rotate: false
-  xy: 859, 367
+  xy: 409, 203
   size: 32, 96
   orig: 32, 96
   offset: 0, 0
   index: -1
 wallInnerSW
   rotate: false
-  xy: 915, 137
+  xy: 885, 137
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallInnerSWConnectW
   rotate: false
-  xy: 959, 367
+  xy: 375, 203
   size: 32, 96
   orig: 32, 96
   offset: 0, 0
   index: -1
 wallNA
   rotate: false
-  xy: 169, 203
+  xy: 35, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallNB
   rotate: false
-  xy: 135, 203
+  xy: 987, 137
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallNE
   rotate: false
-  xy: 965, 203
+  xy: 239, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallNTorchA
   rotate: false
-  xy: 471, 203
+  xy: 103, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallNTorchB
   rotate: false
-  xy: 371, 203
+  xy: 171, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 wallNW
   rotate: false
-  xy: 337, 203
+  xy: 69, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
@@ -1328,7 +1328,7 @@ wallWC
   index: -1
 wallWTorch
   rotate: false
-  xy: 363, 269
+  xy: 307, 203
   size: 32, 64
   orig: 32, 64
   offset: 0, 0

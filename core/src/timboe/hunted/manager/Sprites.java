@@ -119,7 +119,9 @@ public class Sprites {
     final int xStart = (int)(entryRoom.x + entryRoom.width/2 - 1);
     final int yStart = (int)(entryRoom.y + entryRoom.height);
     getTile(xStart + 0, yStart).setVisible(false);
-    getTile(xStart + 1, yStart).setIsFloor(entryRoom);
+    getTile(xStart + 1, yStart).setIsFloor(entryRoom); // Exit path
+    getTile(xStart + 1, yStart + 1).setIsFloor(entryRoom); // Exit path
+    if (yStart < Param.TILE_Y-2) getTile(xStart + 1, yStart + 2).setIsFloor(entryRoom); // Exit path
     getTile(xStart + 2, yStart).setVisible(false);
     exitDoor = new ExitDoor(xStart, (int)(entryRoom.y + entryRoom.height));
     addToStage(exitDoor, false);
