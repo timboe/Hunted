@@ -69,6 +69,9 @@ public class Tile extends EntityBase implements Node<Tile> {
 
   public void moveWeb() { // Only needed during WebEffect
     if (webEffect == 1) {
+      webEffect = 2;
+      // Otherwise in one tick the web can move 2 places hence BigBad cannot sense that it is active underneath
+    } else if (webEffect == 2) {
       webEffect = -1; // Prevents recursion
       for (Tile t : webNeighbours) t.startWebEffect(webTarget);
     }

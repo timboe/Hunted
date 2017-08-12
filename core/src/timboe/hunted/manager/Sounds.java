@@ -12,8 +12,7 @@ import timboe.hunted.Utility;
  */
 public class Sounds {
 
-  boolean musicOn = true;
-  boolean sfxOn = true;
+  public boolean soundsOn = true;
 
   private Music ambiance = Gdx.audio.newMusic(Gdx.files.internal("Echoes_of_Time_v2.mp3"));
   private Music machineNoise = Gdx.audio.newMusic(Gdx.files.internal("260815__iccleste__industrial-machine-cycle.ogg"));
@@ -68,18 +67,21 @@ public class Sounds {
     ignitionSound[2] = Gdx.audio.newSound(Gdx.files.internal("331621__hykenfreak__flame-ignition2.ogg"));
 
     if (!HuntedGame.sounds) {
-      musicOn = false;
-      sfxOn = false;
+      soundsOn = false;
     }
   }
 
   public void step() {
-    if (!sfxOn) return;
+    if (!soundsOn) return;
     footstepSound[ Utility.r.nextInt(nFootsteps) ].play();
   }
 
   public void startDied() {
-    if (!musicOn) return;
+    if (!soundsOn) {
+      stopAmbiance();
+      died.stop();
+      return;
+    }
     stopAmbiance();
     chaseVolume(0);
     died.play();
@@ -87,51 +89,53 @@ public class Sounds {
   }
 
   public void scream(float volume) {
-    if (!sfxOn) return;
+    if (!soundsOn) return;
     int n = Utility.r.nextInt(nMonsterCall);
     long id =  monsterCall[ n ].play();
     monsterCall[ n ].setVolume(id, volume);
   }
 
   public void doorOpen() {
-    if (!sfxOn) return;
+    if (!soundsOn) return;
     doorOpenSound.play();
   }
 
   public void thud() {
-    if (!sfxOn) return;
+    if (!soundsOn) return;
     thudSound.play();
   }
 
-
   public void twang() {
-    if (!sfxOn) return;
+    if (!soundsOn) return;
     twangSound[Utility.r.nextInt(nTwang)].play();
   }
 
-
   public void treasure() {
-    if (!sfxOn) return;
+    if (!soundsOn) return;
     treasureSound.play();
   }
 
   public void ignite() {
-    if (!sfxOn) return;
+    if (!soundsOn) return;
     ignitionSound[Utility.r.nextInt(nIgnite)].play();
   }
 
   public void unlock() {
-    if (!sfxOn) return;
+    if (!soundsOn) return;
     unlockSound.play();
   }
 
   public void unlockStop() {
-    if (!sfxOn) return;
+    if (!soundsOn) return;
     unlockSound.stop();
   }
 
   public void startAmbiance() {
-    if (!musicOn) return;
+    if (!soundsOn){
+      died.stop();
+      ambiance.stop();
+      return;
+    }
     died.stop();
     ambiance.play();
     ambiance.setLooping(true);
@@ -142,7 +146,7 @@ public class Sounds {
   }
 
   public void startChaseMusic() {
-    if (!musicOn) return;
+    if (!soundsOn) return;
     currentChase = Utility.r.nextInt(nChaseStarts);
     chaseMusic[currentChase].play();
     chaseMusic[currentChase].setVolume(1f);
@@ -150,14 +154,14 @@ public class Sounds {
   }
 
   public void chaseVolume(float v) {
-    if (!musicOn) return;
+    if (!soundsOn) return;
     chaseMusic[currentChase].setVolume(v);
     if (Math.abs(v) < 1e-6) chaseMusic[currentChase].stop();
     ambiance.setVolume(1f - v);
   }
 
   public void machineNoise(float v) {
-    if (!musicOn) return;
+    if (!soundsOn) return;
     if (v == 0 && machineNoise.isPlaying()) {
       machineNoise.stop();
       return;
@@ -179,6 +183,7 @@ public class Sounds {
     ambiance.stop();
     ambiance.dispose();
     unlockSound.dispose();
+    died.stop();
     died.dispose();
     for (Music m : chaseMusic) m.dispose();
     for (Sound s : monsterCall) s.dispose();

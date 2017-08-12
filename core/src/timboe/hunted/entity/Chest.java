@@ -18,8 +18,8 @@ import timboe.hunted.manager.*;
 public class Chest extends EntityBase {
 
   public boolean chestOpened = false;
-  protected TextureRegion treasure[] = new TextureRegion[Param.N_TREASURE];
-  private  TextureRegion chestMask;
+  private TextureRegion treasure[] = new TextureRegion[Param.N_TREASURE];
+  private TextureRegion chestMask;
   private int treasureID;
   private int treasureHeight = -1;
   private boolean sound = false;
@@ -66,7 +66,7 @@ public class Chest extends EntityBase {
     body.applyLinearImpulse(mass * deltaVX, mass * deltaVY, body.getPosition().x, body.getPosition().y, true);
   }
 
-  public void setAsChest() {
+  private void setAsChest() {
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = HuntedGame.physicsChests ? BodyDef.BodyType.DynamicBody : BodyDef.BodyType.StaticBody;
     bodyDef.position.set((getX() / Param.TILE_SIZE) + .5f, (getY() / Param.TILE_SIZE) + .5f);

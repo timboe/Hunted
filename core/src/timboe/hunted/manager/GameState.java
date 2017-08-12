@@ -54,7 +54,7 @@ public class GameState {
   private void resetInternal() {
     for (int i = 0; i < Param.KEY_ROOMS + 1; ++i) {
       progress[i] = 0;
-      switchStatus[i] = false;
+      switchStatus[i] = HuntedGame.debug; // Should be false normally
     }
     aiCooldown = 0;
     webEffect = false;

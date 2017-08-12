@@ -55,6 +55,11 @@ public class LooseScreen extends EntryScreen implements Screen, InputProcessor {
     batch.setProjectionMatrix(camera.combined);
     batch.begin();
     batch.draw(escape, buttonRec.x, buttonRec.y);
+    if (Sounds.getInstance().soundsOn) {
+      batch.draw(volOn, volRec.x, volRec.y);
+    } else {
+      batch.draw(volOff, volRec.x, volRec.y);
+    }
     batch.end();
   }
 
@@ -66,6 +71,9 @@ public class LooseScreen extends EntryScreen implements Screen, InputProcessor {
   @Override
   void loadBack() {
     splash = Textures.getInstance().getLoose();
+
+    volOff = Textures.getInstance().getVolOff();
+    volOn = Textures.getInstance().getVolOn();
 
     torchLight[0] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_CAST, 400, 465, 560);
     torchLight[0].setXray(true);

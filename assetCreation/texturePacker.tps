@@ -197,11 +197,8 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">32/blobA.png</key>
-            <key type="filename">32/blobB.png</key>
             <key type="filename">32/blobBlue0.png</key>
             <key type="filename">32/blobBlue1.png</key>
-            <key type="filename">32/blobC.png</key>
             <key type="filename">32/blobGreen0.png</key>
             <key type="filename">32/blobGreen1.png</key>
             <key type="filename">32/blobRed0.png</key>
@@ -227,10 +224,6 @@
             <key type="filename">32/clutter6.png</key>
             <key type="filename">32/clutter7.png</key>
             <key type="filename">32/clutter8.png</key>
-            <key type="filename">32/door0.png</key>
-            <key type="filename">32/door1.png</key>
-            <key type="filename">32/door2.png</key>
-            <key type="filename">32/door3.png</key>
             <key type="filename">32/floor.png</key>
             <key type="filename">32/floor0.png</key>
             <key type="filename">32/floor1.png</key>
@@ -268,11 +261,6 @@
             <key type="filename">32/floor8.png</key>
             <key type="filename">32/floor9.png</key>
             <key type="filename">32/floorZ.png</key>
-            <key type="filename">32/gate0.png</key>
-            <key type="filename">32/gate1.png</key>
-            <key type="filename">32/gate2.png</key>
-            <key type="filename">32/gate3.png</key>
-            <key type="filename">32/gate4.png</key>
             <key type="filename">32/lampBlue0.png</key>
             <key type="filename">32/lampBlue1.png</key>
             <key type="filename">32/lampBlue2.png</key>
@@ -291,25 +279,23 @@
             <key type="filename">32/lampSRed0.png</key>
             <key type="filename">32/lampSRed1.png</key>
             <key type="filename">32/lampSRed2.png</key>
+            <key type="filename">32/p0.png</key>
+            <key type="filename">32/p1.png</key>
+            <key type="filename">32/p10.png</key>
+            <key type="filename">32/p11.png</key>
+            <key type="filename">32/p2.png</key>
+            <key type="filename">32/p3.png</key>
+            <key type="filename">32/p4.png</key>
+            <key type="filename">32/p5.png</key>
+            <key type="filename">32/p6.png</key>
+            <key type="filename">32/p7.png</key>
+            <key type="filename">32/p8.png</key>
+            <key type="filename">32/p9.png</key>
             <key type="filename">32/particle.png</key>
             <key type="filename">32/pitB.png</key>
             <key type="filename">32/pitBL.png</key>
             <key type="filename">32/pitBR.png</key>
             <key type="filename">32/pitC.png</key>
-            <key type="filename">32/pitInnerBL.png</key>
-            <key type="filename">32/pitInnerBR.png</key>
-            <key type="filename">32/pitInnerTL.png</key>
-            <key type="filename">32/pitInnerTR.png</key>
-            <key type="filename">32/pitL.png</key>
-            <key type="filename">32/pitR.png</key>
-            <key type="filename">32/pitT.png</key>
-            <key type="filename">32/pitTL.png</key>
-            <key type="filename">32/pitTR.png</key>
-            <key type="filename">32/playerA.png</key>
-            <key type="filename">32/playerB.png</key>
-            <key type="filename">32/playerC.png</key>
-            <key type="filename">32/playerD.png</key>
-            <key type="filename">32/playerE.png</key>
             <key type="filename">32/switch0.png</key>
             <key type="filename">32/switch1.png</key>
             <key type="filename">32/switch2.png</key>
@@ -398,8 +384,11 @@
             </struct>
             <key type="filename">32/clutter15.png</key>
             <key type="filename">32/clutter16.png</key>
+            <key type="filename">32/clutter17.png</key>
+            <key type="filename">large/compass2.png</key>
+            <key type="filename">large/compass3.png</key>
+            <key type="filename">large/compass4.png</key>
             <key type="filename">large/ladder.png</key>
-            <key type="filename">large/pit.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -464,6 +453,20 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">large/compass0.png</key>
+            <key type="filename">large/compass1.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>24,24,48,48</rect>
+                <key>scale9Paddings</key>
+                <rect>24,24,48,48</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">large/entry0.png</key>
             <key type="filename">large/entry1.png</key>
             <key type="filename">large/entry2.png</key>
@@ -479,6 +482,20 @@
                 <rect>24,16,48,32</rect>
                 <key>scale9Paddings</key>
                 <rect>24,16,48,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">large/escape0.png</key>
+            <key type="filename">large/escape1.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,8,64,16</rect>
+                <key>scale9Paddings</key>
+                <rect>32,8,64,16</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

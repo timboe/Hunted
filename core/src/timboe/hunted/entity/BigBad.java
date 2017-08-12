@@ -43,8 +43,8 @@ public class BigBad extends ParticleEffectActor {
   private RayCastCallback raycastCallback = null;
   private float raycastMin = 1f;
   public boolean canSeePlayer = false;
-  public boolean lookingAtPlayer = false;
-  public boolean sameRoomAsPlayer = false;
+  private boolean lookingAtPlayer = false;
+  private boolean sameRoomAsPlayer = false;
   public boolean musicSting = false;
   public float distanceFromPlayer;
   private final float yOff = 32;
@@ -94,7 +94,7 @@ public class BigBad extends ParticleEffectActor {
 
   }
 
-  public boolean isChasing() {
+  private boolean isChasing() {
     return aiState == AIState.CHASE || aiState == AIState.END;
   }
 
@@ -233,12 +233,11 @@ public class BigBad extends ParticleEffectActor {
       body.getPosition());
   }
 
-  public void checkWebHit() {
-    if (tileUnderMe.getIsWeb() && tileUnderMe.webEffect == 1 && (aiState == PATHING || aiState == ROTATE)) {
+  private void checkWebHit() {
+    if (tileUnderMe.getIsWeb() && tileUnderMe.webEffect > 0 && (aiState == PATHING || aiState == ROTATE)) {
       aiState = BigBad.AIState.DOASTAR;
       // TODO sound isn't working
-      float screamVol = Math.max(0f, (Param.TILE_X - (distanceFromPlayer * Param.TILE_SIZE)) / (float)Param.TILE_X);
-      screamVol = 1f;
+      float screamVol = 1f; //Math.max(0f, (Param.TILE_X - (distanceFromPlayer * Param.TILE_SIZE)) / (float)Param.TILE_X);
       Sounds.getInstance().scream(screamVol);
       Gdx.app.log("AI","-> DO A* (dist from player, "+distanceFromPlayer+"scream vol " + screamVol + ")");
     }

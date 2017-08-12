@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
  * Created by Tim on 31/12/2016.
  */
 public class Param {
+
   public static final int TILE_SIZE = 32;
   public static final int TILE_X = 128;
   public static final int TILE_Y = 128;
@@ -33,10 +34,11 @@ public class Param {
   public static final float WALL_TORCH_STRENGTH = 7f;
   public static final float SMALL_TORCH_STRENGTH = 2f;
   public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, .02f);
+  public static final Color AMBIENT_FLOODLIGHT = new Color(0f, 0f, 0f, .6f);
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
   public static final int TORCH_SPACING = 7;
   public static final float TORCH_FLICKER = 2f;
-  public static final int MAX_MINI_LIGHT = 20; // Mini lights per key room
+  public static final int MAX_MINI_LIGHT = 8; // Mini lights per key room
 
   public static final float CHEST_INERTIA_MOD = 0.07f; // Have some travel
   public static final float PLAYER_INERTIA_MOD = 0.1f; // Still quite responsive (smaller = more sluggish)

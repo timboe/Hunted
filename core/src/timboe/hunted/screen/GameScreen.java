@@ -35,7 +35,6 @@ public class GameScreen implements Screen, InputProcessor {
   public Stage stage;
   public GameCamera gameCamera;
 
-
   private PerformanceCounter renderStage = new PerformanceCounter("Render-Stage");
   private PerformanceCounter renderLights = new PerformanceCounter("Render-Lights");
   private PerformanceCounter renderUI = new PerformanceCounter("Render-UI");
@@ -52,9 +51,7 @@ public class GameScreen implements Screen, InputProcessor {
   private SpriteBatch debugSpriteBatch = new SpriteBatch(); // debug only
   private SpriteBatch uiBatch = new SpriteBatch();
 
-
   private Vector2 screenCentre = new Vector2(Param.DISPLAY_X/2, Param.DISPLAY_Y/2);
-
 
   public GameScreen() {
     GLProfiler.enable();
@@ -256,10 +253,10 @@ public class GameScreen implements Screen, InputProcessor {
       keyS = false;
       keyW = false;
     } else {
-      if (keycode == Input.Keys.LEFT) keyW = true;
-      else if (keycode == Input.Keys.RIGHT) keyE = true;
-      else if (keycode == Input.Keys.UP) keyN = true;
-      else if (keycode == Input.Keys.DOWN) keyS = true;
+      if (keycode == Input.Keys.LEFT || keycode == Input.Keys.A) keyW = true;
+      else if (keycode == Input.Keys.RIGHT || keycode == Input.Keys.D) keyE = true;
+      else if (keycode == Input.Keys.UP || keycode == Input.Keys.W) keyN = true;
+      else if (keycode == Input.Keys.DOWN || keycode == Input.Keys.S) keyS = true;
     }
     if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = true;
     if (keycode == Input.Keys.ENTER && keyAlt) {
@@ -280,10 +277,10 @@ public class GameScreen implements Screen, InputProcessor {
       keyS = false;
       keyW = false;
     } else {
-      if (keycode == Input.Keys.LEFT) keyW = false;
-      else if (keycode == Input.Keys.RIGHT) keyE = false;
-      else if (keycode == Input.Keys.UP) keyN = false;
-      else if (keycode == Input.Keys.DOWN) keyS = false;
+      if (keycode == Input.Keys.LEFT || keycode == Input.Keys.A) keyW = false;
+      else if (keycode == Input.Keys.RIGHT || keycode == Input.Keys.D) keyE = false;
+      else if (keycode == Input.Keys.UP || keycode == Input.Keys.W) keyN = false;
+      else if (keycode == Input.Keys.DOWN || keycode == Input.Keys.S) keyS = false;
     }
     if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = false;
     Sprites.getInstance().getPlayer().updateDirection(keyN, keyE, keyS, keyW);

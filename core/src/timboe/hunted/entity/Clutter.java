@@ -3,7 +3,6 @@ package timboe.hunted.entity;
 import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
-import timboe.hunted.manager.GameState;
 import timboe.hunted.manager.Physics;
 
 /**
@@ -11,11 +10,13 @@ import timboe.hunted.manager.Physics;
  */
 public class Clutter extends EntityBase {
 
-  private final int nClutters = 18;
   private int clutter;
 
   public Clutter(int x, int y) {
     super(x, y);
+
+    final int nClutters = 18;
+
     clutter = Utility.r.nextInt(nClutters);
     setTexture("clutter" + Integer.toString(clutter));
   }

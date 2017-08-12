@@ -168,7 +168,7 @@ public class Sprites {
     addToStage(blobLight, true);
     Physics.getInstance().addTorch(x + 3.5f, y + 3.2f).doCollision(false);
     Physics.getInstance().addTorch(x + .5f, y + 3.2f).doCollision(false);
-    for (int i = 0; i < 5 + Utility.r.nextInt(Param.MAX_MINI_LIGHT - 5); ++i) {
+    for (int i = 0; i < 2 + Utility.r.nextInt(Param.MAX_MINI_LIGHT - 2); ++i) {
       int rX = (int)r.getX() + Utility.r.nextInt((int)r.getWidth()-1);
       int rY = (int)r.getY() + Utility.r.nextInt((int)r.getHeight()-1);
       if (getClear(rX,rY,1,1)) {

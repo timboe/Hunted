@@ -35,6 +35,8 @@ public class EntryScreen implements Screen, InputProcessor {
 
   protected Texture splash = null;
   protected Texture title = null;
+  protected Texture volOff = null;
+  protected Texture volOn = null;
   private TextureRegion escape0 = Textures.getInstance().getTexture("escape0");
   private TextureRegion escape1 = Textures.getInstance().getTexture("escape1");
   protected TextureRegion escape;
@@ -43,6 +45,7 @@ public class EntryScreen implements Screen, InputProcessor {
   private FitViewport viewPort;
   protected Batch batch = new SpriteBatch();
   protected Rectangle buttonRec;
+  protected Rectangle volRec;
   private Vector2 convert = new Vector2();
 
   public PositionalLight[] torchLight = {null,null,null,null};
@@ -57,9 +60,8 @@ public class EntryScreen implements Screen, InputProcessor {
   protected int torchY = 720 - 420;
 
   public EntryScreen() {
-    buttonRec = new Rectangle(Param.TILE_SIZE * 10, Param.TILE_SIZE * 5,
-      escape0.getRegionWidth(), escape0.getRegionHeight());
     escape = escape0;
+
     Sounds.getInstance().startAmbiance();
 
     rayHandler = new RayHandler(new World(new Vector2(0,0), true));
@@ -73,12 +75,22 @@ public class EntryScreen implements Screen, InputProcessor {
 
     camera = new OrthographicCamera();
     viewPort = new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, camera);
+
     loadBack();
+
+    buttonRec = new Rectangle(Param.TILE_SIZE * 10, Param.TILE_SIZE * 5,
+            escape0.getRegionWidth(), escape0.getRegionHeight());
+
+    volRec = new Rectangle(Param.DISPLAY_X - volOn.getWidth(), Param.DISPLAY_Y - volOn.getHeight(),
+            volOn.getWidth(), volOn.getHeight());
+
   }
 
   void loadBack() {
     splash = Textures.getInstance().getSplash();
     title = Textures.getInstance().getTitle();
+    volOff = Textures.getInstance().getVolOff();
+    volOn = Textures.getInstance().getVolOn();
 
     torchLight[0] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_CAST, 600, torchX0, torchY);
     torchLight[0].setXray(true);
@@ -124,6 +136,11 @@ public class EntryScreen implements Screen, InputProcessor {
     batch.begin();
     batch.draw(escape, buttonRec.x, buttonRec.y);
     if (title != null) batch.draw(title, Param.DISPLAY_X/2 - title.getWidth()/2, Param.DISPLAY_Y/2);
+    if (Sounds.getInstance().soundsOn) {
+      batch.draw(volOn, volRec.x, volRec.y);
+    } else {
+      batch.draw(volOff, volRec.x, volRec.y);
+    }
     batch.end();
   }
 
@@ -203,7 +220,6 @@ public class EntryScreen implements Screen, InputProcessor {
   @Override
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
     return mouseMoved(screenX, screenY);
-
   }
 
   protected void startGame() {
@@ -216,6 +232,8 @@ public class EntryScreen implements Screen, InputProcessor {
     convert = viewPort.unproject(convert);
     if (buttonRec.contains(convert)) {
       startGame();
+    } else if (volRec.contains(convert)) {
+       Sounds.getInstance().soundsOn = !Sounds.getInstance().soundsOn;
     }
     return false;
   }

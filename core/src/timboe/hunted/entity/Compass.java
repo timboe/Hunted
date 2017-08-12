@@ -1,14 +1,9 @@
 package timboe.hunted.entity;
 
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
 import timboe.hunted.manager.Sprites;
-
-import java.util.Map;
 
 /**
  * Created by Tim on 23/01/2017.

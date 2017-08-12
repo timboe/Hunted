@@ -20,6 +20,8 @@ public class Textures {
   private Texture loose = new Texture(Gdx.files.internal("loose.png"));
   private Texture title = new Texture(Gdx.files.internal("Hunted.png"));
   private Texture win = new Texture(Gdx.files.internal("win.png"));
+  private Texture volOff = new Texture(Gdx.files.internal("volume_off.png"));
+  private Texture volOn = new Texture(Gdx.files.internal("volume_on.png"));
 
   public TextureRegion getTexture(String name) {
     return atlas.findRegion(name);
@@ -28,6 +30,8 @@ public class Textures {
   public Texture getLoose() { return loose; }
   public Texture getTitle() { return  title;  }
   public Texture getWin() { return win; }
+  public Texture getVolOff() { return volOff; }
+  public Texture getVolOn() { return volOn; }
 
   public TextureAtlas getAtlas() { return  atlas; }
   public void dispose() {

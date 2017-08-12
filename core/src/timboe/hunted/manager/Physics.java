@@ -138,7 +138,7 @@ public class Physics {
     torches = new HashSet<Torch>();
     litTorches = new HashSet<Torch>();
 
-    ambientLightMod = Param.AMBIENT_LIGHT.cpy();
+    ambientLightMod = HuntedGame.floodlight ? Param.AMBIENT_FLOODLIGHT.cpy() : Param.AMBIENT_LIGHT.cpy();
     currentReductionPercent = 1f;
     updateLights = true;
 
