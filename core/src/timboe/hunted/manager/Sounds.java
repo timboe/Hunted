@@ -12,7 +12,7 @@ import timboe.hunted.Utility;
  */
 public class Sounds {
 
-  public boolean soundsOn = true;
+  private boolean soundsOn = true;
 
   private Music ambiance = Gdx.audio.newMusic(Gdx.files.internal("Echoes_of_Time_v2.mp3"));
   private Music machineNoise = Gdx.audio.newMusic(Gdx.files.internal("260815__iccleste__industrial-machine-cycle.ogg"));
@@ -68,6 +68,17 @@ public class Sounds {
 
     if (!HuntedGame.sounds) {
       soundsOn = false;
+    }
+  }
+
+  public boolean getSoundsOn() { return soundsOn; }
+
+  public void toggleSounds() {
+    soundsOn = !soundsOn;
+    if (soundsOn) startAmbiance();
+    else {
+      stopAmbiance();
+      stopDied();
     }
   }
 
@@ -131,11 +142,7 @@ public class Sounds {
   }
 
   public void startAmbiance() {
-    if (!soundsOn){
-      died.stop();
-      ambiance.stop();
-      return;
-    }
+    if (!soundsOn) return;
     died.stop();
     ambiance.play();
     ambiance.setLooping(true);
@@ -143,6 +150,10 @@ public class Sounds {
 
   public void stopAmbiance() {
     ambiance.stop();
+  }
+
+  public void stopDied() {
+    died.stop();
   }
 
   public void startChaseMusic() {

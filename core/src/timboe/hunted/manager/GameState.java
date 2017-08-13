@@ -100,8 +100,7 @@ public class GameState {
       if (scoreDelay > 4f) {
         showingScore = true;
         Sprites.getInstance().treasurePile.setPosition(-2 * Param.TILE_SIZE, -Param.TILE_SIZE);
-        for (int i =0; i<100; ++i)  Sprites.getInstance().treasurePile.addToPile(Utility.r.nextInt(Param.N_TREASURE));
-
+        //for (int i=0; i<100; ++i) Sprites.getInstance().treasurePile.addToPile(Utility.r.nextInt(Param.N_TREASURE));
       }
     }
 

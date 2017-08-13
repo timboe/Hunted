@@ -55,7 +55,7 @@ public class LooseScreen extends EntryScreen implements Screen, InputProcessor {
     batch.setProjectionMatrix(camera.combined);
     batch.begin();
     batch.draw(escape, buttonRec.x, buttonRec.y);
-    if (Sounds.getInstance().soundsOn) {
+    if (Sounds.getInstance().getSoundsOn()) {
       batch.draw(volOn, volRec.x, volRec.y);
     } else {
       batch.draw(volOff, volRec.x, volRec.y);

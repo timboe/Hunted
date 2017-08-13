@@ -13,7 +13,7 @@ public class HuntedGame extends Game {
   private LooseScreen theLooseScreen;
   private EntryScreen theEntryScreen;
 
-  public static boolean debug = true;
+  public static boolean debug = false;
   public static boolean lights = true;
   public static boolean floodlight = false;
   public static boolean particles = true;

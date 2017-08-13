@@ -136,7 +136,7 @@ public class EntryScreen implements Screen, InputProcessor {
     batch.begin();
     batch.draw(escape, buttonRec.x, buttonRec.y);
     if (title != null) batch.draw(title, Param.DISPLAY_X/2 - title.getWidth()/2, Param.DISPLAY_Y/2);
-    if (Sounds.getInstance().soundsOn) {
+    if (Sounds.getInstance().getSoundsOn()) {
       batch.draw(volOn, volRec.x, volRec.y);
     } else {
       batch.draw(volOff, volRec.x, volRec.y);
@@ -234,7 +234,7 @@ public class EntryScreen implements Screen, InputProcessor {
       startGame();
       escape = escape0;
     } else if (volRec.contains(convert)) {
-       Sounds.getInstance().soundsOn = !Sounds.getInstance().soundsOn;
+       Sounds.getInstance().toggleSounds();
     }
     return false;
   }
