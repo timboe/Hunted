@@ -287,7 +287,7 @@ public class BigBad extends ParticleEffectActor {
     LinkedList<Room> pathFind = PathFinding.doAStar(getRoomUnderEntity(), Sprites.getInstance().getPlayer().getRoomUnderEntity());
     if (pathFind == null || pathFind.size() < 2) {
       Gdx.app.error("AI", "Clairvoyant pathfind to players room failed");
-      getRoomUnderEntity().getRandomNeighbourRoom(roomsVisited); // Failed for some reason
+      return getRoomUnderEntity().getRandomNeighbourRoom(roomsVisited); // Failed for some reason
     }
     // Note we go to corridor in location 1 as location 0 is the current room
     return getRoomUnderEntity().getConnectionTo(pathFind.get(1)); // Go to the first room

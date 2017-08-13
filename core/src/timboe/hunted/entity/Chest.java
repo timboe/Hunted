@@ -21,19 +21,25 @@ public class Chest extends EntityBase {
   private TextureRegion treasure[] = new TextureRegion[Param.N_TREASURE];
   private TextureRegion chestMask;
   private int treasureID;
-  private int treasureHeight = -1;
+  public int treasureHeight = -1;
   private boolean sound = false;
-  private boolean done = false;
+  public boolean done = false;
+  private boolean drawRisingTreasure = true;
 
-  public Chest(int x, int y) {
+  public Chest(int x, int y, boolean isLarge) {
     super(x, y);
-    setTexture("chest",6);
+    if (isLarge) {
+      setTexture("chestL",6);
+      drawRisingTreasure = false;
+    } else {
+      setTexture("chest",6);
+    }
     chestMask = Textures.getInstance().getTexture("chestMask");
     for (int i = 0; i < Param.N_TREASURE; ++i) {
       treasure[i] = Textures.getInstance().getTexture("treasure" + Integer.toString(i));
     }
     treasureID = Utility.r.nextInt(Param.N_TREASURE);
-    setAsChest();
+    if (!isLarge) setAsChest();
   }
 
   @Override
@@ -57,6 +63,7 @@ public class Chest extends EntityBase {
       Sounds.getInstance().treasure();
     }
 
+    if (!drawRisingTreasure) return; //i.e. if isLarge=True
     if (!body.isAwake()) return;
     Vector2 lv = body.getLinearVelocity();
     // Apply retarding force
@@ -89,6 +96,7 @@ public class Chest extends EntityBase {
   @Override
   public void draw(Batch batch, float alpha) {
     super.draw(batch, alpha);
+    if (!drawRisingTreasure) return;
     if (treasureHeight >= 0) {
       batch.draw(chestMask,this.getX(),this.getY());
       batch.draw(treasure[treasureID] ,this.getX(),this.getY() + treasureHeight);

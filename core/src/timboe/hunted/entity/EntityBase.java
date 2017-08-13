@@ -169,7 +169,7 @@ public class EntityBase extends Actor {
   @Override
   public void draw(Batch batch, float alpha) {
 //    if (currentFrame > 0) Gdx.app.log("DBG","iam "+textureRegion[0]+" "+currentFrame + " mod " + nFrames + " is " + currentFrame%nFrames);
-    batch.draw(textureRegion[currentFrame % nFrames] ,this.getX(),this.getY());
+    batch.draw(textureRegion[currentFrame % nFrames], this.getX(), this.getY());
     if (webTexture != null) {
       batch.setColor(1f,1f - webTint,1f - webTint,1f); //red
       batch.draw(webTexture, this.getX(), this.getY());

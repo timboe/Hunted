@@ -19,7 +19,7 @@ public class Compass extends EntityBase {
 
   public Compass(int x, int y) {
     super(x,y);
-    setTexture("compass",5);
+    setTexture("compass",6);
   }
 
   public void setDesiredArrow(float angle, int N, float jitterArmount, float jitterSpeed) {

@@ -20,6 +20,7 @@ public class GameState {
   public boolean[] switchStatus = new boolean[Param.KEY_ROOMS + 1];
   public float[] progress = new float[Param.KEY_ROOMS + 1];
   public float aiCooldown = 0;
+  public float scoreDelay = 0f;
   public boolean webEffect = false;
   public GameScreen theGameScreen = null;
   public HuntedGame game = null;
@@ -28,6 +29,7 @@ public class GameState {
   public boolean movementOn;
 
   public boolean gameIsWon = false;
+  public boolean showingScore = false;
 
   private boolean chaseOn = false;
   private float chaseVolume = 100;
@@ -59,8 +61,10 @@ public class GameState {
     aiCooldown = 0;
     webEffect = false;
     frame = 0;
+    scoreDelay = 0f;
     userControl = false;
     gameIsWon = false;
+    showingScore = false;
     waypoints = new HashSet<Tile>();
   }
 
@@ -90,6 +94,17 @@ public class GameState {
     // Update cooldown
     if (aiCooldown > 0) aiCooldown -= delta;
 
+    // Timer for end of game treasure
+    if (gameIsWon && !showingScore) {
+      scoreDelay += delta;
+      if (scoreDelay > 4f) {
+        showingScore = true;
+        Sprites.getInstance().treasurePile.setPosition(-2 * Param.TILE_SIZE, -Param.TILE_SIZE);
+        for (int i =0; i<100; ++i)  Sprites.getInstance().treasurePile.addToPile(Utility.r.nextInt(Param.N_TREASURE));
+
+      }
+    }
+
     // Update logic for key switches
     boolean allKeys = true;
     Vector2 playerPos = Sprites.getInstance().getPlayer().getBody().getPosition();
@@ -116,7 +131,7 @@ public class GameState {
     if (Sprites.getInstance().getBigBad().distanceFromPlayer <= 2f*Param.BIGBAD_SENSE_DISTANCE) {
       float pointAngle = Utility.getTargetAngle(Sprites.getInstance().getBigBad().getBody().getPosition(),
         Sprites.getInstance().getPlayer().getBody().getPosition());
-      Sprites.getInstance().compass.setDesiredArrow(pointAngle, 0, 0.75f, .1f);
+      Sprites.getInstance().compass.setDesiredArrow(pointAngle, 4, 0.75f, .1f);
     } else if (minDist <= 2f*Param.BIGBAD_SENSE_DISTANCE) {
       float pointAngle = Utility.getTargetAngle(Sprites.getInstance().keySwitch[minSwitch].getBody().getPosition(),
         Sprites.getInstance().getPlayer().getBody().getPosition());

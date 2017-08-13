@@ -54,7 +54,7 @@ public class Sprites {
     clutter = new HashSet<EntityBase>();
     chests = new HashSet<Chest>();
     particles = new HashSet<ParticleEffectActor>();
-    treasurePile = new TreasurePile(6, -5);
+    treasurePile = new TreasurePile(6, 3);
     compass = new Compass(-9, -5);
     deltaTot = 0f;
     exitDoor = null;

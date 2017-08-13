@@ -35,8 +35,8 @@ public class EntryScreen implements Screen, InputProcessor {
 
   protected Texture splash = null;
   protected Texture title = null;
-  protected Texture volOff = null;
-  protected Texture volOn = null;
+  protected TextureRegion volOff = null;
+  protected TextureRegion volOn = null;
   private TextureRegion escape0 = Textures.getInstance().getTexture("escape0");
   private TextureRegion escape1 = Textures.getInstance().getTexture("escape1");
   protected TextureRegion escape;
@@ -81,16 +81,16 @@ public class EntryScreen implements Screen, InputProcessor {
     buttonRec = new Rectangle(Param.TILE_SIZE * 10, Param.TILE_SIZE * 5,
             escape0.getRegionWidth(), escape0.getRegionHeight());
 
-    volRec = new Rectangle(Param.DISPLAY_X - volOn.getWidth(), Param.DISPLAY_Y - volOn.getHeight(),
-            volOn.getWidth(), volOn.getHeight());
+    volRec = new Rectangle(Param.DISPLAY_X - volOn.getRegionWidth(), Param.DISPLAY_Y - volOn.getRegionHeight(),
+            volOn.getRegionWidth(), volOn.getRegionHeight());
 
   }
 
   void loadBack() {
     splash = Textures.getInstance().getSplash();
     title = Textures.getInstance().getTitle();
-    volOff = Textures.getInstance().getVolOff();
-    volOn = Textures.getInstance().getVolOn();
+    volOff = Textures.getInstance().getTexture("volume_off");
+    volOn = Textures.getInstance().getTexture("volume_on");
 
     torchLight[0] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_CAST, 600, torchX0, torchY);
     torchLight[0].setXray(true);
@@ -232,6 +232,7 @@ public class EntryScreen implements Screen, InputProcessor {
     convert = viewPort.unproject(convert);
     if (buttonRec.contains(convert)) {
       startGame();
+      escape = escape0;
     } else if (volRec.contains(convert)) {
        Sounds.getInstance().soundsOn = !Sounds.getInstance().soundsOn;
     }

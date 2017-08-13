@@ -10,7 +10,6 @@ import timboe.hunted.Utility;
 import timboe.hunted.entity.BigBad;
 import timboe.hunted.entity.Chest;
 import timboe.hunted.entity.Clutter;
-import timboe.hunted.entity.Tile;
 import timboe.hunted.manager.*;
 
 import java.util.*;
@@ -174,7 +173,7 @@ public class WorldGen {
         int rX = (int)room.getX() + r.nextInt((int)room.getWidth() - 1);
         int rY = (int)room.getY() + r.nextInt((int)room.getHeight() - 1);
         if (!Sprites.getInstance().getClear(rX,rY,1,1)) continue;
-        Chest newChest = new Chest(rX, rY);
+        Chest newChest = new Chest(rX, rY, false);
         Sprites.getInstance().addToStage(newChest, true);
         Sprites.getInstance().chests.add(newChest);
         if (--chests == 0) break;

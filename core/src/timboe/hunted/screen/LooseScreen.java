@@ -72,8 +72,8 @@ public class LooseScreen extends EntryScreen implements Screen, InputProcessor {
   void loadBack() {
     splash = Textures.getInstance().getLoose();
 
-    volOff = Textures.getInstance().getVolOff();
-    volOn = Textures.getInstance().getVolOn();
+    volOff = Textures.getInstance().getTexture("volume_off");
+    volOn = Textures.getInstance().getTexture("volume_on");
 
     torchLight[0] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_CAST, 400, 465, 560);
     torchLight[0].setXray(true);

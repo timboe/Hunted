@@ -13,14 +13,15 @@ public class HuntedGame extends Game {
   private LooseScreen theLooseScreen;
   private EntryScreen theEntryScreen;
 
-  public static boolean debug = false;
+  public static boolean debug = true;
   public static boolean lights = true;
-  public static boolean floodlight = true;
+  public static boolean floodlight = false;
   public static boolean particles = true;
   public static boolean world = true;
   public static boolean physicsChests = false;
   public static boolean sounds = true;
-  public static boolean zoomOut = true;
+  public static boolean zoomOut = false;
+  public static boolean fps = true;
 
   @Override
 	public void create () {
