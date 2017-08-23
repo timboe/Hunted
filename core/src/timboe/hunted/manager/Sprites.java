@@ -21,11 +21,13 @@ import java.util.*;
  * Created by Tim on 28/12/2016.
  */
 public class Sprites {
-  private static Sprites ourInstance = new Sprites();
+  private static Sprites ourInstance;
 
   public static Sprites getInstance() {
     return ourInstance;
   }
+  public static void create() { ourInstance = new Sprites(); }
+
 
   private float deltaTot;
   public Tile[][] tileMap;
@@ -558,5 +560,6 @@ public class Sprites {
   }
 
   public void dispose() {
+    ourInstance = null;
   }
 }

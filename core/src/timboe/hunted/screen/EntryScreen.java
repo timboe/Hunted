@@ -1,13 +1,9 @@
 package timboe.hunted.screen;
 
-import box2dLight.ConeLight;
 import box2dLight.PointLight;
 import box2dLight.PositionalLight;
 import box2dLight.RayHandler;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,14 +15,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
-import timboe.hunted.entity.Torch;
 import timboe.hunted.manager.GameState;
-import timboe.hunted.manager.Physics;
 import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Textures;
-
-import java.util.HashSet;
 
 /**
  * Created by Tim on 25/01/2017.
@@ -37,6 +30,8 @@ public class EntryScreen implements Screen, InputProcessor {
   protected Texture title = null;
   protected TextureRegion volOff = null;
   protected TextureRegion volOn = null;
+  protected TextureRegion fullScreen = null;
+
   private TextureRegion escape0 = Textures.getInstance().getTexture("escape0");
   private TextureRegion escape1 = Textures.getInstance().getTexture("escape1");
   protected TextureRegion escape;
@@ -46,6 +41,7 @@ public class EntryScreen implements Screen, InputProcessor {
   protected Batch batch = new SpriteBatch();
   protected Rectangle buttonRec;
   protected Rectangle volRec;
+  protected Rectangle fsRec;
   private Vector2 convert = new Vector2();
 
   public PositionalLight[] torchLight = {null,null,null,null};
@@ -81,8 +77,11 @@ public class EntryScreen implements Screen, InputProcessor {
     buttonRec = new Rectangle(Param.TILE_SIZE * 10, Param.TILE_SIZE * 5,
             escape0.getRegionWidth(), escape0.getRegionHeight());
 
-    volRec = new Rectangle(Param.DISPLAY_X - volOn.getRegionWidth(), Param.DISPLAY_Y - volOn.getRegionHeight(),
+    volRec = new Rectangle(Param.DISPLAY_X - volOn.getRegionWidth(), 0,
             volOn.getRegionWidth(), volOn.getRegionHeight());
+
+    fsRec = new Rectangle(0, 0,
+            fullScreen.getRegionWidth(), fullScreen.getRegionHeight());
 
   }
 
@@ -91,6 +90,7 @@ public class EntryScreen implements Screen, InputProcessor {
     title = Textures.getInstance().getTitle();
     volOff = Textures.getInstance().getTexture("volume_off");
     volOn = Textures.getInstance().getTexture("volume_on");
+    fullScreen = Textures.getInstance().getTexture("fullscreen");
 
     torchLight[0] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_CAST, 600, torchX0, torchY);
     torchLight[0].setXray(true);
@@ -141,6 +141,7 @@ public class EntryScreen implements Screen, InputProcessor {
     } else {
       batch.draw(volOff, volRec.x, volRec.y);
     }
+    if (Gdx.app.getType() != Application.ApplicationType.Android) batch.draw(fullScreen, fsRec.x, fsRec.y);
     batch.end();
   }
 
@@ -186,11 +187,10 @@ public class EntryScreen implements Screen, InputProcessor {
   @Override
   public boolean keyDown(int keycode) {
     if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = true;
-    if (keycode == Input.Keys.ENTER && keyAlt) {
-      GameState.getInstance().fullscreen = !GameState.getInstance().fullscreen;
-      if (GameState.getInstance().fullscreen) Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-      else Gdx.graphics.setWindowedMode(Param.DISPLAY_X, Param.DISPLAY_Y);
+    if (keycode == Input.Keys.ENTER && keyAlt || keycode == Input.Keys.F11) {
+      GameState.getInstance().toggleFullScreen();
     }
+    if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) Gdx.app.exit();
     return false;
   }
 
@@ -235,6 +235,8 @@ public class EntryScreen implements Screen, InputProcessor {
       escape = escape0;
     } else if (volRec.contains(convert)) {
        Sounds.getInstance().toggleSounds();
+    } else if (fsRec.contains(convert) && Gdx.app.getType() != Application.ApplicationType.Android) {
+      GameState.getInstance().toggleFullScreen();
     }
     return false;
   }

@@ -211,7 +211,7 @@ public class BigBad extends ParticleEffectActor {
   }
 
   private boolean atDestination() {
-    return Math.abs(distanceToDestination()) < 0.1f;
+    return Math.abs(distanceToDestination()) < 0.2f;
   }
 
   private void rotate() {
@@ -269,7 +269,9 @@ public class BigBad extends ParticleEffectActor {
     // First try and follow scent trail
     Room playerRoom = Sprites.getInstance().getPlayer().getRoomUnderEntity();
     HashMap.Entry<Room, Room> toGoTo = getRoomUnderEntity().getConnectionTo(playerRoom);
-    if (canSeePlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE && toGoTo != null) {
+    if (GameState.getInstance().gameIsWon) {
+      toGoTo = getRoomUnderEntity().getRandomNeighbourRoom(null); // Pick truly at random
+    } else if (canSeePlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE && toGoTo != null) {
       Gdx.app.log("AI","Got visual on player in neighbouring room/corridor");
     } else if (Utility.prob(sixthSense)) { // Clairvoyant!
       Gdx.app.log("AI", "Being clairvoyant");

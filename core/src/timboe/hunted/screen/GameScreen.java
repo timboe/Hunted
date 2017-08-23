@@ -4,20 +4,17 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.PerformanceCounter;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
 import timboe.hunted.Utility;
@@ -28,8 +25,6 @@ import timboe.hunted.manager.Sprites;
 import timboe.hunted.manager.Physics;
 import timboe.hunted.manager.Textures;
 import timboe.hunted.world.GameCamera;
-import timboe.hunted.world.Room;
-import timboe.hunted.world.WorldGen;
 
 
 /**
@@ -52,7 +47,8 @@ public class GameScreen implements Screen, InputProcessor {
 
   private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   private Matrix4 scaledLightingMatrix;
-  private BitmapFont debugFont = new BitmapFont(); // debug only
+//  private BitmapFont debugFont = new BitmapFont(Gdx.files.internal("arial-15.fnt"),
+//          Gdx.files.internal("arial-15.png"), false, true); // debug only
   private SpriteBatch debugSpriteBatch = new SpriteBatch(); // debug only
   private SpriteBatch uiBatch = new SpriteBatch();
 
@@ -80,7 +76,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
     gameCamera = new GameCamera();
     winChest = new Chest(-2,-2, true);
-    stage = new Stage(new FitViewport(Param.DISPLAY_X, Param.DISPLAY_Y, gameCamera.camera));
+    stage = new Stage(new ExtendViewport(Param.DISPLAY_X, Param.DISPLAY_Y, gameCamera.camera));
     Sprites.getInstance().stage = stage;
     stage.setDebugAll(HuntedGame.debug);
   }
@@ -88,11 +84,13 @@ public class GameScreen implements Screen, InputProcessor {
   @Override
   public void show() {
     Gdx.input.setInputProcessor( this );
+    Gdx.input.setCatchBackKey(true);
     init();
   }
 
   @Override
   public void hide() {
+    Gdx.input.setCatchBackKey(false);
     Gdx.input.setInputProcessor(null);
   }
 
@@ -169,9 +167,9 @@ public class GameScreen implements Screen, InputProcessor {
     if (HuntedGame.debug) {
       debugSpriteBatch.setProjectionMatrix(stage.getCamera().combined);
       debugSpriteBatch.begin();
-      for (Room room : WorldGen.getInstance().getAllRooms()) {
-        debugFont.draw(debugSpriteBatch, Float.toString(room.getScent() * 100f), room.getX() * Param.TILE_SIZE, room.getY() * Param.TILE_SIZE);
-      }
+//      for (Room room : WorldGen.getInstance().getAllRooms()) {
+//        debugFont.draw(debugSpriteBatch, Float.toString(room.getScent() * 100f), room.getX() * Param.TILE_SIZE, room.getY() * Param.TILE_SIZE);
+//      }
       debugSpriteBatch.end();
     }
     renderStage.stop();
@@ -230,12 +228,12 @@ public class GameScreen implements Screen, InputProcessor {
     }
     // End of game (win) UI
     if (GameState.getInstance().showingScore) {
-      uiBatch.draw(back, -Param.DISPLAY_X/4, Param.DISPLAY_Y/4 - back.getRegionHeight());
+      uiBatch.draw(back, -Param.DISPLAY_X/4, -Param.DISPLAY_Y/4);
       winChest.chestOpened = true;
       winChest.draw(uiBatch, 1f);
       if (winChest.treasureHeight > 0 || winChest.done) Sprites.getInstance().treasurePile.draw(uiBatch, 1f);
     }
-    if (HuntedGame.fps) debugFont.draw(uiBatch, String.valueOf(Gdx.graphics.getFramesPerSecond()), 0, 170f);
+    //if (HuntedGame.fps) debugFont.draw(uiBatch, String.valueOf(Gdx.graphics.getFramesPerSecond()), 0, 170f);
     uiBatch.end();
   }
 
@@ -286,11 +284,9 @@ public class GameScreen implements Screen, InputProcessor {
       else if (keycode == Input.Keys.DOWN || keycode == Input.Keys.S) keyS = true;
     }
     if (keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) keyAlt = true;
-    if (keycode == Input.Keys.ESCAPE) GameState.getInstance().game.setToEntry();
+    if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) GameState.getInstance().game.setToEntry();
     if ((keycode == Input.Keys.ENTER && keyAlt) || keycode == Input.Keys.F11) {
-      GameState.getInstance().fullscreen = !GameState.getInstance().fullscreen;
-      if (GameState.getInstance().fullscreen) Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-      else Gdx.graphics.setWindowedMode(Param.DISPLAY_X, Param.DISPLAY_Y);
+      GameState.getInstance().toggleFullScreen();
     }
     Sprites.getInstance().getPlayer().updateDirection(keyN, keyE, keyS, keyW);
     GameState.getInstance().movementOn = (keyN || keyE || keyS || keyW);
@@ -331,11 +327,6 @@ public class GameScreen implements Screen, InputProcessor {
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
     boolean toMove = true;
     if (!GameState.getInstance().userControl) toMove = false;
-    if (GameState.getInstance().showingScore) { // Check for clicking exit button
-      if (screenX <= back.getRegionWidth()*2 && screenY <= back.getRegionHeight()*2) {
-        GameState.getInstance().game.setToEntry();
-      }
-    }
     float angle = getMoveAngle(screenX, screenY);
     Sprites.getInstance().getPlayer().updateDirection(toMove, angle);
     GameState.getInstance().movementOn = toMove;
@@ -347,6 +338,11 @@ public class GameScreen implements Screen, InputProcessor {
     float angle = getMoveAngle(screenX, screenY);
     Sprites.getInstance().getPlayer().updateDirection(false, angle);
     GameState.getInstance().movementOn = false;
+    if (GameState.getInstance().showingScore) { // Check for clicking exit button
+      if (screenX <= back.getRegionWidth()*2 && screenY >= Gdx.graphics.getHeight() - back.getRegionHeight()*2) {
+        GameState.getInstance().game.setToEntry();
+      }
+    }
     return false;
   }
 

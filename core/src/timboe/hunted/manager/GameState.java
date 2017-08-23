@@ -1,5 +1,6 @@
 package timboe.hunted.manager;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import timboe.hunted.HuntedGame;
 import timboe.hunted.Param;
@@ -36,14 +37,21 @@ public class GameState {
 
   private boolean unlockSound = false;
 
-  private static GameState ourInstance = new GameState();
+  private static GameState ourInstance;
 
   public static GameState getInstance() {
     return ourInstance;
   }
+  public static void create() { ourInstance = new GameState(); }
 
   private GameState() {
 
+  }
+
+  public void toggleFullScreen() {
+    GameState.getInstance().fullscreen = !GameState.getInstance().fullscreen;
+    if (GameState.getInstance().fullscreen) Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+    else Gdx.graphics.setWindowedMode(Param.DISPLAY_X, Param.DISPLAY_Y);
   }
 
   public void reset() {
@@ -163,4 +171,9 @@ public class GameState {
       }
     }
   }
+
+  public void dispose() {
+    ourInstance = null;
+  }
+
 }

@@ -9,11 +9,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * Created by Tim on 28/12/2016.
  */
 public class Textures {
-  private static Textures ourInstance = new Textures();
+  private static Textures ourInstance;
   public static Textures getInstance() {
     return ourInstance;
   }
   private Textures() {}
+  public static void create() { ourInstance = new Textures(); }
 
   private TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
   private Texture splash = new Texture(Gdx.files.internal("splash.png"));
@@ -34,5 +35,6 @@ public class Textures {
     atlas.dispose();
     loose.dispose();
     title.dispose();
+    ourInstance = null;
   }
 }

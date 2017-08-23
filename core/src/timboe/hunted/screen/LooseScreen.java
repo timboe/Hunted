@@ -1,6 +1,7 @@
 package timboe.hunted.screen;
 
 import box2dLight.PointLight;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -60,6 +61,7 @@ public class LooseScreen extends EntryScreen implements Screen, InputProcessor {
     } else {
       batch.draw(volOff, volRec.x, volRec.y);
     }
+    if (Gdx.app.getType() != Application.ApplicationType.Android) batch.draw(fullScreen, fsRec.x, fsRec.y);
     batch.end();
   }
 
@@ -74,6 +76,7 @@ public class LooseScreen extends EntryScreen implements Screen, InputProcessor {
 
     volOff = Textures.getInstance().getTexture("volume_off");
     volOn = Textures.getInstance().getTexture("volume_on");
+    fullScreen = Textures.getInstance().getTexture("fullscreen");
 
     torchLight[0] = new PointLight(rayHandler, Param.RAYS_BIGBAD, Param.WALL_FLAME_CAST, 400, 465, 560);
     torchLight[0].setXray(true);

@@ -139,7 +139,7 @@ public class Room extends Rectangle implements Node<Room> {
     // Try and choose a room not visited
     HashMap<Room, Room> choices = new HashMap<Room, Room>();
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
-      if (!roomsVisited.contains(entry.getValue())) {
+      if (roomsVisited != null && !roomsVisited.contains(entry.getValue())) {
         choices.put(entry.getKey(), entry.getValue());
       }
     }

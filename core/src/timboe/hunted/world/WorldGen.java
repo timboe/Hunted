@@ -18,11 +18,12 @@ import java.util.*;
  * Created by Tim on 28/12/2016.
  */
 public class WorldGen {
-  private static WorldGen ourInstance = new WorldGen();
-
+  private static WorldGen ourInstance;
   public static WorldGen getInstance() {
     return ourInstance;
   }
+  public static void create() { ourInstance = new WorldGen(); }
+
 
   private Vector<Room> rooms;
   private Vector<Room> corridors;
@@ -447,6 +448,10 @@ public class WorldGen {
         }
       }
     }
+  }
+
+  public void dispose() {
+    ourInstance = null;
   }
 
 }

@@ -18,16 +18,19 @@ import java.util.HashSet;
  * Created by Tim on 30/12/2016.
  */
 public class Physics {
-  private static Physics ourInstance = new Physics();
+  private static Physics ourInstance;
 
   public static Physics getInstance() {
     return ourInstance;
   }
+  public static void create() { ourInstance = new Physics(); }
+
 
   public World world = null;
   public RayHandler rayHandler = null;
   public HashSet<Torch> torches = null;
   public HashSet<Torch> litTorches = null;
+  public Color ambientLight = Param.AMBIENT_LIGHT.cpy();
   private Color ambientLightMod = Param.AMBIENT_LIGHT.cpy();
   private float currentReductionPercent = 1f;
   private boolean updateLights;
@@ -41,7 +44,7 @@ public class Physics {
 
 
   private CollisionHandle collisionHandle = null;
-  private boolean resetLights = false;
+  public boolean resetLights = false;
 
   private Physics() {
   }
@@ -96,15 +99,15 @@ public class Physics {
 
   public void torchPhysics() {
 
-    for (Torch t : litTorches) {
-      t.flicker();
-    }
+//    for (Torch t : litTorches) {
+//      t.flicker();
+//    }
 
     // Check if torches need dimming
     float distance = Sprites.getInstance().getBigBad().distanceFromPlayer;
     boolean canSeePlayer = Sprites.getInstance().getBigBad().canSeePlayer;
     updateLights = false;
-    if (canSeePlayer && distance <= Param.PLAYER_TORCH_STRENGTH) {
+    if (canSeePlayer && distance <= Param.PLAYER_TORCH_STRENGTH && !GameState.getInstance().gameIsWon) {
       float desiredReductionPercent = distance / Param.PLAYER_TORCH_STRENGTH;
       currentReductionPercent = currentReductionPercent + (0.05f * (desiredReductionPercent - currentReductionPercent));
       updateLights = true;
@@ -118,7 +121,7 @@ public class Physics {
     if (updateLights) {
       Sprites.getInstance().getPlayer().modTorch( currentReductionPercent );
       Sprites.getInstance().getBigBad().modTorch( Math.min(currentReductionPercent + 0.5f, 1f) );
-      ambientLightMod.a = Param.AMBIENT_LIGHT.a * Math.min(1f, distance / Param.PLAYER_TORCH_STRENGTH);
+      ambientLightMod.a = ambientLight.a * Math.min(1f, distance / Param.PLAYER_TORCH_STRENGTH);
       rayHandler.setAmbientLight(ambientLightMod);
       for (Torch t : litTorches) {
         t.modTorch( currentReductionPercent );
@@ -138,7 +141,8 @@ public class Physics {
     torches = new HashSet<Torch>();
     litTorches = new HashSet<Torch>();
 
-    ambientLightMod = HuntedGame.floodlight ? Param.AMBIENT_FLOODLIGHT.cpy() : Param.AMBIENT_LIGHT.cpy();
+    ambientLight = HuntedGame.floodlight ? Param.AMBIENT_FLOODLIGHT.cpy() : Param.AMBIENT_LIGHT.cpy();
+    ambientLightMod = ambientLight;
     currentReductionPercent = 1f;
     updateLights = true;
 
@@ -160,5 +164,6 @@ public class Physics {
     Gdx.app.log("Perf", physicsProbeStage.toString());
     Gdx.app.log("Perf", physicsProbeGameState.toString());
     Gdx.app.log("Perf", physicsProbeCamera.toString());
+    ourInstance = null;
   }
 }

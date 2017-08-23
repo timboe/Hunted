@@ -6,6 +6,7 @@ import timboe.hunted.manager.*;
 import timboe.hunted.screen.EntryScreen;
 import timboe.hunted.screen.GameScreen;
 import timboe.hunted.screen.LooseScreen;
+import timboe.hunted.world.WorldGen;
 
 public class HuntedGame extends Game {
 
@@ -25,7 +26,15 @@ public class HuntedGame extends Game {
 
   @Override
 	public void create () {
+    Textures.getInstance().create();
+    Sprites.getInstance().create();
+    Physics.getInstance().create();
+    Sounds.getInstance().create();
+    WorldGen.getInstance().create();
+    GameState.getInstance().create();
+
     GameState.getInstance().game = this;
+
     theGameScreen = new GameScreen();
     theLooseScreen = new LooseScreen();
     theEntryScreen = new EntryScreen();
@@ -53,5 +62,7 @@ public class HuntedGame extends Game {
     Sprites.getInstance().dispose();
     Physics.getInstance().dispose();
     Sounds.getInstance().dispose();
+    WorldGen.getInstance().dispose();
+    GameState.getInstance().dispose();
   }
 }

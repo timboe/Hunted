@@ -18,7 +18,7 @@ public class Param {
 
   public static final int CAMERA_LEAD = TILE_SIZE*2;
 
-  public static final int RAYS = 32;
+  public static final int RAYS = 16;
   public static final int RAYS_SMALL = 8;
   public static final int RAYS_PLAYER = 128;
   public static final int RAYS_BIGBAD = 64;
@@ -33,11 +33,11 @@ public class Param {
   public static final float PLAYER_TORCH_STRENGTH = 10f;
   public static final float WALL_TORCH_STRENGTH = 7f;
   public static final float SMALL_TORCH_STRENGTH = 2f;
-  public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, .02f);
+  public static final Color AMBIENT_LIGHT = new Color(0f, 0f, 0f, .04f);
   public static final Color AMBIENT_FLOODLIGHT = new Color(0f, 0f, 0f, .6f);
   public static final float TORCH_CHANCE = .9f; // Chance to place torch on valid surface
   public static final int TORCH_SPACING = 7;
-  public static final float TORCH_FLICKER = 2f;
+//  public static final float TORCH_FLICKER = 2f;
   public static final int MAX_MINI_LIGHT = 8; // Mini lights per key room
 
   public static final float CHEST_INERTIA_MOD = 0.07f; // Have some travel

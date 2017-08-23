@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>4</int>
         <key>texturePackerVersion</key>
-        <string>4.3.3</string>
+        <string>4.4.0</string>
         <key>fileName</key>
         <string>C:/Users/Tim/Dropbox/git/Hunted/assetCreation/texturePacker.tps</string>
         <key>autoSDSettings</key>
@@ -28,7 +28,7 @@
             </struct>
         </array>
         <key>allowRotation</key>
-        <true/>
+        <false/>
         <key>shapeDebug</key>
         <false/>
         <key>dpi</key>
@@ -104,7 +104,7 @@
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
-            <enum type="AlgorithmSettings::AlgorithmId">Basic</enum>
+            <enum type="AlgorithmSettings::AlgorithmId">MaxRects</enum>
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
@@ -167,11 +167,13 @@
             <string></string>
         </struct>
         <key>autoAliasEnabled</key>
-        <false/>
+        <true/>
         <key>trimSpriteNames</key>
         <false/>
         <key>prependSmartFolderName</key>
         <false/>
+        <key>autodetectAnimations</key>
+        <true/>
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
@@ -385,9 +387,11 @@
             <key type="filename">32/clutter15.png</key>
             <key type="filename">32/clutter16.png</key>
             <key type="filename">32/clutter17.png</key>
+            <key type="filename">large/back.png</key>
             <key type="filename">large/compass2.png</key>
             <key type="filename">large/compass3.png</key>
             <key type="filename">large/compass4.png</key>
+            <key type="filename">large/compass5.png</key>
             <key type="filename">large/ladder.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -453,6 +457,26 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">large/chestL0.png</key>
+            <key type="filename">large/chestL1.png</key>
+            <key type="filename">large/chestL2.png</key>
+            <key type="filename">large/chestL3.png</key>
+            <key type="filename">large/chestL4.png</key>
+            <key type="filename">large/chestL5.png</key>
+            <key type="filename">large/volume_off.png</key>
+            <key type="filename">large/volume_on.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,32,64,64</rect>
+                <key>scale9Paddings</key>
+                <rect>32,32,64,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">large/compass0.png</key>
             <key type="filename">large/compass1.png</key>
             <struct type="IndividualSpriteSettings">
@@ -464,6 +488,19 @@
                 <rect>24,24,48,48</rect>
                 <key>scale9Paddings</key>
                 <rect>24,24,48,48</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">large/control.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>49,49,98,98</rect>
+                <key>scale9Paddings</key>
+                <rect>49,49,98,98</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

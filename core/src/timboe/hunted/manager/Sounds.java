@@ -35,11 +35,11 @@ public class Sounds {
   private int currentChase = 0;
   private Music chaseMusic[] = new Music[nChaseStarts];
 
-  private static Sounds ourInstance = new Sounds();
-
+  private static Sounds ourInstance;
   public static Sounds getInstance() {
     return ourInstance;
   }
+  public static void create() { ourInstance = new Sounds(); }
 
   private Sounds() {
     monsterCall[0] = Gdx.audio.newSound(Gdx.files.internal("276481__xdimebagx__monster-scream-1-wet.ogg"));
@@ -201,6 +201,7 @@ public class Sounds {
     for (Sound s : twangSound) s.dispose();
     for (Sound s : footstepSound) s.dispose();
     for (Sound s : ignitionSound) s.dispose();
+    ourInstance = null;
   }
 
 }

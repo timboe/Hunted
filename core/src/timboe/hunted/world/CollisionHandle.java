@@ -4,6 +4,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import timboe.hunted.Param;
 import timboe.hunted.entity.*;
 import timboe.hunted.manager.GameState;
+import timboe.hunted.manager.Physics;
 import timboe.hunted.manager.Sounds;
 import timboe.hunted.manager.Sprites;
 
@@ -40,6 +41,8 @@ public class CollisionHandle implements ContactListener {
         GameState.getInstance().gameIsWon = true;
         Sprites.getInstance().exitDoor.sound = false;
         Sprites.getInstance().getBigBad().aiState = BigBad.AIState.RETURN_TO_WAYPOINT;
+        Physics.getInstance().resetLights = true;
+        Physics.getInstance().ambientLight.a += 0.2;
       }
 
       if (myEntity instanceof Tile) {
