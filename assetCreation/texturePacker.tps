@@ -463,6 +463,7 @@
             <key type="filename">large/chestL3.png</key>
             <key type="filename">large/chestL4.png</key>
             <key type="filename">large/chestL5.png</key>
+            <key type="filename">large/fullscreen.png</key>
             <key type="filename">large/volume_off.png</key>
             <key type="filename">large/volume_on.png</key>
             <struct type="IndividualSpriteSettings">
