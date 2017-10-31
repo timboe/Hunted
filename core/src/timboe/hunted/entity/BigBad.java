@@ -133,7 +133,7 @@ public class BigBad extends ParticleEffectActor {
     }
     // If far away then speed up
     if (distanceFromPlayer > Param.BIGBAD_SENSE_DISTANCE * 2) {
-      speed *= 2;
+      speed *= Param.BIGBAD_FARAWAY_BOOST;
     }
     // Update the things which relate to the movement of the AI over different tiles
     Tile t = getTileUnderEntity();

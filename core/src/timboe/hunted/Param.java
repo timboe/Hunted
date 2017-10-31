@@ -47,13 +47,14 @@ public class Param {
   public static final float PLAYER_SPEED_BOOST = PLAYER_SPEED * 1.5f;
   public static final float PLAYER_SPEED_LOSS = 0.01f;
   public static final float BIGBAD_RUSH = 3f * PLAYER_SPEED;
-  public static final float BIGBAD_SPEED = .8f * PLAYER_SPEED;
+  public static final float BIGBAD_SPEED = .7f * PLAYER_SPEED;
   public static final float BIGBAD_SPEED_BOOST = .05f * PLAYER_SPEED;
   public static final float BIGBAD_ANGULAR_SPEED = (float)Math.PI/90f;
   public static final int BIGBAD_POUNCE_DISTANCE = 2;
-  public static final int BIGBAD_SIXTH_SENSE = 25; //% chance to guess correct direction
-  public static final int BIGBAD_SIXTH_SENSE_BOOST = 25; //% chance boost with every key shrine
+  public static final int BIGBAD_SIXTH_SENSE = 20; //% chance to guess correct direction
+  public static final int BIGBAD_SIXTH_SENSE_BOOST = 20; //% chance boost with every key shrine
   public static final float BIGBAD_SENSE_DISTANCE = 20f; // Within what line of sight can we see the player
+  public static final float BIGBAD_FARAWAY_BOOST = 1.5f;
 
   public static final float PLAYER_SMELL = 0.1f;
   public static final float SMELL_DISSAPATE = PLAYER_SMELL/10f; // How much of the moving smell is lost
