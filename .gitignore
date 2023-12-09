@@ -71,3 +71,9 @@ Thumbs.db
 
 *.au
 TheGrue-RC1.aab
+
+android/release/android-release.aab
+
+gradle/wrapper/gradle-wrapper.jar
+
+DELETE/

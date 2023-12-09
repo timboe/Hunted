@@ -61,7 +61,6 @@ public class GameScreen implements Screen, InputProcessor {
   private Vector2 mobileCenter = new Vector2();
 
   public GameScreen() {
-    GLProfiler.enable();
     GameState.getInstance().theGameScreen = this;
   }
 
@@ -119,7 +118,6 @@ public class GameScreen implements Screen, InputProcessor {
   @Override
   public void render(float delta) {
     allProbe.start();
-    GLProfiler.reset();
 
     renderClear();
     renderMain();
@@ -129,13 +127,6 @@ public class GameScreen implements Screen, InputProcessor {
     fpsLogger.log();
 
     allProbe.stop();
-
-    if (GameState.getInstance().frame % 60 == 0) {
-      Gdx.app.log("OpenGL","DrawCalls:" + GLProfiler.drawCalls +
-      ", ShaderSwitches:" + GLProfiler.shaderSwitches +
-      ", TexBindings:" + GLProfiler.textureBindings +
-      ", Vertexies:" +GLProfiler.vertexCount.total);
-    }
 
     renderStage.tick(delta);
     renderLights.tick(delta);
@@ -347,6 +338,11 @@ public class GameScreen implements Screen, InputProcessor {
   }
 
   @Override
+  public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+    return false;
+  }
+
+  @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
     boolean toMove = true;
     if (!GameState.getInstance().userControl) toMove = false;
@@ -362,8 +358,6 @@ public class GameScreen implements Screen, InputProcessor {
   }
 
   @Override
-  public boolean scrolled(int amount) {
-    return false;
-  }
+  public boolean scrolled(float amountX, float amountY) { return false; }
 
 }
