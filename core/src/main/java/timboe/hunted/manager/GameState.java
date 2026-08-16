@@ -56,7 +56,6 @@ public class GameState {
 
   public void reset() {
     resetInternal();
-    theGameScreen.reset();
     WorldGen.getInstance().generateWorld();
     userControl = true;
   }

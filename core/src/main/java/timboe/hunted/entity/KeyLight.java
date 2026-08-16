@@ -26,8 +26,8 @@ public class KeyLight extends Torch {
       default:
         Gdx.app.error("Sprites::addKeyShrine","FATAL n = " + aID); Gdx.app.exit();
     }
-    if (tex == "lampS") lightMax = .6f;
-    else if (tex == "lamp" || tex == "blob") lightMax = .75f;
+    if ("lampS".equals(tex)) lightMax = .6f;
+    else if ("lamp".equals(tex) || "blob".equals(tex)) lightMax = .75f;
     lightColour.a = 0f;
     boolean repeat = (frames == 3);
     setTexture(tex + colourStr, frames, repeat);

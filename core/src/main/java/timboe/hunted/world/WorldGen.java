@@ -381,11 +381,14 @@ public class WorldGen {
                 below.getY() + below.getHeight(),
                 Param.CORRIDOR_SIZE,
                 corridorLength);
-              // Check that the corridor does not intercept any other large rooms
+              // Check that the corridor does not intercept any other large rooms or corridors
               boolean overlap = false;
               Room fatC = new Room(c.getX() - 2, c.getY(), c.getWidth() + 4, c.getHeight());
               for (Room overlapCheck : rooms) {
                 if (overlapCheck.overlaps(fatC)) overlap = true;
+              }
+              for (Room overlapCheck : corridors) {
+                if (overlapCheck.overlaps(c)) overlap = true;
               }
               if (!overlap) possibleCorridors.add(c);
             }
@@ -416,11 +419,14 @@ public class WorldGen {
                 intersectionX.getY() + startY,
                 corridorLength,
                 Param.CORRIDOR_SIZE);
-              // Check that the corridor does not intercept any other large rooms
+              // Check that the corridor does not intercept any other large rooms or corridors
               boolean overlap = false;
               Room fatC = new Room(c.getX(), c.getY() - 3, c.getWidth(), c.getHeight() + 6);
               for (Room overlapCheck : rooms) {
                 if (overlapCheck.overlaps(fatC)) overlap = true;
+              }
+              for (Room overlapCheck : corridors) {
+                if (overlapCheck.overlaps(c)) overlap = true;
               }
               if (!overlap) possibleCorridors.add(c);
             }

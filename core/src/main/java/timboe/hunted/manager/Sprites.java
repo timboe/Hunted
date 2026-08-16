@@ -344,9 +344,10 @@ public class Sprites {
       int y = (int)c.getY();
       int w = (int)c.getWidth() - 1;
       int h = (int)c.getHeight() - 1;
-      if (c.getX() < Param.MAX_CRINKLE + 1 || c.getY() < Param.MAX_CRINKLE + 1) continue;
       if (c.getCorridorDirection() == Room.CorridorDirection.VERTICAL) {
         if (c.getHeight() < Param.CORRIDOR_SIZE + vGap) continue;
+        // Corner corners probe up to MAX_CRINKLE+vGap tiles to the left/right - keep them in bounds
+        if (x - Param.MAX_CRINKLE - vGap < 0 || x + w + Param.MAX_CRINKLE + vGap >= Param.TILE_X) continue;
         for (int corner = 0; corner < 4; ++ corner) {
           for (int e = 1; e <= extent; ++e) {
 //            Gdx.app.log("dbg","Room="+c+" x=" + x + " y=" + y + " e=" + e);
@@ -373,6 +374,10 @@ public class Sprites {
         }
       } else if (c.getCorridorDirection() == Room.CorridorDirection.HORIZONTAL) {
         if (c.getWidth() < Param.CORRIDOR_SIZE) continue;
+        // Corner corners probe up to MAX_CRINKLE+hGap tiles up/down and 1 tile right - keep them in bounds
+        if (y - Param.MAX_CRINKLE - hGap < 0
+          || y + h + Param.MAX_CRINKLE + hGap >= Param.TILE_Y
+          || x + w + 1 >= Param.TILE_X) continue;
         for (int corner = 0; corner < 4; ++ corner) {
           for (int e = 1; e <= extent; ++e) {
 //            Gdx.app.log("dbg","Room="+c+" x=" + x + " y=" + y + " e=" + e);

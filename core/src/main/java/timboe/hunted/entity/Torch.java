@@ -84,7 +84,9 @@ public class Torch extends EntityBase {
   }
 
   public void modTorch(float percent) {
-    torchLight[0].setDistance( torchDistanceRef[0] * percent );
+    for (int i = 0; i < nLight; ++i) {
+      torchLight[i].setDistance( torchDistanceRef[i] * percent );
+    }
   }
 
   public void flicker() {

@@ -193,6 +193,8 @@ public class Sounds {
     chaseMusic[currentChase].stop();
     ambiance.stop();
     ambiance.dispose();
+    machineNoise.stop();
+    machineNoise.dispose();
     unlockSound.dispose();
     died.stop();
     died.dispose();

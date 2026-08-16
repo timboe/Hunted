@@ -79,7 +79,7 @@ public class BigBad extends ParticleEffectActor {
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = circleShape;
     fixtureDef.filter.categoryBits = Param.TORCH_ENTITY; // I am a
-    fixtureDef.filter.maskBits = Param.PLAYER_ENTITY|Param.WORLD_ENTITY|Param.TORCH_ENTITY; // I collide with
+    fixtureDef.filter.maskBits = Param.WORLD_ENTITY|Param.TORCH_ENTITY; // I collide with
     lightAttachment.createFixture(fixtureDef);
     circleShape.dispose();
 
@@ -179,7 +179,6 @@ public class BigBad extends ParticleEffectActor {
     // Update my light
     lightAttachment.setTransform(body.getPosition().x,
       body.getPosition().y + torchOffset, body.getAngle());
-      super.updatePosition();
 
     setPosition(getX(), getY() + yOff);
     // Set angle
@@ -267,32 +266,46 @@ public class BigBad extends ParticleEffectActor {
 
   private void chooseDestination() {
     // First try and follow scent trail
+    Room myRoom = getRoomUnderEntity();
+    if (myRoom == null) {
+      Gdx.app.log("AI","Not standing in a room, cannot choose destination");
+      aiState = AIState.IDLE;
+      return;
+    }
     Room playerRoom = Sprites.getInstance().getPlayer().getRoomUnderEntity();
-    HashMap.Entry<Room, Room> toGoTo = getRoomUnderEntity().getConnectionTo(playerRoom);
+    HashMap.Entry<Room, Room> toGoTo = myRoom.getConnectionTo(playerRoom);
     if (GameState.getInstance().gameIsWon) {
-      toGoTo = getRoomUnderEntity().getRandomNeighbourRoom(null); // Pick truly at random
+      toGoTo = myRoom.getRandomNeighbourRoom(null); // Pick truly at random
     } else if (canSeePlayer && distanceFromPlayer < Param.BIGBAD_SENSE_DISTANCE && toGoTo != null) {
       Gdx.app.log("AI","Got visual on player in neighbouring room/corridor");
     } else if (Utility.prob(sixthSense)) { // Clairvoyant!
       Gdx.app.log("AI", "Being clairvoyant");
       toGoTo = getBestRoom();
-    } else if (Utility.prob(getRoomUnderEntity().getScent()) ) { // Follow scent
-      toGoTo = getRoomUnderEntity().getNeighborRoomWithHighestScentTrail();
-      Gdx.app.log("AI", "Got scent of " + getRoomUnderEntity().getScent() * 100 + "% following to " + toGoTo.getValue() + " with scent " + toGoTo.getValue().getScent() * 100);
+    } else if (Utility.prob(myRoom.getScent()) ) { // Follow scent
+      toGoTo = myRoom.getNeighborRoomWithHighestScentTrail();
+      if (toGoTo != null) Gdx.app.log("AI", "Got scent of " + myRoom.getScent() * 100 + "% following to " + toGoTo.getValue() + " with scent " + toGoTo.getValue().getScent() * 100);
     } else { // Pick random, prefer new rooms
-      toGoTo = getRoomUnderEntity().getRandomNeighbourRoom(roomsVisited);
+      toGoTo = myRoom.getRandomNeighbourRoom(roomsVisited);
+    }
+    if (toGoTo == null) {
+      Gdx.app.log("AI","Could not choose a destination, wandering");
+      aiState = AIState.IDLE;
+      return;
     }
     basicPathing(toGoTo.getKey(), toGoTo.getValue());
   }
 
   private HashMap.Entry<Room,Room> getBestRoom() { // Pathfind to the player's room
-    LinkedList<Room> pathFind = PathFinding.doAStar(getRoomUnderEntity(), Sprites.getInstance().getPlayer().getRoomUnderEntity());
+    Room myRoom = getRoomUnderEntity();
+    Room playerRoom = Sprites.getInstance().getPlayer().getRoomUnderEntity();
+    if (myRoom == null || playerRoom == null) return null;
+    LinkedList<Room> pathFind = PathFinding.doAStar(myRoom, playerRoom);
     if (pathFind == null || pathFind.size() < 2) {
       Gdx.app.error("AI", "Clairvoyant pathfind to players room failed");
-      return getRoomUnderEntity().getRandomNeighbourRoom(roomsVisited); // Failed for some reason
+      return myRoom.getRandomNeighbourRoom(roomsVisited); // Failed for some reason
     }
     // Note we go to corridor in location 1 as location 0 is the current room
-    return getRoomUnderEntity().getConnectionTo(pathFind.get(1)); // Go to the first room
+    return myRoom.getConnectionTo(pathFind.get(1)); // Go to the first room
   }
 
   private void getNearestWaypoint() {
@@ -308,8 +321,10 @@ public class BigBad extends ParticleEffectActor {
       }
     }
     if (nearest == null) {
-      Gdx.app.error("AI","Nearest waypoint fail");
-      Gdx.app.exit();
+      Gdx.app.log("AI","Nearest waypoint fail, retrying");
+      movementTargets.clear();
+      aiState = AIState.IDLE;
+      return;
     }
     movementTargets.clear();
     movementTargets.add(nearest);

@@ -116,6 +116,7 @@ public class Room extends Rectangle implements Node<Room> {
   public float getScent() { return scent; }
 
   public HashMap.Entry<Room,Room> getNeighborRoomWithHighestScentTrail() {
+    if (linksTo.isEmpty()) return null;
     HashMap.Entry<Room,Room> toReturn = linksTo.entrySet().iterator().next();
     for (HashMap.Entry<Room,Room> entry : linksTo.entrySet()) {
       if (entry.getKey().getScent() > toReturn.getKey().getScent()) { // Check corridors
@@ -148,6 +149,10 @@ public class Room extends Rectangle implements Node<Room> {
       Gdx.app.log("AI","All rooms are visited so I pick at random");
     } else {
       Gdx.app.log("AI","Picking at random from " + choices.size() + " unvisited rooms.");
+    }
+    if (choices.isEmpty()) { // No links at all - nothing to choose
+      Gdx.app.error("Room", "Was unable to choose new room for AI");
+      return null;
     }
     List<Room> keys = new ArrayList<Room>(choices.keySet()); // Round-about way of choosing a random exitDoor
     Room chosen = keys.get(Utility.r.nextInt(keys.size()));

@@ -152,6 +152,7 @@ public class EntryScreen implements Screen, InputProcessor {
 
   @Override
   public void dispose() {
+    rayHandler.dispose();
   }
 
   @Override
