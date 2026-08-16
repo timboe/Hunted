@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -103,7 +102,7 @@ public class GameScreen implements Screen, InputProcessor {
 
   protected void renderClear() {
     Gdx.gl.glClearColor(.184f, .157f, .227f, 1);
-    Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
   }
 
   public void resize (int width, int height) {
@@ -168,7 +167,13 @@ public class GameScreen implements Screen, InputProcessor {
     renderLights.start();
     if (HuntedGame.lights) {
       scaledLightingMatrix = gameCamera.camera.combined.cpy().scale(Param.TILE_SIZE, Param.TILE_SIZE, 0);
-      Physics.getInstance().rayHandler.setCombinedMatrix(scaledLightingMatrix);
+      Physics.getInstance().rayHandler.setCombinedMatrix(
+          scaledLightingMatrix,
+          gameCamera.camera.position.x / Param.TILE_SIZE,
+          gameCamera.camera.position.y / Param.TILE_SIZE,
+          gameCamera.camera.viewportWidth * gameCamera.camera.zoom / Param.TILE_SIZE,
+          gameCamera.camera.viewportHeight * gameCamera.camera.zoom / Param.TILE_SIZE
+      );
       Physics.getInstance().rayHandler.render();
       if (HuntedGame.debug) debugRenderer.render(Physics.getInstance().world, scaledLightingMatrix);
     }

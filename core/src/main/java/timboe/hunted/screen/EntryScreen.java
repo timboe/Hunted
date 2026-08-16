@@ -147,7 +147,7 @@ public class EntryScreen implements Screen, InputProcessor {
 
   protected void renderClear() {
     Gdx.gl.glClearColor(.184f, .157f, .227f, 1);
-    Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
   }
 
   @Override
