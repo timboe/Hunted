@@ -10,8 +10,8 @@ apply plugin: 'com.android.application'
 
 android {
   namespace "com.timboe.hunted"
-  compileSdk 35
-  sourceSets {
+    compileSdk 36
+    sourceSets {
     main {
       manifest.srcFile 'AndroidManifest.xml'
       java.setSrcDirs(['src/main/java'])
@@ -33,9 +33,9 @@ android {
   defaultConfig {
     applicationId 'timboe.hunted'
     minSdkVersion 21
-    targetSdkVersion 35
-    versionCode 120
-    versionName "1.2"
+    targetSdkVersion 36
+    versionCode 130
+    versionName "1.3"
   }
   compileOptions {
     sourceCompatibility "11"
